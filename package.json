@@ -1,0 +1,12 @@
+{
+  "name": "express-power-flow",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "commit": "bash ./npm-run-commit.sh",
+    "dev": "concurrently \"npm --prefix client run dev\" \"npm --prefix server run dev\""
+  },
+  "dependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
