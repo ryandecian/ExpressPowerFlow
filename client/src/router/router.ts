@@ -1,5 +1,5 @@
-/* Import des composants React */
-import { ReactNode } from "react"
+/* Import des Types */
+import { Router_Type } from "../types/router/router.type";
 
 /* Liste des pages en import */
 /* Page Frontend vérrouillée */
@@ -9,5 +9,4 @@ import { ReactNode } from "react"
 /**
  * Utilisation : 
  * {router[0].path}
- * {routerExt.instagram}
  */
