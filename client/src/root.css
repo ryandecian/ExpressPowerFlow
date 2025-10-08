@@ -1,0 +1,35 @@
+/* Import des typographies */
+
+:root {
+    /* ✨ Couleur des textes */
+        /* Couleur des textes général Restructuration */
+            --ColorTextBlack: rgb(0, 0, 0);
+
+    /* ✨ Logique taille police d'écriture site*/
+        --font-size-root: 1rem; /* 16 px : Ref size, dimensionne tout le site*/
+        --p: var(--font-size-root); /*16px*/
+        --h1: calc(var(--font-size-root) * 2); /*32px*/
+        --h2: calc(var(--font-size-root) * 1.5); /*24px*/
+        --h3: calc(var(--font-size-root) + 0.125rem); /*18px*/
+        --h4: var(--font-size-root); /*16px*/
+        --h5: calc(var(--font-size-root) - 0.125rem); /*14px*/
+        --h6: calc(var(--font-size-root) - 0.3125rem); /*11px*/
+        --h7: calc(var(--font-size-root) - 0.4375rem); /*9px*/
+        --h8: calc(var(--font-size-root) - 0.5rem); /*8px*/
+}
+
+/* Reset universel pour tout le front */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    /* font-family: "Quicksand", Arial, sans-serif; */
+    padding: 0;
+    border: 0;
+    margin: 0;
+    width: 100%;
+    min-height: 100vh;
+}
