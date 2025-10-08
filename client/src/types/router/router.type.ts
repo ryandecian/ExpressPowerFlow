@@ -1,4 +1,4 @@
-// router.type.ts (fichier .ts OK)
+/* Import des Types */
 import type { ReactNode } from "react";
 
 type Router_Type = {
