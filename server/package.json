@@ -1,7 +1,7 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
     "commit": "bash ../npm-run-commit.sh",
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
