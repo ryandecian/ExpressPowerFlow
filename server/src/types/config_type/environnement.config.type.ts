@@ -1,2 +1,3 @@
-type environnement_type = "development" | "production" | "test";
-export default environnement_type;
+type Environnement_Type = "development" | "production" | "test";
+
+export type { Environnement_Type };
