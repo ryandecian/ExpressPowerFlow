@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import path from 'path';
 import fs from 'fs';
-import environnement_type from '../types/environnement.config.type';
+import environnement_type from '../types/config_type/environnement.config.type';
 import chalk from 'chalk';
 
 /**
