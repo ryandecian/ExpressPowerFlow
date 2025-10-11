@@ -1,0 +1,7 @@
+Les .env et sample à la racine ont été édité mais demeures incomplet. Il faudra les corriger
+Il ne reste que le mot de passe d'application a aller chercher et créer une boite mail. 
+
+Il faut vérifier le dockerfiles du client ainsi que les variable d'environnement + sample
+
+Il faut créer le dockerfile du serveur et vérifier ses variable .env en dev
+
