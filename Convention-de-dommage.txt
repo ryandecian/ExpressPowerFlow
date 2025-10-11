@@ -40,10 +40,9 @@ Documentation client
 
 Documentation server
 Toujours en premier
-/* Import des dépendances externes : */
-
-
 /* Import des Config : */
+
+/* Import des dépendances : */
 
 /* Import des Emails : */
 
@@ -51,7 +50,9 @@ Toujours en premier
 
 /* Import des Repositories : */
 
-/* Import des routers secondaires */
+/* Import des Routers */
+
+/* Import des Routers secondaires */
 
 /* Import des composants de Security */
 

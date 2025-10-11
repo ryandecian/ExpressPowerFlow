@@ -1,14 +1,15 @@
-/* Charger d'abord les variables d'environnement */
+/* Import des Config : */
 import "./config/dotenv.config.js";
-
-import express, { Request, Response } from "express";
-import cors from "cors";
-import cookieParser from "cookie-parser";
-import chalk from "chalk";
-
-import router from "./router/router.js";
 import { ENV_SAFE } from "./config/ENV.config.js";
 
+/* Import des dépendances : */
+import chalk from "chalk";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import express, { Request, Response } from "express";
+
+/* Import des Routers */
+import router from "./router/router.js";
 
 const app = express();
 const port = ENV_SAFE("VITE_PORT_API_SERVER");
