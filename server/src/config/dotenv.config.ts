@@ -1,9 +1,12 @@
-import dotenv from "dotenv";
-import path from "node:path";
-import fs from "node:fs";
-import { fileURLToPath } from "node:url";
-import { Environnement_Type } from "../types/config_type/environnement.config.type.js";
+/* Import des dépendances : */
 import chalk from "chalk";
+import dotenv from "dotenv";
+import { fileURLToPath } from "node:url";
+import fs from "node:fs";
+import path from "node:path";
+
+/* Import des Types : */
+import { Environnement_Type } from "../types/config_type/environnement.config.type.js";
 
 /* -- __dirname compatible ESM -- */
 const __filename = fileURLToPath(import.meta.url);
