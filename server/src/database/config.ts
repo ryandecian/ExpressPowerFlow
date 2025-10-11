@@ -1,10 +1,15 @@
+/* Import des Config : */
 import "dotenv/config";
-import mysql from "mysql2/promise";
-import chalk from "chalk";
 import { ENV_SAFE } from "../config/ENV.config.js";
-import testPoolConnection from "../repository/database_tbl/testPoolConnection.config.repository.js";
 
-// Stockage du pool dans une variable globale
+/* Import des dépendances : */
+import chalk from "chalk";
+import mysql from "mysql2/promise";
+
+/* Import des Repositories : */
+import { testPoolConnection_Repository } from "../repository/database_tbl/testPoolConnection.config.repository.js";
+
+/* Stockage du pool dans une variable globale */
 let pool: mysql.Pool | null = null;
 
 /**
@@ -28,7 +33,7 @@ function initializePool() {
             
             // ✅ Test réel de connexion MySQL
             try {
-                testPoolConnection(pool);
+                testPoolConnection_Repository(pool);
             }
             catch (error) {
                 const testPoolConnectionError = error as Error;
@@ -82,7 +87,7 @@ export async function useComplexConnection() {
     }
 }
 
-// ✅ Initialisation du pool au démarrage
+/* ✅ Initialisation du pool au démarrage */
 export const usePoolConnection = initializePool();
 export default usePoolConnection;
 
