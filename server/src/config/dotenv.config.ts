@@ -1,33 +1,37 @@
-import dotenv from 'dotenv';
-import path from 'path';
-import fs from 'fs';
-import { Environnement_Type } from '../types/config_type/environnement.config.type';
-import chalk from 'chalk';
+import dotenv from "dotenv";
+import path from "node:path";
+import fs from "node:fs";
+import { fileURLToPath } from "node:url";
+import { Environnement_Type } from "../types/config_type/environnement.config.type.js";
+import chalk from "chalk";
+
+/* -- __dirname compatible ESM -- */
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 /**
  * Détermine le fichier .env à charger
- * 
- * NODE_ENV est une variable d'environnement du docker-compose.yml qui indique l'environnement d'exécution (développement, production, etc.).
- * Si elle n'est pas définie, on utilise "development" par défaut.
+ * NODE_ENV (docker-compose, npm scripts, etc.). Défaut: "development"
  */
 const VerifENV = (process.env.NODE_ENV || "development") as Environnement_Type;
+
+/* Chemin vers /server/.env.<env> (depuis /server/src/config) */
 const envDevPath: string = path.resolve(__dirname, `../../.env.${VerifENV}`);
 
 if (VerifENV === "development") {
-  // Vérifie si le fichier .env.base existe
-  if (!fs.existsSync(envDevPath)) {
-    console.error(
-      {
-        identity: "dotenv.config.ts",
-        type: "fichier de configuration",
-        chemin: "/server/src/config/dotenv.config.ts",
-        "❌ Nature de l'erreur": `Fichier .env.development introuvable !`,
-        route: envDevPath,
-      }
-    );
-    process.exit(1); /* Arrête le serveur si les variables d'environnement ne sont pas disponibles */
-  }
-  /* Charge le fichier .env.development pour les variables d'environnements */
-  dotenv.config({ path: envDevPath });
-  console.info(chalk.magenta(`Environnement .env.${VerifENV} chargé !`));
+    if (!fs.existsSync(envDevPath)) {
+        console.error({
+            identity: "dotenv.config.ts",
+            type: "fichier de configuration",
+            chemin: "/server/src/config/dotenv.config.ts",
+            "❌ Nature de l'erreur": `Fichier .env.development introuvable !`,
+            route: envDevPath,
+        });
+        process.exit(1);
+    }
+    dotenv.config({ path: envDevPath });
+    console.info(chalk.magenta(`Environnement .env.${VerifENV} chargé !`));
+} else {
+    // En prod/test, on laisse l’ENV venir du système (Docker/CI). Optionnel :
+    dotenv.config();
 }
