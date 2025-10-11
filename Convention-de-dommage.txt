@@ -13,6 +13,7 @@ Fichier tsx :
         - fonction réutilisable (utils) : camelCase
             Pour les fonctions séparé en ts ou tsx exporté pour être réutilisé.
 
+Documentation client
 /* Import des modules CSS */
 
 /* Import des Components */
@@ -34,3 +35,30 @@ Fichier tsx :
 /* Import des Types */
 
 /* Import des Utils */
+
+------------------------------------------------------------
+
+Documentation server
+Toujours en premier
+/* Import des dépendances externes : */
+
+
+/* Import des Config : */
+
+/* Import des Emails : */
+
+/* Import des Middlewares */
+
+/* Import des Repositories : */
+
+/* Import des routers secondaires */
+
+/* Import des composants de Security */
+
+/* Import des Services : */
+
+/* Import des Types : */
+
+/* Import des Utils */
+
+
