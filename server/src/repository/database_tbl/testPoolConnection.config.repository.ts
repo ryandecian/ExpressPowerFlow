@@ -1,10 +1,11 @@
-import chalk = require("chalk");
-import { RowDataPacket } from "mysql2";
+/* Import des dépendances : */
+import chalk from "chalk";
 import mysql from "mysql2/promise";
+import { RowDataPacket } from "mysql2";
 
 type TestConnectionResult = RowDataPacket & { test: number };
 
-async function testPoolConnection(pool: mysql.Pool) {
+async function testPoolConnection_Repository(pool: mysql.Pool) {
     try {
         /* On demande à la base de données de nous renvoyer une clé qui se nomme test et qui vaut 1 */
         const [result] = await pool.query<TestConnectionResult[]>("SELECT 1 as test");
@@ -34,4 +35,4 @@ async function testPoolConnection(pool: mysql.Pool) {
     }
 }
 
-export default testPoolConnection;
+export { testPoolConnection_Repository };
