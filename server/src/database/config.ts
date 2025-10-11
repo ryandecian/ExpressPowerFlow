@@ -7,7 +7,7 @@ import chalk from "chalk";
 import mysql from "mysql2/promise";
 
 /* Import des Repositories : */
-import testPoolConnection from "../repository/database_tbl/testPoolConnection.config.repository.js";
+import { testPoolConnection_Repository } from "../repository/database_tbl/testPoolConnection.config.repository.js";
 
 /* Stockage du pool dans une variable globale */
 let pool: mysql.Pool | null = null;
@@ -33,7 +33,7 @@ function initializePool() {
             
             // ✅ Test réel de connexion MySQL
             try {
-                testPoolConnection(pool);
+                testPoolConnection_Repository(pool);
             }
             catch (error) {
                 const testPoolConnectionError = error as Error;
