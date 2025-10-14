@@ -30,10 +30,10 @@ services:
       - db_data:/var/lib/mysql
     # Exposition du port vers les services internes de docker
     expose:
-      - "4406"  # seulement accessible entre services Docker (sécurité)
+      - "3306"  # seulement accessible entre services Docker (sécurité)
     # Exposition de la DB vers l'extérieur en dehors de Docker
     ports:
-      - "4406:4406"  # DB accessible depuis l'extérieur le temps du dev
+      - "4406:3306"  # DB accessible depuis l'extérieur le temps du dev
     networks:
       - epf_net
 
