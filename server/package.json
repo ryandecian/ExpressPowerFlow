@@ -6,6 +6,7 @@
   "main": "./dist/index.js",
   "scripts": {
     "build": "tsc",
+    "build:runtime": "rm -rf dist node_modules && npm ci && npm run build && npm prune --production",
     "commit": "bash ../npm-run-commit.sh",
     "dev": "tsx watch src/index.ts",
     "pull-force": "bash ../npm-run-pull-force.sh",

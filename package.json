@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "build": "concurrently --raw \"npm run build --prefix client\" \"npm run build --prefix server\"",
     "commit": "bash ./npm-run-commit.sh",
     "pull-force": "bash ./npm-run-pull-force.sh",
 
