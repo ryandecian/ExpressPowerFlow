@@ -73,6 +73,7 @@ services:
       - SECRET_KEY_TOKEN_API_SERVER=${SECRET_KEY_TOKEN_API_SERVER}
     volumes:
       - /volume1/docker/ExpressPowerFlow/server-dist:/app/dist:ro
+      - /volume1/docker/ExpressPowerFlow/server-node_modules:/app/node_modules:ro
       - /volume1/docker/ExpressPowerFlow/server/uploads:/app/uploads
       - /volume1/docker/ExpressPowerFlow/logs/server:/app/logs
     depends_on:
