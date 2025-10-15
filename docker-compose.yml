@@ -1,25 +1,25 @@
-version: '3.8'
+version: "3.8"
 
 services:
   nginx:
-    image: nginx:latest
-    container_name: nginx-reverse
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro               # Fichier de configuration Nginx personnalisé
-      - ./nginx/certs:/etc/nginx/certs                            # Certificats TLS (Let's Encrypt)
-      - /etc/letsencrypt:/etc/letsencrypt:ro
-      - ./nginx/html:/usr/share/nginx/html                        # Page HTML statique (optionnel, ex: page maintenance)
-      - client-dist:/usr/share/nginx/html/lapm                   # Volume monté contenant les fichiers buildés du frontend
+    image: nginx:1.27-alpine
+    container_name: epf_nginx
     depends_on:
       - client
       - server
+    ports:
+      - "60500:80"   # Uniquement interne au NAS; DSM fera 443 -> 60500
+    volumes:
+      - /volume1/docker/ExpressPowerFlow/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      # Sert le build du front (même dossier que le service client ci-dessous)
+      - /volume1/docker/ExpressPowerFlow/client-dist:/usr/share/nginx/html:ro
+    restart: unless-stopped
+    networks:
+      - epf_net
 
   db:
     image: mariadb:11
-    container_name: db
+    container_name: epf_db
     restart: always
     env_file: .env
     environment:
@@ -34,55 +34,63 @@ services:
       - "3306"  # seulement accessible entre services Docker (sécurité)
     # Exposition de la DB vers l'extérieur en dehors de Docker
     ports:
-      - "3306:3306"  # DB accessible depuis l'extérieur le temps du dev
+      - "4406:3306"  # DB accessible depuis l'extérieur le temps du dev
+    networks:
+      - epf_net
 
   client:
-    container_name: client
+    container_name: epf_client
     build:
       context: ./client
       dockerfile: Dockerfile
-      args: # Arguments pour le build qui remplace "environment". Necessaire pour vite ! A configurer également dans le Dockerfile
+      args:
         - VITE_NODE_ENV=production
         - VITE_DOMAIN_CLIENT=${VITE_DOMAIN_CLIENT}
         - VITE_DOMAIN_API_SERVER=${VITE_DOMAIN_API_SERVER}
     env_file: .env
-    restart: always
+    restart: "no"
+    # 📦 Le build Vite est copié ici par le CMD du Dockerfile (pas de npm dans cette image)
+    #    👉 Même bind-mount que Nginx, pour qu'il serve directement le résultat du build
     volumes:
-      - client-dist:/app/dist  # Rend disponible le build Vite pour Nginx
-    command: [ "sleep", "infinity" ]
+      - /volume1/docker/ExpressPowerFlow/client-dist:/app/dist
+    networks:
+      - epf_net
+    # ❌ Ne pas surcharger 'command:' ici (le CMD du Dockerfile copie /app/dist-build -> /app/dist)
 
   server:
-    container_name: server
+    container_name: epf_server
     build:
       context: ./server
       dockerfile: Dockerfile
     env_file: .env
     restart: always
     expose:
-      - "8080"
+      - "7080"     # visible seulement sur le réseau Docker
     environment:
       - NODE_ENV=production
       - VITE_DOMAIN_CLIENT=${VITE_DOMAIN_CLIENT}
       - VITE_DOMAIN_API_SERVER=${VITE_DOMAIN_API_SERVER}
-
       - VITE_PORT_API_SERVER=${VITE_PORT_API_SERVER}
-
-      - DB_HOST=${DB_HOST}
+      # 🔗 DB_HOST par défaut = 'db' (nom de service). Si absent du .env, on utilise 'db'.
+      - DB_HOST=${DB_HOST:-db}
       - DB_PORT=${DB_PORT}
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_NAME=${DB_NAME}
-
       - MAIL_SERVER_ADMIN=${MAIL_SERVER_ADMIN}
       - MAIL_PASSWORD=${MAIL_PASSWORD}
-
       - SECRET_KEY_TOKEN_CLIENT=${SECRET_KEY_TOKEN_CLIENT}
       - SECRET_KEY_TOKEN_API_SERVER=${SECRET_KEY_TOKEN_API_SERVER}
+    volumes:
+      - /volume1/docker/ExpressPowerFlow/server/uploads:/app/uploads
+    networks:
+      - epf_net
     depends_on:
       - db
-    volumes:
-      - ./server/uploads:/app/uploads # Dossier pour les fichiers uploadés
 
 volumes:
   db_data:
-  client-dist:
+
+networks:
+  epf_net:
+    driver: bridge
