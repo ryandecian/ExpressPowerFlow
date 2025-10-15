@@ -1,25 +1,24 @@
-version: '3.8'
+version: "3.9"
 
 services:
   nginx:
-    image: nginx:latest
-    container_name: nginx-reverse
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro               # Fichier de configuration Nginx personnalisé
-      - ./nginx/certs:/etc/nginx/certs                            # Certificats TLS (Let's Encrypt)
-      - /etc/letsencrypt:/etc/letsencrypt:ro
-      - ./nginx/html:/usr/share/nginx/html                        # Page HTML statique (optionnel, ex: page maintenance)
-      - client-dist:/usr/share/nginx/html/lapm                   # Volume monté contenant les fichiers buildés du frontend
+    image: nginx:1.27-alpine
+    container_name: epf_nginx
     depends_on:
-      - client
       - server
+    ports:
+      - "60500:80"   # DSM fera 443 -> 60500 pour le front
+    volumes:
+      - /volume1/docker/ExpressPowerFlow/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /volume1/docker/ExpressPowerFlow/client-dist:/usr/share/nginx/html:ro
+      - /volume1/docker/ExpressPowerFlow/logs/nginx:/var/log/nginx
+    restart: unless-stopped
+    networks:
+      - epf_net
 
   db:
     image: mariadb:11
-    container_name: db
+    container_name: epf_db
     restart: always
     env_file: .env
     environment:
@@ -27,62 +26,69 @@ services:
       - MYSQL_DATABASE=${DB_NAME}
       - MYSQL_USER=${DB_USER}
       - MYSQL_PASSWORD=${DB_PASSWORD}
+      - TZ=Europe/Paris
     volumes:
       - db_data:/var/lib/mysql
-    # Exposition du port vers les services internes de docker
+      - /volume1/docker/ExpressPowerFlow/logs/db:/var/log/mysql
     expose:
-      - "3306"  # seulement accessible entre services Docker (sécurité)
-    # Exposition de la DB vers l'extérieur en dehors de Docker
+      - "3306"  # seulement accessible entre services Docker
+    # DEV uniquement : accès externe
     ports:
-      - "3306:3306"  # DB accessible depuis l'extérieur le temps du dev
-
-  client:
-    container_name: client
-    build:
-      context: ./client
-      dockerfile: Dockerfile
-      args: # Arguments pour le build qui remplace "environment". Necessaire pour vite ! A configurer également dans le Dockerfile
-        - VITE_NODE_ENV=production
-        - VITE_DOMAIN_CLIENT=${VITE_DOMAIN_CLIENT}
-        - VITE_DOMAIN_API_SERVER=${VITE_DOMAIN_API_SERVER}
-    env_file: .env
-    restart: always
-    volumes:
-      - client-dist:/app/dist  # Rend disponible le build Vite pour Nginx
-    command: [ "sleep", "infinity" ]
+      - "4406:3306"
+    networks:
+      - epf_net
 
   server:
-    container_name: server
-    build:
-      context: ./server
-      dockerfile: Dockerfile
-    env_file: .env
+    image: node:22-alpine
+    container_name: epf_server
     restart: always
-    expose:
-      - "8080"
+    ports:
+      - "7080:7080"     # DSM proxy: 443 -> 7080 pour l'API
+    working_dir: /app
+    env_file: .env
     environment:
       - NODE_ENV=production
+      - TZ=Europe/Paris
+
+      # Domaines
       - VITE_DOMAIN_CLIENT=${VITE_DOMAIN_CLIENT}
       - VITE_DOMAIN_API_SERVER=${VITE_DOMAIN_API_SERVER}
 
-      - VITE_PORT_API_SERVER=${VITE_PORT_API_SERVER}
+      # Ports hors DB
+      - VITE_PORT_API_SERVER=${VITE_PORT_API_SERVER} # Port interne docker. Le port externe dépend du reverse proxy
 
+      # Variables de connexion DB
       - DB_HOST=${DB_HOST}
       - DB_PORT=${DB_PORT}
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_NAME=${DB_NAME}
 
+      # Variables de connexion au service gmail
       - MAIL_SERVER_ADMIN=${MAIL_SERVER_ADMIN}
       - MAIL_PASSWORD=${MAIL_PASSWORD}
 
+      # Clés secrètes pour JWT
       - SECRET_KEY_TOKEN_CLIENT=${SECRET_KEY_TOKEN_CLIENT}
       - SECRET_KEY_TOKEN_API_SERVER=${SECRET_KEY_TOKEN_API_SERVER}
+    volumes:
+      - /volume1/docker/ExpressPowerFlow/server-dist:/app/dist:ro
+      - /volume1/docker/ExpressPowerFlow/server-node_modules:/app/node_modules:ro
+      - /volume1/docker/ExpressPowerFlow/server/uploads:/app/uploads
+      - /volume1/docker/ExpressPowerFlow/logs/server:/app/logs
     depends_on:
       - db
-    volumes:
-      - ./server/uploads:/app/uploads # Dossier pour les fichiers uploadés
+    networks:
+      - epf_net
+    command: >
+      sh -c "
+      node --version &&
+      node dist/index.js
+      "
 
 volumes:
   db_data:
-  client-dist:
+
+networks:
+  epf_net:
+    driver: bridge
