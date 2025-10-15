@@ -1,15 +1,19 @@
-const mqttConfig = {                           /* Configuration du broker MQTT embarqué (Express = broker) */
-    "enabled": true,                           /* Active/désactive le broker intégré (true = on, false = off) */
-    "port": 1883,                              /* Port TCP d’écoute (1883 = MQTT sans TLS) */
-    "clientsMax": 50,                          /* Nombre max de clients MQTT simultanés autorisés */
-    "users": [                                 /* Liste des comptes autorisés à s’authentifier sur le broker */
-        {                                      /* Définition d’un utilisateur (ici : celui du Shelly) */
+/* Configuration du broker MQTT embarqué (Express = broker) */
+const mqttConfig = {
+    "enabled": true, /* Active/désactive le broker intégré (true = on, false = off) */
+    "port": 1883, /* Port TCP d’écoute (1883 = MQTT sans TLS) */
+    "clientsMax": 50, /* Nombre max de clients MQTT simultanés autorisés */
+    /* Liste des comptes autorisés à s’authentifier sur le broker */
+    "users": [
+        {                                      
             "username": "shelly_user",         /* Identifiant MQTT à renseigner dans l’interface du Shelly 3EM */
             "password": "change_me_strong"     /* Mot de passe MQTT (à changer en prod ; plus tard chiffré en DB) */
         }
     ],
-    "acl": [                                   /* ACL = Access Control List (droits de publish/subscribe par user) */
-        {                                      /* Règle d’ACL associée à un utilisateur précis */
+    /* ACL = Access Control List (droits de publish/subscribe par user) */
+    "acl": [
+        /* Règle d’ACL associée à un utilisateur précis */
+        {
             "username": "shelly_user",         /* Cette règle s’applique à l’utilisateur "shelly_user" */
             "publish": [                       /* Liste blanche des topics que cet utilisateur peut PUBLIER */
                 "shellies/+/emeter/+/+",       /* Mesures 3EM : shellies/<id>/emeter/<phase>/<clé> (power, voltage, …) */
@@ -20,6 +24,6 @@ const mqttConfig = {                           /* Configuration du broker MQTT e
             "subscribe": []                    /* Vide = aucun droit de SUBSCRIBE (Shelly = publisher only) */
         }
     ]
-};                                             /* Fin de l’objet de configuration */
+};
 
-export { mqttConfig };                         /* Export pour import côté broker/orchestrateur */
+export { mqttConfig };
