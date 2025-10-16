@@ -7,7 +7,7 @@ services:
     depends_on:
       - server
     ports:
-      - "60500:80"   # DSM fera 443 -> 60500 pour le front
+      - "${DSM_PORT_CLIENT}:${VITE_PORT_CLIENT}"   # 60500:80 /  DSM fera 443 -> 60500 pour le front -> 80
     volumes:
       - /volume1/docker/ExpressPowerFlow/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - /volume1/docker/ExpressPowerFlow/client-dist:/usr/share/nginx/html:ro
