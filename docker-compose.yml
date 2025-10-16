@@ -43,7 +43,8 @@ services:
     container_name: epf_server
     restart: always
     ports:
-      - "7080:7080"     # DSM proxy: 443 -> 7080 pour l'API
+      - "${DSM_PORT_API_SERVER}:${VITE_PORT_API_SERVER}"     # 7080:7080 / DSM proxy: 443 -> 7080 pour l'API
+      - "${DSM_PORT_MQTT_BROKER}:${PORT_MQTT_BROKER}"  # 1883:1883 / DSM proxy: 1883 -> 1883 pour le broker MQTT
     working_dir: /app
     env_file: .env
     environment:
