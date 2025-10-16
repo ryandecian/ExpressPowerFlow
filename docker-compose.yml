@@ -7,7 +7,7 @@ services:
     depends_on:
       - server
     ports:
-      - "60500:80"   # DSM fera 443 -> 60500 pour le front
+      - "${DSM_PORT_CLIENT}:${VITE_PORT_CLIENT}"   # 60500:80 /  DSM fera 443 -> 60500 pour le front -> 80
     volumes:
       - /volume1/docker/ExpressPowerFlow/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - /volume1/docker/ExpressPowerFlow/client-dist:/usr/share/nginx/html:ro
@@ -31,10 +31,10 @@ services:
       - db_data:/var/lib/mysql
       - /volume1/docker/ExpressPowerFlow/logs/db:/var/log/mysql
     expose:
-      - "3306"  # seulement accessible entre services Docker
-    # DEV uniquement : accès externe
+      - "${DB_PORT}"  # Exposition interne au réseau docker (3306)
+    # DEV uniquement : Exposition de la DB au net 
     ports:
-      - "4406:3306"
+      - "${DSM_PORT_DB_EXPOSITION}:${DB_PORT}" # 4406:3306 / DSM proxy: 4406 -> 3306 pour accès externe (dev uniquement, à sécuriser)
     networks:
       - epf_net
 
@@ -43,7 +43,8 @@ services:
     container_name: epf_server
     restart: always
     ports:
-      - "7080:7080"     # DSM proxy: 443 -> 7080 pour l'API
+      - "${DSM_PORT_API_SERVER}:${VITE_PORT_API_SERVER}"     # 7080:7080 / DSM proxy: 443 -> 7080 pour l'API
+      - "${DSM_PORT_MQTT_BROKER}:${PORT_MQTT_BROKER}"  # 1883:1883 / DSM proxy: 1883 -> 1883 pour le broker MQTT
     working_dir: /app
     env_file: .env
     environment:
