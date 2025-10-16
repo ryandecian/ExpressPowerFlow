@@ -31,10 +31,10 @@ services:
       - db_data:/var/lib/mysql
       - /volume1/docker/ExpressPowerFlow/logs/db:/var/log/mysql
     expose:
-      - "${DB_PORT}"  # seulement accessible entre services Docker
+      - "${DB_PORT}"  # Exposition interne au réseau docker (3306)
     # DEV uniquement : Exposition de la DB au net 
     ports:
-      - "${DSM_PORT_DB_EXPOSITION}:${DB_PORT}"
+      - "${DSM_PORT_DB_EXPOSITION}:${DB_PORT}" # 4406:3306 / DSM proxy: 4406 -> 3306 pour accès externe (dev uniquement, à sécuriser)
     networks:
       - epf_net
 
