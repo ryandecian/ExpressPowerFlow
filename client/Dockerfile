@@ -1,4 +1,8 @@
 # syntax=docker/dockerfile:1.4
+# ------------------------------------------------------------
+
+# Sur nas synology ce dockerfile ne sert a rien car on envois directement le build dans le dossier partage
+# /volume1/docker/ExpressPowerFlow/client-dist
 
 # ------------------------------------------------------------
 # Étape 1 : Build du front (Node + Alpine)
