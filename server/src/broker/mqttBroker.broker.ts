@@ -13,24 +13,20 @@ import { createRequire } from "node:module";
 import { createServer, Server as NetServer } from "node:net";
 
 /* Import des Types : */
+import type { AclRuleBroker_Type } from "../types/broker/aclRuleBroker.type.js";
 import type { UserBroker_Type } from "../types/broker/userBroker.type.js";
+
 import type { Client as AedesClient, Subscription } from "aedes";
 import type { IPublishPacket } from "mqtt-packet";
 
 /* ---------- Types de configuration ---------- */
-
-export type AclRule = {
-    username: string;
-    publish?: string[];
-    subscribe?: string[];
-};
 
 export type MqttConfig = {
     enabled: boolean;
     port: number;
     clientsMax?: number;
     users: UserBroker_Type[];
-    acl: AclRule[];
+    acl: AclRuleBroker_Type[];
 };
 
 /* ---------- Client étendu pour stocker l’username authentifié ---------- */
@@ -138,7 +134,7 @@ export function createMqttBroker(configPath: string) {
         }
 
         const users: UserBroker_Type[] = config.users ?? [];
-        const acl: AclRule[] = config.acl ?? [];
+        const acl: AclRuleBroker_Type[] = config.acl ?? [];
         const clientsMax: number = config.clientsMax ?? 50;
 
         const b = aedesFactory({ concurrency: 100 });
