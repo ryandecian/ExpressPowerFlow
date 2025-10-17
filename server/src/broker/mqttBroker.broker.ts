@@ -17,6 +17,7 @@ import type { AclRuleBroker_Type } from "../types/broker/aclRuleBroker.type.js";
 import type { UserBroker_Type } from "../types/broker/userBroker.type.js";
 import type { MqttConfigBrocker_Type } from "../types/broker/mqttConfigBroker.type.js";
 import type { AugmentedClientBroker_Type } from "../types/broker/augmentedClientBroker.type.js";
+import { AedesLikeBroker_Interface } from "../types/broker/aedesLikeBroker.interface.js";
 
 import type { Client as AedesClient, Subscription } from "aedes";
 import type { IPublishPacket } from "mqtt-packet";
@@ -27,34 +28,7 @@ import { topicMatchesBroker_Utils } from "../utils/broker/topicMatchesBroker.uti
 /* ---------- Aedes: factory CommonJS chargée proprement en ESM ---------- */
 /* On typage structurellement uniquement ce qu’on utilise (zéro any) */
 
-interface AedesLike {
-    connectedClients: number;
-    handle: (socket: import("node:net").Socket) => void;
-    close: (cb: () => void) => void;
-
-    authenticate: (
-        client: AedesClient,
-        username: string | null | undefined,
-        password: Buffer | null | undefined,
-        done: (err: Error | null, success: boolean) => void
-    ) => void;
-
-    authorizePublish: (
-        client: AedesClient,
-        packet: IPublishPacket,
-        done: (error?: Error) => void
-    ) => void;
-
-    authorizeSubscribe: (
-        client: AedesClient,
-        sub: Subscription,
-        done: (error: Error | null, subscription?: Subscription | null) => void
-    ) => void;
-
-    on: (event: "client" | "clientDisconnect", listener: (c: AedesClient) => void) => void;
-}
-
-type AedesFactory = (opts?: { concurrency?: number }) => AedesLike;
+type AedesFactory = (opts?: { concurrency?: number }) => AedesLikeBroker_Interface;
 
 const require = createRequire(import.meta.url);
 const aedesFactory: AedesFactory = require("aedes");
