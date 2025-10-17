@@ -16,17 +16,10 @@ import { createServer, Server as NetServer } from "node:net";
 import type { AclRuleBroker_Type } from "../types/broker/aclRuleBroker.type.js";
 import type { UserBroker_Type } from "../types/broker/userBroker.type.js";
 import type { MqttConfigBrocker_Type } from "../types/broker/mqttConfigBroker.type.js";
+import type { AugmentedClientBroker_Type } from "../types/broker/augmentedClientBroker.type.js";
 
 import type { Client as AedesClient, Subscription } from "aedes";
 import type { IPublishPacket } from "mqtt-packet";
-
-/* ---------- Types de configuration ---------- */
-
-/* ---------- Client étendu pour stocker l’username authentifié ---------- */
-
-type AugmentedClient = AedesClient & {
-    __username?: string;
-};
 
 /* ---------- Utilitaire: matching wildcards MQTT ---------- */
 /* "+" = un niveau ; "#" = plusieurs niveaux */
@@ -156,7 +149,7 @@ export function createMqttBroker(configPath: string) {
                 return;
             }
 
-            (client as AugmentedClient).__username = username;
+            (client as AugmentedClientBroker_Type).__username = username;
             done(null, true);
         };
 
@@ -167,7 +160,7 @@ export function createMqttBroker(configPath: string) {
             done: (error?: Error) => void
         ): void => {
             try {
-                const username = (client as AugmentedClient).__username;
+                const username = (client as AugmentedClientBroker_Type).__username;
                 const topic = packet.topic;
 
                 if (!username) {
@@ -201,7 +194,7 @@ export function createMqttBroker(configPath: string) {
             done: (error: Error | null, subscription?: Subscription | null) => void
         ): void => {
             try {
-                const username = (client as AugmentedClient).__username;
+                const username = (client as AugmentedClientBroker_Type).__username;
                 const topic = sub.topic;
 
                 if (!username) {
