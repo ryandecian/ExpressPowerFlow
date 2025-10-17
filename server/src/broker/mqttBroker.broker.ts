@@ -8,10 +8,9 @@
 
 /* Import des Composants */
 import { loadConfig_Broker } from "./loadConfig.broker.js";
+import { status_Broker } from "./status.broker.js";
 
 /* Import des dépendances : */
-import fs from "node:fs";
-import path from "node:path";
 import { createRequire } from "node:module";
 import { createServer, Server as NetServer } from "node:net";
 
@@ -43,19 +42,7 @@ export function createMqttBroker(configPath: string) {
     loadConfig_Broker(configPath);
 
     /* État synthétique (pour /health par ex.) */
-    function status(): {
-        running: boolean;
-        port: number | null;
-        clients: number;
-        enabled: boolean;
-    } {
-        return {
-            running: !!broker && !!tcpServer,
-            port: config?.port ?? null,
-            clients: broker?.connectedClients ?? 0,
-            enabled: config?.enabled ?? false
-        };
-    }
+    status_Broker(broker, tcpServer, config);
 
     /* Démarrage */
     function start(): void {
@@ -225,7 +212,7 @@ export function createMqttBroker(configPath: string) {
         start,
         stop,
         reload,
-        status
+        status_Broker
     };
 }
 
