@@ -17,7 +17,7 @@ import type { AclRuleBroker_Type } from "../types/broker/aclRuleBroker.type.js";
 import type { UserBroker_Type } from "../types/broker/userBroker.type.js";
 import type { MqttConfigBrocker_Type } from "../types/broker/mqttConfigBroker.type.js";
 import type { AugmentedClientBroker_Type } from "../types/broker/augmentedClientBroker.type.js";
-import { AedesLikeBroker_Interface } from "../types/broker/aedesLikeBroker.interface.js";
+import type { AedesFactoryBroker_Type } from "../types/broker/aedesFactoryBroker.type.js";
 
 import type { Client as AedesClient, Subscription } from "aedes";
 import type { IPublishPacket } from "mqtt-packet";
@@ -25,18 +25,12 @@ import type { IPublishPacket } from "mqtt-packet";
 /* Import des Utils */
 import { topicMatchesBroker_Utils } from "../utils/broker/topicMatchesBroker.utils.js";
 
-/* ---------- Aedes: factory CommonJS chargée proprement en ESM ---------- */
-/* On typage structurellement uniquement ce qu’on utilise (zéro any) */
-
-type AedesFactory = (opts?: { concurrency?: number }) => AedesLikeBroker_Interface;
 
 const require = createRequire(import.meta.url);
-const aedesFactory: AedesFactory = require("aedes");
-
-/* ---------- Factory fonctionnelle ---------- */
+const aedesFactory: AedesFactoryBroker_Type = require("aedes");
 
 export function createMqttBroker(configPath: string) {
-    type AedesInstance = ReturnType<AedesFactory>;
+    type AedesInstance = ReturnType<AedesFactoryBroker_Type>;
 
     let broker: AedesInstance | null = null;   // Instance Aedes
     let tcpServer: NetServer | null = null;    // Serveur TCP
