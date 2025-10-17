@@ -15,19 +15,12 @@ import { createServer, Server as NetServer } from "node:net";
 /* Import des Types : */
 import type { AclRuleBroker_Type } from "../types/broker/aclRuleBroker.type.js";
 import type { UserBroker_Type } from "../types/broker/userBroker.type.js";
+import type { MqttConfigBrocker_Type } from "../types/broker/mqttConfigBroker.type.js";
 
 import type { Client as AedesClient, Subscription } from "aedes";
 import type { IPublishPacket } from "mqtt-packet";
 
 /* ---------- Types de configuration ---------- */
-
-export type MqttConfig = {
-    enabled: boolean;
-    port: number;
-    clientsMax?: number;
-    users: UserBroker_Type[];
-    acl: AclRuleBroker_Type[];
-};
 
 /* ---------- Client étendu pour stocker l’username authentifié ---------- */
 
@@ -97,13 +90,13 @@ export function createMqttBroker(configPath: string) {
 
     let broker: AedesInstance | null = null;   // Instance Aedes
     let tcpServer: NetServer | null = null;    // Serveur TCP
-    let config: MqttConfig | null = null;      // Config courante
+    let config: MqttConfigBrocker_Type | null = null;      // Config courante
 
     /* Lecture + parsing de la configuration */
-    function loadConfig(): MqttConfig {
+    function loadConfig(): MqttConfigBrocker_Type {
         const p = path.resolve(configPath);
         const raw = fs.readFileSync(p, "utf-8");
-        const json: MqttConfig = JSON.parse(raw);
+        const json: MqttConfigBrocker_Type = JSON.parse(raw);
         json.clientsMax = json.clientsMax ?? 50;
         return json;
     }
