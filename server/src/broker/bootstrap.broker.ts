@@ -1,6 +1,6 @@
 import express from "express";
 import path from "path";
-import { MqttBroker } from "./mqttBroker.js";
+import { MqttBroker } from "./mqttBroker.broker.js";
 
 const app = express();
 app.use(express.json());
