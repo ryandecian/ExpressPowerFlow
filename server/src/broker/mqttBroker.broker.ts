@@ -6,20 +6,18 @@
    - start / stop / reload / status
 */
 
+/* Import des dépendances : */
 import fs from "node:fs";
 import path from "node:path";
-import { createServer, Server as NetServer } from "node:net";
 import { createRequire } from "node:module";
+import { createServer, Server as NetServer } from "node:net";
 
+/* Import des Types : */
+import type { UserBroker_Type } from "../types/broker/userBroker.type.js";
 import type { Client as AedesClient, Subscription } from "aedes";
 import type { IPublishPacket } from "mqtt-packet";
 
 /* ---------- Types de configuration ---------- */
-
-export type User = {
-    username: string;
-    password: string;
-};
 
 export type AclRule = {
     username: string;
@@ -31,7 +29,7 @@ export type MqttConfig = {
     enabled: boolean;
     port: number;
     clientsMax?: number;
-    users: User[];
+    users: UserBroker_Type[];
     acl: AclRule[];
 };
 
@@ -139,7 +137,7 @@ export function createMqttBroker(configPath: string) {
             return;
         }
 
-        const users: User[] = config.users ?? [];
+        const users: UserBroker_Type[] = config.users ?? [];
         const acl: AclRule[] = config.acl ?? [];
         const clientsMax: number = config.clientsMax ?? 50;
 
