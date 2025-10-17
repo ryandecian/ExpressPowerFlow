@@ -21,25 +21,8 @@ import type { AugmentedClientBroker_Type } from "../types/broker/augmentedClient
 import type { Client as AedesClient, Subscription } from "aedes";
 import type { IPublishPacket } from "mqtt-packet";
 
-/* ---------- Utilitaire: matching wildcards MQTT ---------- */
-/* "+" = un niveau ; "#" = plusieurs niveaux */
-function topicMatches(pattern: string, topic: string): boolean {
-    const patt = pattern.split("/");
-    const top = topic.split("/");
-
-    for (let i = 0; i < patt.length; i++) {
-        const p = patt[i];
-        const t = top[i];
-
-        if (p === "#") return true;
-        if (p === "+") {
-            if (t === undefined) return false;
-            continue;
-        }
-        if (t !== p) return false;
-    }
-    return patt.length === top.length;
-}
+/* Import des Utils */
+import { topicMatchesBroker_Utils } from "../utils/broker/topicMatchesBroker.utils.js";
 
 /* ---------- Aedes: factory CommonJS chargée proprement en ESM ---------- */
 /* On typage structurellement uniquement ce qu’on utilise (zéro any) */
@@ -175,7 +158,7 @@ export function createMqttBroker(configPath: string) {
                     return;
                 }
 
-                const allowed = publishList.some((pattern) => topicMatches(pattern, topic));
+                const allowed = publishList.some((pattern) => topicMatchesBroker_Utils(pattern, topic));
                 if (!allowed) {
                     done(new Error("Topic publish refusé"));
                     return;
@@ -209,7 +192,7 @@ export function createMqttBroker(configPath: string) {
                     return;
                 }
 
-                const allowed = list.some((pattern) => topicMatches(pattern, topic));
+                const allowed = list.some((pattern) => topicMatchesBroker_Utils(pattern, topic));
                 if (!allowed) {
                     done(null, null);
                     return;
