@@ -6,6 +6,9 @@
    - start / stop / reload / status
 */
 
+/* Import des Composants */
+import { loadConfig_Broker } from "./loadConfig.broker.js";
+
 /* Import des dépendances : */
 import fs from "node:fs";
 import path from "node:path";
@@ -14,10 +17,11 @@ import { createServer, Server as NetServer } from "node:net";
 
 /* Import des Types : */
 import type { AclRuleBroker_Type } from "../types/broker/aclRuleBroker.type.js";
+import type { AedesFactoryBroker_Type } from "../types/broker/aedesFactoryBroker.type.js";
+import type { AugmentedClientBroker_Type } from "../types/broker/augmentedClientBroker.type.js";
 import type { UserBroker_Type } from "../types/broker/userBroker.type.js";
 import type { MqttConfigBrocker_Type } from "../types/broker/mqttConfigBroker.type.js";
-import type { AugmentedClientBroker_Type } from "../types/broker/augmentedClientBroker.type.js";
-import type { AedesFactoryBroker_Type } from "../types/broker/aedesFactoryBroker.type.js";
+import type { AedesInstanceBroker_Type } from "../types/broker/aedesInstanceBroker.type.js";
 
 import type { Client as AedesClient, Subscription } from "aedes";
 import type { IPublishPacket } from "mqtt-packet";
@@ -30,20 +34,13 @@ const require = createRequire(import.meta.url);
 const aedesFactory: AedesFactoryBroker_Type = require("aedes");
 
 export function createMqttBroker(configPath: string) {
-    type AedesInstance = ReturnType<AedesFactoryBroker_Type>;
 
-    let broker: AedesInstance | null = null;   // Instance Aedes
+    let broker: AedesInstanceBroker_Type | null = null;   // Instance Aedes
     let tcpServer: NetServer | null = null;    // Serveur TCP
     let config: MqttConfigBrocker_Type | null = null;      // Config courante
 
     /* Lecture + parsing de la configuration */
-    function loadConfig(): MqttConfigBrocker_Type {
-        const p = path.resolve(configPath);
-        const raw = fs.readFileSync(p, "utf-8");
-        const json: MqttConfigBrocker_Type = JSON.parse(raw);
-        json.clientsMax = json.clientsMax ?? 50;
-        return json;
-    }
+    loadConfig_Broker(configPath);
 
     /* État synthétique (pour /health par ex.) */
     function status(): {
@@ -64,7 +61,7 @@ export function createMqttBroker(configPath: string) {
     function start(): void {
         if (broker || tcpServer) return; // déjà lancé
 
-        config = loadConfig();
+        config = loadConfig_Broker(configPath);
         if (!config.enabled) {
             console.log("[MQTT] Broker désactivé par la config.");
             return;
