@@ -4,3 +4,4 @@ Il ne reste que le mot de passe d'application a aller chercher et créer une boi
 Il faut vérifier le dockerfiles du client ainsi que les variable d'environnement + sample
 
 Il faut créer le dockerfile du serveur et vérifier ses variable .env en dev
+
