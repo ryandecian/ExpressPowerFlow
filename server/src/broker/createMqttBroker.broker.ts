@@ -11,21 +11,17 @@ import { loadConfig_Broker } from "./loadConfig.broker.js";
 import { start_Broker } from "./start.broker.js";
 import { status_Broker } from "./status.broker.js";
 import { stop_Broker } from "./stop.broker.js";
+import { reload_Broker } from "./reload.broker.js";
 
 /* Import des dépendances : */
-import { createServer, Server as NetServer } from "node:net";
+import { Server as NetServer } from "node:net";
 
 /* Import des Types : */
 import type { AedesFactoryBroker_Type } from "../types/broker/aedesFactoryBroker.type.js";
 import type { MqttConfigBrocker_Type } from "../types/broker/mqttConfigBroker.type.js";
 import type { AedesInstanceBroker_Type } from "../types/broker/aedesInstanceBroker.type.js";
 
-/* Import des Utils */
-import { require_Utils } from "../utils/import/require.utils.js";
-
-const aedesFactory: AedesFactoryBroker_Type = require_Utils("aedes");
-
-export function createMqttBroker(configPath: string) {
+function createMqttBroker_Broker(configPath: string) {
 
     let broker: AedesInstanceBroker_Type | null = null;   // Instance Aedes
     let tcpServer: NetServer | null = null;    // Serveur TCP
@@ -38,26 +34,26 @@ export function createMqttBroker(configPath: string) {
     status_Broker(broker, tcpServer, config);
 
     /* Démarrage */
-    start_Broker(broker, tcpServer, config, configPath);
+    function start(): void {
+        start_Broker(broker, tcpServer, config, configPath);
+    }
 
     /* Arrêt propre */
     stop_Broker(broker, tcpServer);
 
     /* Reload (arrêt + redémarrage) */
-    function reload(): void {
-        stop_Broker(broker, tcpServer);
-        setTimeout(() => start_Broker(broker, tcpServer, config, configPath), 250);
-    }
+    reload_Broker(broker, tcpServer, config, configPath);
 
     /* API publique de la factory */
     return {
-        start_Broker,
+        start,
         stop_Broker,
-        reload,
+        reload_Broker,
         status_Broker
     };
 }
 
+export { createMqttBroker_Broker };
 
 /* ---------- Exemple d’utilisation ----------
 
