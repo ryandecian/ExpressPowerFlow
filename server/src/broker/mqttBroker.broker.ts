@@ -12,7 +12,6 @@ import { start_Broker } from "./start.broker.js";
 import { status_Broker } from "./status.broker.js";
 
 /* Import des dépendances : */
-import { createRequire } from "node:module";
 import { createServer, Server as NetServer } from "node:net";
 
 /* Import des Types : */
@@ -23,12 +22,8 @@ import type { UserBroker_Type } from "../types/broker/userBroker.type.js";
 import type { MqttConfigBrocker_Type } from "../types/broker/mqttConfigBroker.type.js";
 import type { AedesInstanceBroker_Type } from "../types/broker/aedesInstanceBroker.type.js";
 
-import type { Client as AedesClient, Subscription } from "aedes";
-import type { IPublishPacket } from "mqtt-packet";
-
 /* Import des Utils */
 import { require_Utils } from "../utils/import/require.utils.js";
-import { topicMatchesBroker_Utils } from "../utils/broker/topicMatchesBroker.utils.js";
 
 const aedesFactory: AedesFactoryBroker_Type = require_Utils("aedes");
 
