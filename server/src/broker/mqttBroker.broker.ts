@@ -10,15 +10,13 @@
 import { loadConfig_Broker } from "./loadConfig.broker.js";
 import { start_Broker } from "./start.broker.js";
 import { status_Broker } from "./status.broker.js";
+import { stop_Broker } from "./stop.broker.js";
 
 /* Import des dépendances : */
 import { createServer, Server as NetServer } from "node:net";
 
 /* Import des Types : */
-import type { AclRuleBroker_Type } from "../types/broker/aclRuleBroker.type.js";
 import type { AedesFactoryBroker_Type } from "../types/broker/aedesFactoryBroker.type.js";
-import type { AugmentedClientBroker_Type } from "../types/broker/augmentedClientBroker.type.js";
-import type { UserBroker_Type } from "../types/broker/userBroker.type.js";
 import type { MqttConfigBrocker_Type } from "../types/broker/mqttConfigBroker.type.js";
 import type { AedesInstanceBroker_Type } from "../types/broker/aedesInstanceBroker.type.js";
 
@@ -43,39 +41,18 @@ export function createMqttBroker(configPath: string) {
     start_Broker(broker, tcpServer, config, configPath);
 
     /* Arrêt propre */
-    function stop(): void {
-        if (!broker && !tcpServer) return;
-
-        console.log("[MQTT] Arrêt du broker…");
-        const tasks: Array<Promise<void>> = [];
-
-        if (tcpServer) {
-            const s = tcpServer;
-            tasks.push(new Promise<void>((resolve) => s.close(() => resolve())));
-        }
-
-        if (broker) {
-            const b = broker;
-            tasks.push(new Promise<void>((resolve) => b.close(() => resolve())));
-        }
-
-        void Promise.all(tasks).finally((): void => {
-            broker = null;
-            tcpServer = null;
-            console.log("[MQTT] Broker arrêté.");
-        });
-    }
+    stop_Broker(broker, tcpServer);
 
     /* Reload (arrêt + redémarrage) */
     function reload(): void {
-        stop();
+        stop_Broker(broker, tcpServer);
         setTimeout(() => start_Broker(broker, tcpServer, config, configPath), 250);
     }
 
     /* API publique de la factory */
     return {
         start_Broker,
-        stop,
+        stop_Broker,
         reload,
         status_Broker
     };
