@@ -26,11 +26,10 @@ import type { Client as AedesClient, Subscription } from "aedes";
 import type { IPublishPacket } from "mqtt-packet";
 
 /* Import des Utils */
+import { require_Utils } from "../utils/import/require.utils.js";
 import { topicMatchesBroker_Utils } from "../utils/broker/topicMatchesBroker.utils.js";
 
-
-const require = createRequire(import.meta.url);
-const aedesFactory: AedesFactoryBroker_Type = require("aedes");
+const aedesFactory: AedesFactoryBroker_Type = require_Utils("aedes");
 
 export function createMqttBroker(configPath: string) {
 
