@@ -29,7 +29,6 @@ import type { IPublishPacket } from "mqtt-packet";
 /* Import des Utils */
 import { require_Utils } from "../utils/import/require.utils.js";
 import { topicMatchesBroker_Utils } from "../utils/broker/topicMatchesBroker.utils.js";
-import { start } from "node:repl";
 
 const aedesFactory: AedesFactoryBroker_Type = require_Utils("aedes");
 
