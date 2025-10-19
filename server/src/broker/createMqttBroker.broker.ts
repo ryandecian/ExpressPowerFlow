@@ -1,11 +1,3 @@
-/* mqttBroker.functional.ts
-   Broker MQTT embarqué pour ExpressPowerFlow (Aedes + TCP) en style fonctionnel
-   - Factory createMqttBroker(configPath)
-   - Authentification simple (JSON) en attendant la DB
-   - ACL Publish/Subscribe par username
-   - start / stop / reload / status
-*/
-
 /* Import des Composants */
 import { loadConfig_Broker } from "./loadConfig.broker.js";
 import { start_Broker } from "./start.broker.js";
@@ -17,43 +9,66 @@ import { reload_Broker } from "./reload.broker.js";
 import { Server as NetServer } from "node:net";
 
 /* Import des Types : */
-import type { AedesFactoryBroker_Type } from "../types/broker/aedesFactoryBroker.type.js";
 import type { MqttConfigBrocker_Type } from "../types/broker/mqttConfigBroker.type.js";
 import type { AedesInstanceBroker_Type } from "../types/broker/aedesInstanceBroker.type.js";
+import type { StatusBroker_Type } from "../types/broker/statusBroker.type.js";
+
+/* -------------------------------------------------------------------------------------------------
+   Factory : createMqttBroker_Broker
+   - Encapsule l’état (broker, tcpServer, config, configPath) dans une fermeture.
+   - S’appuie sur TES helpers, légèrement adaptés pour retourner l’état.
+   - API publique sans argument : start(), stop(), reload(), status().
+-------------------------------------------------------------------------------------------------- */
 
 function createMqttBroker_Broker(configPath: string) {
+    /* État privé (capturé par fermeture) */
+    let broker: AedesInstanceBroker_Type | null = null;   /* Instance Aedes */
+    let tcpServer: NetServer | null = null;               /* Serveur TCP */
+    let config: MqttConfigBrocker_Type | null = null;     /* Config courante */
+    const pathCfg: string = configPath;                    /* Chemin de config */
 
-    let broker: AedesInstanceBroker_Type | null = null;   // Instance Aedes
-    let tcpServer: NetServer | null = null;    // Serveur TCP
-    let config: MqttConfigBrocker_Type | null = null;      // Config courante
+    /* Chargement initial de la configuration (pas de start auto) */
+    config = loadConfig_Broker(pathCfg);
 
-    /* Lecture + parsing de la configuration */
-    loadConfig_Broker(configPath);
-
-    /* État synthétique (pour /health par ex.) */
-    status_Broker(broker, tcpServer, config);
-
-    /* Démarrage */
-    function start(): void {
-        start_Broker(broker, tcpServer, config, configPath);
+    function status(): StatusBroker_Type {
+        return status_Broker(broker, tcpServer, config);
     }
 
-    /* Arrêt propre */
-    stop_Broker(broker, tcpServer);
+    function start(): void {
+        const res = start_Broker(broker, tcpServer, config, pathCfg);
+        if (res) {
+            broker = res.broker ?? broker;
+            tcpServer = res.tcpServer ?? tcpServer;
+            config = res.config ?? config; /* au cas où start recharge la config */
+        }
+    }
 
-    /* Reload (arrêt + redémarrage) */
-    reload_Broker(broker, tcpServer, config, configPath);
+    async function stop(): Promise<void> {
+        const res = await stop_Broker(broker, tcpServer);
+        /* Les helpers arrêtent réellement; on remet l’état local à jour */
+        broker = res.broker;
+        tcpServer = res.tcpServer;
+        /* config non touchée */
+    }
 
-    /* API publique de la factory */
+    async function reload(): Promise<void> {
+        const res = await reload_Broker(broker, tcpServer, config, pathCfg);
+        broker = res.broker;
+        tcpServer = res.tcpServer;
+        if (res.config) config = res.config;
+    }
+
+
     return {
         start,
-        stop_Broker,
-        reload_Broker,
-        status_Broker
+        stop,
+        reload,
+        status
     };
 }
 
 export { createMqttBroker_Broker };
+
 
 /* ---------- Exemple d’utilisation ----------
 

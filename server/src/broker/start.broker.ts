@@ -32,6 +32,7 @@ import { topicMatchesBroker_Utils } from "../utils/broker/topicMatchesBroker.uti
  * `AedesFactoryBroker_Type` décrit la signature d’appel de la factory (options en entrée,
  * instance de broker en sortie), garantissant l’absence de `any` dans le flux.
  */
+
 const aedesFactory: AedesFactoryBroker_Type = require_Utils("aedes");
 
 function start_Broker(
@@ -39,13 +40,15 @@ function start_Broker(
     tcpServer: NetServer | null = null,
     config: MqttConfigBrocker_Type | null,
     configPath: string
-): void {
-    if (broker || tcpServer) return; // déjà lancé
+): { broker: AedesInstanceBroker_Type | null; tcpServer: NetServer | null; config?: MqttConfigBrocker_Type } {
+    if (broker || tcpServer) {
+        return { broker, tcpServer, ...(config ? { config } : {}) };
+    }
 
     config = loadConfig_Broker(configPath);
     if (!config.enabled) {
         console.info("[MQTT] Broker désactivé par la config.");
-        return;
+        return { broker: null, tcpServer: null, config };
     }
 
     const users: UserBroker_Type[] = config.users ?? [];
@@ -150,28 +153,22 @@ function start_Broker(
         }
     };
 
-    /* Logs utiles (dev) */
-    b.on("client", (c: AedesClient) => {
-        console.log(`[MQTT] client connecté: ${c?.id ?? "unknown"}`);
-    });
-    b.on("clientDisconnect", (c: AedesClient) => {
-        console.log(`[MQTT] client déconnecté: ${c?.id ?? "unknown"}`);
-    });
-    // b.on("publish", (packet: IPublishPacket, c: AedesClient | null) => {
-    //     console.log(`[MQTT] publish ${packet.topic} (${Buffer.isBuffer(packet.payload) ? packet.payload.length : 0}B) from ${c?.id ?? "server"}`);
-    // });
-
     /* Serveur TCP */
     const s = createServer(b.handle);
     s.listen(config.port, () => {
         console.log(`[MQTT] Broker embarqué en écoute sur :${config?.port}`);
     });
 
-    broker = b;
-    tcpServer = s;
+    /* Retour des références pour que la factory les capture */
+    return {
+        broker: b,
+        tcpServer: s,
+        config
+    };
 }
 
 export { start_Broker };
+
 
 /**
  * Démarre le broker MQTT embarqué (Aedes + serveur TCP) si non déjà lancé.

@@ -6,9 +6,11 @@ import type { AedesInstanceBroker_Type } from "../types/broker/aedesInstanceBrok
 
 function stop_Broker(
     broker: AedesInstanceBroker_Type | null,
-    tcpServer: NetServer | null = null,
-): void {
-    if (!broker && !tcpServer) return;
+    tcpServer: NetServer | null = null
+): Promise<{ broker: null; tcpServer: null }> {
+    if (!broker && !tcpServer) {
+        return Promise.resolve({ broker: null, tcpServer: null });
+    }
 
     console.log("[MQTT] Arrêt du broker…");
     const tasks: Array<Promise<void>> = [];
@@ -23,14 +25,19 @@ function stop_Broker(
         tasks.push(new Promise<void>((resolve) => b.close(() => resolve())));
     }
 
-    void Promise.all(tasks).finally((): void => {
-        broker = null;
-        tcpServer = null;
-        console.log("[MQTT] Broker arrêté.");
-    });
+    return Promise.all(tasks)
+        .then(() => {
+            console.log("[MQTT] Broker arrêté.");
+            return { broker: null, tcpServer: null };
+        })
+        .catch(() => {
+            /* On force malgré tout la remise à zéro locale */
+            return { broker: null, tcpServer: null };
+        });
 }
 
 export { stop_Broker };
+
 
 /**
  * Fonction utilitaire permettant d’arrêter proprement le broker MQTT embarqué (Aedes)

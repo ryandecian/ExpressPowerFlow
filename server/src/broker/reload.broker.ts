@@ -9,17 +9,40 @@ import { Server as NetServer } from "node:net";
 import type { AedesInstanceBroker_Type } from "../types/broker/aedesInstanceBroker.type.js";
 import type { MqttConfigBrocker_Type } from "../types/broker/mqttConfigBroker.type.js";
 
+/**
+ * Reload du broker : stop -> (pause) -> start
+ * Retourne les NOUVELLES références pour que la factory puisse mettre à jour son état.
+ */
 function reload_Broker(
     broker: AedesInstanceBroker_Type | null,
     tcpServer: NetServer | null = null,
     config: MqttConfigBrocker_Type | null,
     configPath: string
-): void {
-    stop_Broker(broker, tcpServer);
-    setTimeout(() => start_Broker(broker, tcpServer, config, configPath), 250);
+): Promise<{
+    broker: AedesInstanceBroker_Type | null;
+    tcpServer: NetServer | null;
+    config?: MqttConfigBrocker_Type | undefined;
+}> {
+    return stop_Broker(broker, tcpServer).then(() => {
+        return new Promise<{
+            broker: AedesInstanceBroker_Type | null;
+            tcpServer: NetServer | null;
+            config?: MqttConfigBrocker_Type | undefined;
+        }>((resolve) => {
+            setTimeout(() => {
+                const res = start_Broker(null, null, config, configPath);
+                resolve({
+                    broker: res.broker ?? null,
+                    tcpServer: res.tcpServer ?? null,
+                    ...(res.config ? { config: res.config } : {})
+                });
+            }, 250);
+        });
+    });
 }
 
 export { reload_Broker };
+
 
 /**
  * Fonction utilitaire permettant de redémarrer proprement le broker MQTT embarqué.
