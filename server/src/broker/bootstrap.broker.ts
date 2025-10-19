@@ -1,12 +1,12 @@
 import express from "express";
 import path from "path";
-import { MqttBroker } from "./mqttBroker.broker.js";
+import { createMqttBroker_Broker } from "./createMqttBroker.broker.js";
 
 const app = express();
 app.use(express.json());
 
 // Démarre le broker au lancement (selon la config JSON)
-const broker = MqttBroker.getInstance(path.resolve(__dirname, "../config/mqtt.config.json"));
+const broker = createMqttBroker_Broker(path.resolve(__dirname, "../config/mqtt.config.json"));
 broker.start();
 
 /** Health */
