@@ -4,17 +4,12 @@ import { Server as NetServer } from "node:net";
 /* Import des Types : */
 import type { AedesInstanceBroker_Type } from "../types/broker/aedesInstanceBroker.type.js";
 import type { MqttConfigBrocker_Type } from "../types/broker/mqttConfigBroker.type.js";
+import type { StatusBroker_Type } from "../types/broker/statusBroker.type.js";
 
 function status_Broker(
     broker: AedesInstanceBroker_Type | null, 
     tcpServer: NetServer | null = null, 
-    config: MqttConfigBrocker_Type | null): {
-        running: boolean;
-        port: number | null;
-        clients: number;
-        enabled: boolean;
-    }
-{
+    config: MqttConfigBrocker_Type | null): StatusBroker_Type {
     return {
         running: !!broker && !!tcpServer,
         port: config?.port ?? null,
