@@ -1,9 +1,4 @@
-Les .env et sample à la racine ont été édité mais demeures incomplet. Il faudra les corriger
-Il ne reste que le mot de passe d'application a aller chercher et créer une boite mail. 
 
-Il faut vérifier le dockerfiles du client ainsi que les variable d'environnement + sample
-
-Il faut créer le dockerfile du serveur et vérifier ses variable .env en dev
 
 -------------------------------------------------------------------------
 le fichier mqtt.config.ts n'est pas encore utilisé, il va falloir le mettre a jour avec les connection express et l'utiliser
