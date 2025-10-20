@@ -7,29 +7,38 @@ const mqttConfig = {
     "users": [
         {                                      
             "username": "shelly_3em_user",         /* Identifiant MQTT à renseigner dans l’interface du Shelly 3EM */
-            "password": "change_me_strong"     /* Mot de passe MQTT (à changer en prod ; plus tard chiffré en DB) */
+            "password": "change_me_strong"     /* Mot de passe MQTT du compteur Shelly 3EM */
         },
         {                                      
-            "username": "zendure_solarflow_2400ac_user",         /* Identifiant MQTT à renseigner dans l’interface du Shelly 3EM */
-            "password": "zendure_pw"     /* Mot de passe MQTT (à changer en prod ; plus tard chiffré en DB) */
+            "username": "zendure_solarflow_2400ac_user",         /* Identifiant MQTT à renseigner dans l’interface du Zendure */
+            "password": "zendure_pw"     /* Mot de passe MQTT de la batterie Solarflow 2400AC */
         },
         {                                      
-            "username": "express_power_flow",         /* Identifiant MQTT à renseigner dans l’interface du Shelly 3EM */
-            "password": "super_secure_password"     /* Mot de passe MQTT (à changer en prod ; plus tard chiffré en DB) */
+            "username": "express_power_flow",         /* Identifiant utilisé par ton client interne Express */
+            "password": "super_secure_password"     /* Mot de passe MQTT du serveur Express */
         }
     ],
     /* ACL = Access Control List (droits de publish/subscribe par user) */
     "acl": [
-        /* Règle d’ACL associée à un utilisateur précis */
+        /* Shelly 3EM : publie uniquement ses mesures/états */
         {
-            "username": "shelly_3em_user",         /* Cette règle s’applique à l’utilisateur "shelly_user" */
-            "publish": [                       /* Liste blanche des topics que cet utilisateur peut PUBLIER */
-                "shellies/+/emeter/+/+",       /* Mesures 3EM : shellies/<id>/emeter/<phase>/<clé> (power, voltage, …) */
-                                                /*   "+" = wildcard sur exactement un segment de topic */
-                "shellies/+/online",           /* Publication de l’état de présence (online/offline) */
-                "shellies/+/announce"          /* Messages d’annonce/découverte du Shelly */
+            "username": "shelly_3em_user",
+            "publish": [
+                "shellies/+/emeter/+/+", /* Mesures (power, voltage, current, total…) */
+                "shellies/+/online", /* État de présence */
+                "shellies/+/announce" /* Message d’annonce Shelly */
             ],
-            "subscribe": []                    /* Vide = aucun droit de SUBSCRIBE (Shelly = publisher only) */
+            "subscribe": [] /* Le Shelly n’écoute rien */
+        },
+        /* Express : s’abonne aux messages du Shelly */
+        {
+            username: "express_power_flow",
+            publish: [], /* Express ne publie rien pour l’instant */
+            subscribe: [
+                "shellies/+/emeter/+/+", /* Toutes les mesures 3EM */
+                "shellies/+/online", /* États de présence */
+                "shellies/+/announce" /* Messages d’annonce */
+            ]
         }
     ]
 };
