@@ -1,22 +1,17 @@
-/* Import des dépendances : */
-import fs from "node:fs";
-import path from "node:path";
+/* Import des Config : */
+import { mqttConfig } from "../database/mqtt.config.js";
 
 /* Import des Types : */
 import type { MqttConfigBrocker_Type } from "../types/broker/mqttConfigBroker.type.js";
 
-function loadConfig_Broker(configPath: string): MqttConfigBrocker_Type {
-    const p = path.resolve(configPath);
-    const raw = fs.readFileSync(p, "utf-8");
-    const json: MqttConfigBrocker_Type = JSON.parse(raw);
-    json.clientsMax = json.clientsMax ?? 50;
-
-    return (
-        json
-    );
+function loadConfig_Broker(): MqttConfigBrocker_Type {
+    const configMQTT: MqttConfigBrocker_Type = { ...mqttConfig };
+    configMQTT.clientsMax = configMQTT.clientsMax ?? 50;
+    return configMQTT;
 }
 
 export { loadConfig_Broker };
+
 
 /**
  * Fonction utilitaire chargée de lire et de parser le fichier de configuration MQTT du broker.

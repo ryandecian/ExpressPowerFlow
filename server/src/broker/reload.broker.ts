@@ -11,26 +11,25 @@ import type { MqttConfigBrocker_Type } from "../types/broker/mqttConfigBroker.ty
 
 /**
  * Reload du broker : stop -> (pause) -> start
- * Retourne les NOUVELLES références pour que la factory puisse mettre à jour son état.
+ * --------------------------------------------------
+ * - Arrête le broker proprement
+ * - Attend un court délai pour libérer les ressources
+ * - Relance avec la même configuration en mémoire
+ * - Retourne les nouvelles références à la factory
  */
 function reload_Broker(
     broker: AedesInstanceBroker_Type | null,
     tcpServer: NetServer | null = null,
-    config: MqttConfigBrocker_Type | null,
-    configPath: string
+    config: MqttConfigBrocker_Type | null
 ): Promise<{
     broker: AedesInstanceBroker_Type | null;
     tcpServer: NetServer | null;
     config?: MqttConfigBrocker_Type | undefined;
 }> {
     return stop_Broker(broker, tcpServer).then(() => {
-        return new Promise<{
-            broker: AedesInstanceBroker_Type | null;
-            tcpServer: NetServer | null;
-            config?: MqttConfigBrocker_Type | undefined;
-        }>((resolve) => {
+        return new Promise((resolve) => {
             setTimeout(() => {
-                const res = start_Broker(null, null, config, configPath);
+                const res = start_Broker(null, null, config);
                 resolve({
                     broker: res.broker ?? null,
                     tcpServer: res.tcpServer ?? null,
