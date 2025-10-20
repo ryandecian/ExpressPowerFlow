@@ -7,7 +7,7 @@ const mqttConfig = {
     "users": [
         {                                      
             "username": "shelly_3em_user",         /* Identifiant MQTT à renseigner dans l’interface du Shelly 3EM */
-            "password": "change_me_strong"     /* Mot de passe MQTT du compteur Shelly 3EM */
+            "password": "Tv4rbSA6odtQE62ce4VZ"     /* Mot de passe MQTT du compteur Shelly 3EM */
         },
         {                                      
             "username": "zendure_solarflow_2400ac_user",         /* Identifiant MQTT à renseigner dans l’interface du Zendure */
