@@ -1,9 +1,14 @@
-Les .env et sample à la racine ont été édité mais demeures incomplet. Il faudra les corriger
-Il ne reste que le mot de passe d'application a aller chercher et créer une boite mail. 
-
-Il faut vérifier le dockerfiles du client ainsi que les variable d'environnement + sample
-
-Il faut créer le dockerfile du serveur et vérifier ses variable .env en dev
+Avancement : 
+- DB vide mais opérationnel
+- Broker configuré mais non lancé et utilisé
+- Test de connexion Express broker a effectuer
+- Construction DB a effectuer pour la connexion utilisateur
 
 -------------------------------------------------------------------------
-le fichier mqtt.config.ts n'est pas encore utilisé, il va falloir le mettre a jour avec les connection express et l'utiliser
+Le broker est maintenant prêt, il va falloir configurer le démarrage propre du broker
+dans le serveur express en même temps que le démarrage de express
+
+configurer la dépendance mqtt pour se connecter en tant que client express
+console log les données retourné par shelly
+
+

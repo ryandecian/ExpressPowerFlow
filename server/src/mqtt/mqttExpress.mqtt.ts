@@ -2,9 +2,9 @@
 import mqtt from "mqtt";
 
 /* Paramètres de connexion (vers ton propre broker Express) */
-const MQTT_URL = "mqtt://localhost:1883";
-const MQTT_USER = "express_server";  // un compte spécifique à ton API
-const MQTT_PASS = "super_secure_password";
+const MQTT_URL = "mqtt://localhost:1883"; /* Localisation du Broker */
+const MQTT_USER = "express_power_flow";  /* Nom d'utilisateur du serveur express dans le Broker */
+const MQTT_PASS = "super_secure_password"; /* Mot de passe du serveur express dans le Broker */
 
 /* Connexion du client interne */
 const mqttExpress_MQTT = mqtt.connect(MQTT_URL, {

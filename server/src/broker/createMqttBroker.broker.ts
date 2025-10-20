@@ -15,27 +15,26 @@ import type { StatusBroker_Type } from "../types/broker/statusBroker.type.js";
 
 /* -------------------------------------------------------------------------------------------------
    Factory : createMqttBroker_Broker
-   - Encapsule l’état (broker, tcpServer, config, configPath) dans une fermeture.
+   - Encapsule l’état (broker, tcpServer, config) dans une fermeture.
    - S’appuie sur TES helpers, légèrement adaptés pour retourner l’état.
    - API publique sans argument : start(), stop(), reload(), status().
 -------------------------------------------------------------------------------------------------- */
 
-function createMqttBroker_Broker(configPath: string) {
+function createMqttBroker_Broker() {
     /* État privé (capturé par fermeture) */
     let broker: AedesInstanceBroker_Type | null = null;   /* Instance Aedes */
     let tcpServer: NetServer | null = null;               /* Serveur TCP */
     let config: MqttConfigBrocker_Type | null = null;     /* Config courante */
-    const pathCfg: string = configPath;                    /* Chemin de config */
 
     /* Chargement initial de la configuration (pas de start auto) */
-    config = loadConfig_Broker(pathCfg);
+    config = loadConfig_Broker();
 
     function status(): StatusBroker_Type {
         return status_Broker(broker, tcpServer, config);
     }
 
     function start(): void {
-        const res = start_Broker(broker, tcpServer, config, pathCfg);
+        const res = start_Broker(broker, tcpServer, config);
         if (res) {
             broker = res.broker ?? broker;
             tcpServer = res.tcpServer ?? tcpServer;
@@ -52,7 +51,7 @@ function createMqttBroker_Broker(configPath: string) {
     }
 
     async function reload(): Promise<void> {
-        const res = await reload_Broker(broker, tcpServer, config, pathCfg);
+        const res = await reload_Broker(broker, tcpServer, config);
         broker = res.broker;
         tcpServer = res.tcpServer;
         if (res.config) config = res.config;
