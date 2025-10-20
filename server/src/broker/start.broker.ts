@@ -1,6 +1,3 @@
-/* Import des Composants */
-import { loadConfig_Broker } from "./loadConfig.broker.js";
-
 /* Import des dépendances : */
 import { createServer, Server as NetServer } from "node:net";
 
@@ -19,73 +16,61 @@ import { require_Utils } from "../utils/import/require.utils.js";
 import { topicMatchesBroker_Utils } from "../utils/broker/topicMatchesBroker.utils.js";
 
 /**
- * Factory du broker Aedes (CommonJS) chargée via un wrapper `require_Utils`.
- *
- * Contexte :
- * ----------
- * Le paquet `aedes` expose une factory CommonJS. Dans un projet ESM, on utilise
- * `createRequire(import.meta.url)` (encapsulé ici dans `require_Utils`) pour obtenir une
- * fonction `require` compatible. Cela permet d’instancier Aedes sans heurter la résolution ESM.
- *
- * Typage :
- * --------
- * `AedesFactoryBroker_Type` décrit la signature d’appel de la factory (options en entrée,
- * instance de broker en sortie), garantissant l’absence de `any` dans le flux.
+ * Démarre le broker MQTT embarqué.
+ * --------------------------------------------------------------
+ * - Utilise la configuration déjà chargée en mémoire (pas de lecture fichier)
+ * - Initialise Aedes, les ACL et le serveur TCP
+ * - Retourne les nouvelles références broker + serveur + config
  */
-
 const aedesFactory: AedesFactoryBroker_Type = require_Utils("aedes");
 
 function start_Broker(
     broker: AedesInstanceBroker_Type | null,
     tcpServer: NetServer | null = null,
-    config: MqttConfigBrocker_Type | null,
-    configPath: string
+    config: MqttConfigBrocker_Type | null
 ): { broker: AedesInstanceBroker_Type | null; tcpServer: NetServer | null; config?: MqttConfigBrocker_Type } {
+    /* Si déjà lancé, on ne fait rien */
     if (broker || tcpServer) {
         return { broker, tcpServer, ...(config ? { config } : {}) };
     }
 
-    config = loadConfig_Broker(configPath);
-    if (!config.enabled) {
-        console.info("[MQTT] Broker désactivé par la config.");
-        return { broker: null, tcpServer: null, config };
+    /* Vérifie que la config est active */
+    if (!config || !config.enabled) {
+        console.info("[MQTT] Broker désactivé par la configuration.");
+        return { broker: null, tcpServer: null, ...(config ? { config } : {}) };
+
     }
 
+    /* Extraction de la configuration */
     const users: UserBroker_Type[] = config.users ?? [];
     const acl: AclRuleBroker_Type[] = config.acl ?? [];
     const clientsMax: number = config.clientsMax ?? 50;
 
+    /* Création de l’instance Aedes */
     const b = aedesFactory({ concurrency: 100 });
 
-    /* Auth basique (plaintext pour la phase JSON sans DB) */
+    /* ---------- AUTHENTIFICATION ---------- */
     b.authenticate = (
         client: AedesClient,
         username: string | null | undefined,
         password: Buffer | null | undefined,
         done: (err: Error | null, success: boolean) => void
     ): void => {
-        if (!username || !password) {
-            done(null, false);
-            return;
-        }
+        if (!username || !password) return done(null, false);
         const passText = password.toString("utf-8");
 
         const ok = users.some((u) => u.username === username && u.password === passText);
-        if (!ok) {
-            done(null, false);
-            return;
-        }
+        if (!ok) return done(null, false);
 
         if (b.connectedClients >= clientsMax) {
-            done(new Error("Trop de clients connectés"), false);
-            return;
+            return done(new Error("Trop de clients connectés"), false);
         }
 
         (client as AugmentedClientBroker_Type).__username = username;
         done(null, true);
     };
 
-    /* ACL Publish */
+    /* ---------- AUTORISATION PUBLISH ---------- */
     b.authorizePublish = (
         client: AedesClient,
         packet: IPublishPacket,
@@ -94,24 +79,14 @@ function start_Broker(
         try {
             const username = (client as AugmentedClientBroker_Type).__username;
             const topic = packet.topic;
-
-            if (!username) {
-                done(new Error("Client non authentifié"));
-                return;
-            }
+            if (!username) return done(new Error("Client non authentifié"));
 
             const rule = acl.find((r) => r.username === username);
             const publishList = rule?.publish ?? [];
-            if (publishList.length === 0) {
-                done(new Error("Publish non autorisé"));
-                return;
-            }
+            if (publishList.length === 0) return done(new Error("Publish non autorisé"));
 
             const allowed = publishList.some((pattern) => topicMatchesBroker_Utils(pattern, topic));
-            if (!allowed) {
-                done(new Error("Topic publish refusé"));
-                return;
-            }
+            if (!allowed) return done(new Error("Topic publish refusé"));
 
             done();
         } catch (e) {
@@ -119,7 +94,7 @@ function start_Broker(
         }
     };
 
-    /* ACL Subscribe */
+    /* ---------- AUTORISATION SUBSCRIBE ---------- */
     b.authorizeSubscribe = (
         client: AedesClient,
         sub: Subscription,
@@ -128,47 +103,38 @@ function start_Broker(
         try {
             const username = (client as AugmentedClientBroker_Type).__username;
             const topic = sub.topic;
-
-            if (!username) {
-                done(null, null);
-                return;
-            }
+            if (!username) return done(null, null);
 
             const rule = acl.find((r) => r.username === username);
             const list = rule?.subscribe ?? [];
-            if (list.length === 0) {
-                done(null, null);
-                return;
-            }
+            if (list.length === 0) return done(null, null);
 
             const allowed = list.some((pattern) => topicMatchesBroker_Utils(pattern, topic));
-            if (!allowed) {
-                done(null, null);
-                return;
-            }
-
-            done(null, sub);
+            done(null, allowed ? sub : null);
         } catch {
             done(null, null);
         }
     };
 
-    /* Serveur TCP */
-    const s = createServer(b.handle);
-    s.listen(config.port, () => {
-        console.log(`[MQTT] Broker embarqué en écoute sur :${config?.port}`);
+    /* ---------- LOGS (optionnels) ---------- */
+    b.on("client", (c: AedesClient) => {
+        console.log(`[MQTT] Client connecté : ${c?.id ?? "unknown"}`);
+    });
+    b.on("clientDisconnect", (c: AedesClient) => {
+        console.log(`[MQTT] Client déconnecté : ${c?.id ?? "unknown"}`);
     });
 
-    /* Retour des références pour que la factory les capture */
-    return {
-        broker: b,
-        tcpServer: s,
-        config
-    };
+    /* ---------- SERVEUR TCP ---------- */
+    const s = createServer(b.handle);
+    s.listen(config.port, () => {
+        console.log(`[MQTT] Broker embarqué en écoute sur :${config.port}`);
+    });
+
+    /* Retourne les références (nouveau broker et serveur) */
+    return { broker: b, tcpServer: s, config };
 }
 
 export { start_Broker };
-
 
 /**
  * Démarre le broker MQTT embarqué (Aedes + serveur TCP) si non déjà lancé.
