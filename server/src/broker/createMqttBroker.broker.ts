@@ -15,7 +15,7 @@ import type { StatusBroker_Type } from "../types/broker/statusBroker.type.js";
 
 /* -------------------------------------------------------------------------------------------------
    Factory : createMqttBroker_Broker
-   - Encapsule l’état (broker, tcpServer, config, configPath) dans une fermeture.
+   - Encapsule l’état (broker, tcpServer, config) dans une fermeture.
    - S’appuie sur TES helpers, légèrement adaptés pour retourner l’état.
    - API publique sans argument : start(), stop(), reload(), status().
 -------------------------------------------------------------------------------------------------- */
@@ -51,7 +51,7 @@ function createMqttBroker_Broker() {
     }
 
     async function reload(): Promise<void> {
-        const res = await reload_Broker(broker, tcpServer, config, pathCfg);
+        const res = await reload_Broker(broker, tcpServer, config);
         broker = res.broker;
         tcpServer = res.tcpServer;
         if (res.config) config = res.config;
