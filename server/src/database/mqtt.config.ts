@@ -12,6 +12,10 @@ const mqttConfig = {
         {                                      
             "username": "zendure_solarflow_2400ac_user",         /* Identifiant MQTT à renseigner dans l’interface du Shelly 3EM */
             "password": "zendure_pw"     /* Mot de passe MQTT (à changer en prod ; plus tard chiffré en DB) */
+        },
+        {                                      
+            "username": "express_power_flow",         /* Identifiant MQTT à renseigner dans l’interface du Shelly 3EM */
+            "password": "super_secure_password"     /* Mot de passe MQTT (à changer en prod ; plus tard chiffré en DB) */
         }
     ],
     /* ACL = Access Control List (droits de publish/subscribe par user) */
