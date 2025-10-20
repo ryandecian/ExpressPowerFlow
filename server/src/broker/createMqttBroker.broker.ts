@@ -28,7 +28,7 @@ function createMqttBroker_Broker(configPath: string) {
     const pathCfg: string = configPath;                    /* Chemin de config */
 
     /* Chargement initial de la configuration (pas de start auto) */
-    config = loadConfig_Broker(pathCfg);
+    config = loadConfig_Broker();
 
     function status(): StatusBroker_Type {
         return status_Broker(broker, tcpServer, config);
