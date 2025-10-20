@@ -8,6 +8,10 @@ Avancement :
 Le broker est maintenant prêt, il va falloir configurer le démarrage propre du broker
 dans le serveur express en même temps que le démarrage de express
 
+Problème de test a prévoir, le broker en dev n'est accessible que sur mon pc, il faut donc
+comprendre comment il fonctionne en local PC et comment lui attribuer un port pour que le 
+Shelly s'y connecte pour les test. 
+
 configurer la dépendance mqtt pour se connecter en tant que client express
 console log les données retourné par shelly
 
