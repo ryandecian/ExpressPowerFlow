@@ -5,5 +5,10 @@ Avancement :
 - Construction DB a effectuer pour la connexion utilisateur
 
 -------------------------------------------------------------------------
-le fichier mqtt.config.ts n'est pas encore utilisé, il va falloir le mettre a jour avec les connection express et l'utiliser
+Le broker est maintenant prêt, il va falloir configurer le démarrage propre du broker
+dans le serveur express en même temps que le démarrage de express
+
+configurer la dépendance mqtt pour se connecter en tant que client express
+console log les données retourné par shelly
+
 
