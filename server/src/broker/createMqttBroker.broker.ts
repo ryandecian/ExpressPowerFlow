@@ -20,12 +20,11 @@ import type { StatusBroker_Type } from "../types/broker/statusBroker.type.js";
    - API publique sans argument : start(), stop(), reload(), status().
 -------------------------------------------------------------------------------------------------- */
 
-function createMqttBroker_Broker(configPath: string) {
+function createMqttBroker_Broker() {
     /* État privé (capturé par fermeture) */
     let broker: AedesInstanceBroker_Type | null = null;   /* Instance Aedes */
     let tcpServer: NetServer | null = null;               /* Serveur TCP */
     let config: MqttConfigBrocker_Type | null = null;     /* Config courante */
-    const pathCfg: string = configPath;                    /* Chemin de config */
 
     /* Chargement initial de la configuration (pas de start auto) */
     config = loadConfig_Broker();
@@ -35,7 +34,7 @@ function createMqttBroker_Broker(configPath: string) {
     }
 
     function start(): void {
-        const res = start_Broker(broker, tcpServer, config, pathCfg);
+        const res = start_Broker(broker, tcpServer, config);
         if (res) {
             broker = res.broker ?? broker;
             tcpServer = res.tcpServer ?? tcpServer;
