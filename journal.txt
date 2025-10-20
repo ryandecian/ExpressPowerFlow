@@ -1,4 +1,8 @@
-
+Avancement : 
+- DB vide mais opérationnel
+- Broker configuré mais non lancé et utilisé
+- Test de connexion Express broker a effectuer
+- Construction DB a effectuer pour la connexion utilisateur
 
 -------------------------------------------------------------------------
 le fichier mqtt.config.ts n'est pas encore utilisé, il va falloir le mettre a jour avec les connection express et l'utiliser
