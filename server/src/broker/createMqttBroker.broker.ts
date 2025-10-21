@@ -73,8 +73,8 @@ export { createMqttBroker_Broker };
 
 import { createMqttBroker } from "./mqttBroker.functional";
 
-const mqtt = createMqttBroker("./config/mqtt.config.json");
-mqtt.start();
+const mqttBroker = createMqttBroker("./config/mqtt.config.json");
+mqttBroker.start();
 
 // plus tard...
 // console.log(mqtt.status());
