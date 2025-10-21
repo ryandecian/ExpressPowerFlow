@@ -126,8 +126,8 @@ function start_Broker(
 
     /* ---------- SERVEUR TCP ---------- */
     const s = createServer(b.handle);
-    s.listen(config.port, () => {
-        console.log(`[MQTT] Broker embarqué en écoute sur :${config.port}`);
+    s.listen(config.port, "0.0.0.0", () => {
+    console.log(`[MQTT] Broker embarqué en écoute sur 0.0.0.0:${config.port}`);
     });
 
     /* Retourne les références (nouveau broker et serveur) */
