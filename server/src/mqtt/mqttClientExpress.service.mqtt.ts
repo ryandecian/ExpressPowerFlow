@@ -7,8 +7,7 @@ import type { MqttClientStatus_Type } from "../types/mqtt/mqttClientStatus.type.
 
 /* =============================== Configuration ============================== */
 /**
- * Ces valeurs seront extraites d'un fichier .env ou d'une config centralisée.
- * Pour le moment on met des valeurs par défaut.
+ * Valeur par défaut en dev ; passera par .env/Docker plus tard.
 */
 const MQTT_URL = process.env.MQTT_URL ?? "mqtt://localhost:1883";
 
@@ -22,18 +21,76 @@ let status: MqttClientStatus_Type = {
     clientId: String(clientOptions_MQTT.clientId),
 };
 
-/* ============================= Fonctions internes =========================== */
+/* ================================ Logger ==================================== */
+function logInfo(msg: string): void {
+    console.log(`[MQTT-CLIENT] ${msg}`);
+}
+function logWarn(msg: string): void {
+    console.warn(`[MQTT-CLIENT] ${msg}`);
+}
+function logError(msg: string): void {
+    console.error(`[MQTT-CLIENT] ${msg}`);
+}
+
+/* ================================ init() ==================================== */
 /**
- * Ici viendront :
- * - init() : établir la connexion et initialiser les events
- * - subscribe() / publish() : gérer les interactions MQTT
- * - onMessage() : intercepter les messages reçus
- * - getStatus() : retourner l’état du client
-*/
+ * Établit la connexion au broker et enregistre les événements de base.
+ * Idempotent : si déjà initialisé, ne refait rien.
+ */
+function init(): void {
+    if (client) {
+        logWarn("init() appelé mais le client est déjà initialisé.");
+        return;
+    }
+
+    logInfo(`Connexion au broker: ${MQTT_URL} (clientId=${status.clientId})`);
+    client = mqtt.connect(MQTT_URL, clientOptions_MQTT);
+
+    client.on("connect", () => {
+        status.connected = true;
+        status.reconnecting = false;
+        status.lastError = undefined;
+        logInfo("Connecté ✅");
+    });
+
+    client.on("reconnect", () => {
+        status.reconnecting = true;
+        logWarn("Tentative de reconnexion…");
+    });
+
+    client.on("close", () => {
+        status.connected = false;
+        logWarn("Connexion fermée.");
+    });
+
+    client.on("offline", () => {
+        status.connected = false;
+        logWarn("Client offline.");
+    });
+
+    client.on("error", (err) => {
+        status.connected = false;
+        status.lastError = err?.message ?? "Unknown MQTT error";
+        logError(`Erreur: ${status.lastError}`);
+    });
+
+    /* on("message") viendra à l’étape C */
+}
+
+/* ============================ Accesseurs simples ============================ */
+function isConnected(): boolean {
+    return status.connected;
+}
+function getStatus(): Readonly<MqttClientStatus_Type> {
+    return status;
+}
 
 /* ============================== API publique ================================ */
 export const mqttClientExpress_Service = {
-    /* fonctions exportées viendront ici */
+    init,
+    isConnected,
+    getStatus,
+    /* Bientôt : subscribe, publish, setMessageHandler */
 };
 
 /* =========================================================================
