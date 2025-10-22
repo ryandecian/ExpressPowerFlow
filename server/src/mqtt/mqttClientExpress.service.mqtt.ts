@@ -2,7 +2,7 @@
 import { clientOptions_MQTT } from "./mqttClientExpress.config.mqtt.js";
 
 /* Import des Types : */
-import mqtt, { MqttClient, IClientOptions } from "mqtt";
+import mqtt, { MqttClient } from "mqtt";
 import type { MqttClientStatus_Type } from "../types/mqtt/mqttClientStatus.type.js";
 
 /* =============================== Configuration ============================== */
