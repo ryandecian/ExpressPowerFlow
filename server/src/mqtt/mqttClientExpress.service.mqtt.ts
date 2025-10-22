@@ -3,6 +3,7 @@ import { clientOptions_MQTT } from "./mqttClientExpress.config.mqtt.js";
 import { init_MQTT } from "./init.mqtt.js";
 import { isConnected_MQTT } from "./isConnected.mqtt.js";
 import { getStatus_MQTT } from "./getStatus.mqtt.js";
+import { ensureClient_MQTT } from "./ensureClient.mqtt.js";
 
 /* Import des Logs : */
 import { logInfo, logWarn, logError } from "../log/mqtt/logMqtt.log.js";
@@ -39,14 +40,15 @@ isConnected_MQTT(status);
 
 getStatus_MQTT(status);
 
-/* ============================== API publique ================================ */
-/* ============================== Helpers internes ============================ */
-function ensureClient(): MqttClient {
-    if (!client) {
-        throw new Error("[MQTT-CLIENT] Client non initialisé. Appelle init() avant subscribe/publish.");
-    }
-    return client;
-}
+/*
+    - Cette fonction agit comme une "garde" (guard function) afin de
+      vérifier que le client MQTT a bien été initialisé avant d’exécuter
+      toute opération (ex : subscribe, publish, etc.).
+    - Elle évite les erreurs classiques du type :
+      "Cannot read properties of null (reading 'subscribe')"
+      lorsque le client n’a pas encore été créé par la fonction init().
+*/
+ensureClient_MQTT(client);
 
 /* ============================== subscribe() ================================= */
 /**
