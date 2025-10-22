@@ -1,6 +1,7 @@
 /* Import des Composants */
 import { clientOptions_MQTT } from "./mqttClientExpress.config.mqtt.js";
 import { init_MQTT } from "./init.mqtt.js";
+import { isConnected_MQTT } from "./isConnected.mqtt.js";
 
 /* Import des Logs : */
 import { logInfo, logWarn, logError } from "../log/mqtt/logMqtt.log.js";
@@ -33,9 +34,8 @@ let status: MqttClientStatus_Type = {
 init_MQTT(client, status, MQTT_URL);
 
 /* ============================ Accesseurs simples ============================ */
-function isConnected(): boolean {
-    return status.connected;
-}
+isConnected_MQTT(status);
+
 function getStatus(): Readonly<MqttClientStatus_Type> {
     return status;
 }
