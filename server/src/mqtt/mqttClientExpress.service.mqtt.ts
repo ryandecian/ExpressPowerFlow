@@ -4,12 +4,11 @@ import { init_MQTT } from "./init.mqtt.js";
 import { isConnected_MQTT } from "./isConnected.mqtt.js";
 import { getStatus_MQTT } from "./getStatus.mqtt.js";
 import { ensureClient_MQTT } from "./ensureClient.mqtt.js";
-
-/* Import des Logs : */
-import { logInfo, logWarn, logError } from "../log/mqtt/logMqtt.log.js";
+import { subscribe_MQTT } from "./subscribe.mqtt.js";
+import { publish_MQTT } from "./publish.mqtt.js";
 
 /* Import des Types : */
-import mqtt, { MqttClient } from "mqtt";
+import { MqttClient } from "mqtt";
 import type { MqttClientStatus_Type } from "../types/mqtt/mqttClientStatus.type.js";
 
 /* =============================== Configuration ============================== */
@@ -62,27 +61,7 @@ ensureClient_MQTT(client);
  * - topic : chaîne non vide (ex: "shelly/+/status")
  * - qos   : 0 par défaut, 1 ou 2 si besoin (à éviter tant qu'on apprend)
  */
-function subscribe(topic: string, qos: 0 | 1 | 2 = 0): Promise<void> {
-    return new Promise((resolve, reject) => {
-        if (!topic || typeof topic !== "string" || topic.trim().length === 0) {
-            reject(new Error("[MQTT-CLIENT] subscribe(): topic invalide."));
-            return;
-        }
-
-        const cli = ensureClient_MQTT(client);
-
-        cli.subscribe(topic, { qos }, (err, granted) => {
-            if (err) {
-                logError(`subscribe("${topic}") a échoué: ${err.message}`);
-                reject(err);
-                return;
-            }
-            const g = granted?.map(g => `${g.topic}(qos=${g.qos})`).join(", ") ?? "—";
-            logInfo(`Abonné: ${g}`);
-            resolve();
-        });
-    });
-}
+subscribe_MQTT()
 
 /* =============================== publish() ================================== */
 /**
@@ -90,43 +69,14 @@ function subscribe(topic: string, qos: 0 | 1 | 2 = 0): Promise<void> {
  * - payload peut être string ou Buffer (évite les gros objets pour l'instant).
  * - options.qos: 0 par défaut; options.retain: false par défaut.
  */
-function publish(
-    topic: string,
-    payload: string | Buffer,
-    options?: { qos?: 0 | 1 | 2; retain?: boolean }
-): Promise<void> {
-    return new Promise((resolve, reject) => {
-        if (!topic || typeof topic !== "string" || topic.trim().length === 0) {
-            reject(new Error("[MQTT-CLIENT] publish(): topic invalide."));
-            return;
-        }
-        if (payload === undefined || payload === null) {
-            reject(new Error("[MQTT-CLIENT] publish(): payload manquant."));
-            return;
-        }
-
-        const cli = ensureClient_MQTT(client);
-        const qos = options?.qos ?? 0;
-        const retain = options?.retain ?? false;
-
-        cli.publish(topic, payload, { qos, retain }, (err) => {
-            if (err) {
-                logError(`publish("${topic}") a échoué: ${err.message}`);
-                reject(err);
-                return;
-            }
-            logInfo(`Publié → ${topic} (qos=${qos}, retain=${retain})`);
-            resolve();
-        });
-    });
-}
+publish_MQTT()
 
 export const mqttClientExpress_Service = {
     init_MQTT,
     isConnected_MQTT,
     getStatus_MQTT,
     subscribe,
-    publish,
+    publish_MQTT,
     /* Bientôt : setMessageHandler (Étape C) */
 };
 

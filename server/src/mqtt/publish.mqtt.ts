@@ -8,7 +8,7 @@ import { logInfo, logError } from "../log/mqtt/logMqtt.log.js";
 import { MqttClient } from "mqtt";
 
 function publish_MQTT(
-    client: MqttClient | null,
+    client: MqttClient,
     topic: string,
     payload: string | Buffer,
     options?: { qos?: 0 | 1 | 2; retain?: boolean }
