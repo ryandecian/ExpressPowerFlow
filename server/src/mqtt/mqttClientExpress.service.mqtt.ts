@@ -2,6 +2,7 @@
 import { clientOptions_MQTT } from "./mqttClientExpress.config.mqtt.js";
 import { init_MQTT } from "./init.mqtt.js";
 import { isConnected_MQTT } from "./isConnected.mqtt.js";
+import { getStatus_MQTT } from "./getStatus.mqtt.js";
 
 /* Import des Logs : */
 import { logInfo, logWarn, logError } from "../log/mqtt/logMqtt.log.js";
@@ -36,9 +37,7 @@ init_MQTT(client, status, MQTT_URL);
 /* ============================ Accesseurs simples ============================ */
 isConnected_MQTT(status);
 
-function getStatus(): Readonly<MqttClientStatus_Type> {
-    return status;
-}
+getStatus_MQTT(status);
 
 /* ============================== API publique ================================ */
 /* ============================== Helpers internes ============================ */
@@ -115,9 +114,9 @@ function publish(
 }
 
 export const mqttClientExpress_Service = {
-    init,
-    isConnected,
-    getStatus,
+    init_MQTT,
+    isConnected_MQTT,
+    getStatus_MQTT,
     subscribe,
     publish,
     /* Bientôt : setMessageHandler (Étape C) */
