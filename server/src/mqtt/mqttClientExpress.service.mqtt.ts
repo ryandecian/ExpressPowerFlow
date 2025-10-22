@@ -28,26 +28,32 @@ let status: MqttClientStatus_Type = {
     clientId: String(clientOptions_MQTT.clientId),
 };
 
-/* ================================ init() ==================================== */
 /**
  * Établit la connexion au broker et enregistre les événements de base.
  * Idempotent : si déjà initialisé, ne refait rien.
  */
 init_MQTT(client, status, MQTT_URL);
 
-/* ============================ Accesseurs simples ============================ */
+/**
+ * Vérifie si le client MQTT est actuellement connecté au broker.
+ */
 isConnected_MQTT(status);
 
+/**
+ * Récupère l'état complet du client MQTT.
+ */
 getStatus_MQTT(status);
 
-/*
-    - Cette fonction agit comme une "garde" (guard function) afin de
-      vérifier que le client MQTT a bien été initialisé avant d’exécuter
-      toute opération (ex : subscribe, publish, etc.).
-    - Elle évite les erreurs classiques du type :
-      "Cannot read properties of null (reading 'subscribe')"
-      lorsque le client n’a pas encore été créé par la fonction init().
-*/
+
+/**
+ * - Cette fonction agit comme une "garde" (guard function) afin de
+ *  vérifier que le client MQTT a bien été initialisé avant d’exécuter
+ *  toute opération (ex : subscribe, publish, etc.).
+ * 
+ * - Elle évite les erreurs classiques du type :
+ *   "Cannot read properties of null (reading 'subscribe')"
+ *   lorsque le client n’a pas encore été créé par la fonction init().
+ */
 ensureClient_MQTT(client);
 
 /* ============================== subscribe() ================================= */
@@ -63,7 +69,7 @@ function subscribe(topic: string, qos: 0 | 1 | 2 = 0): Promise<void> {
             return;
         }
 
-        const cli = ensureClient();
+        const cli = ensureClient_MQTT(client);
 
         cli.subscribe(topic, { qos }, (err, granted) => {
             if (err) {
@@ -99,7 +105,7 @@ function publish(
             return;
         }
 
-        const cli = ensureClient();
+        const cli = ensureClient_MQTT(client);
         const qos = options?.qos ?? 0;
         const retain = options?.retain ?? false;
 
