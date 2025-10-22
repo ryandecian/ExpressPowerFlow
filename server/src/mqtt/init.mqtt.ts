@@ -9,45 +9,47 @@ import mqtt, { MqttClient } from "mqtt";
 import type { MqttClientStatus_Type } from "../types/mqtt/mqttClientStatus.type.js";
 
 function init_MQTT(
-    client: MqttClient | null = null, 
+    currentClient: MqttClient | null,
     status: MqttClientStatus_Type,
     MQTT_URL: string,
-): void {
-    if (client) {
+): MqttClient {
+    if (currentClient) {
         logWarn("init() appelé mais le client est déjà initialisé.");
-        return;
+        return currentClient;
     }
 
     logInfo(`Connexion au broker: ${MQTT_URL} (clientId=${status.clientId})`);
-    client = mqtt.connect(MQTT_URL, clientOptions_MQTT);
+    const cli = mqtt.connect(MQTT_URL, clientOptions_MQTT);
 
-    client.on("connect", () => {
+    cli.on("connect", () => {
         status.connected = true;
         status.reconnecting = false;
         status.lastError = undefined;
         logInfo("Connecté ✅");
     });
 
-    client.on("reconnect", () => {
+    cli.on("reconnect", () => {
         status.reconnecting = true;
         logWarn("Tentative de reconnexion…");
     });
 
-    client.on("close", () => {
+    cli.on("close", () => {
         status.connected = false;
         logWarn("Connexion fermée.");
     });
 
-    client.on("offline", () => {
+    cli.on("offline", () => {
         status.connected = false;
         logWarn("Client offline.");
     });
 
-    client.on("error", (err) => {
+    cli.on("error", (err) => {
         status.connected = false;
         status.lastError = err?.message ?? "Unknown MQTT error";
         logError(`Erreur: ${status.lastError}`);
     });
+
+    return cli;
 }
 
 export { init_MQTT };
