@@ -16,3 +16,7 @@ configurer la dépendance mqtt pour se connecter en tant que client express
 console log les données retourné par shelly
 
 
+-----------------------------------------------------------------------------
+Pour controller le broker (start, stop etc... il faut utiliser la fonction creatMqttBroker)
+
+Pour faire les tests sur shelly, il faut faire pointer le mqtt sur l'ip du pc
