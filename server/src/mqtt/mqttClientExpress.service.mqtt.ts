@@ -1,6 +1,9 @@
 /* Import des Composants */
 import { clientOptions_MQTT } from "./mqttClientExpress.config.mqtt.js";
 
+/* Import des Logs : */
+import { logInfo, logWarn, logError } from "../log/mqtt/logMqtt.log.js";
+
 /* Import des Types : */
 import mqtt, { MqttClient } from "mqtt";
 import type { MqttClientStatus_Type } from "../types/mqtt/mqttClientStatus.type.js";
@@ -20,17 +23,6 @@ let status: MqttClientStatus_Type = {
     url: MQTT_URL,
     clientId: String(clientOptions_MQTT.clientId),
 };
-
-/* ================================ Logger ==================================== */
-function logInfo(msg: string): void {
-    console.log(`[MQTT-CLIENT] ${msg}`);
-}
-function logWarn(msg: string): void {
-    console.warn(`[MQTT-CLIENT] ${msg}`);
-}
-function logError(msg: string): void {
-    console.error(`[MQTT-CLIENT] ${msg}`);
-}
 
 /* ================================ init() ==================================== */
 /**
