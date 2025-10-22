@@ -1,3 +1,6 @@
+/* Import des Composants */
+import { clientOptions_MQTT } from "./mqttClientExpress.config.mqtt.js";
+
 /* Import des Types : */
 import mqtt, { MqttClient, IClientOptions } from "mqtt";
 import type { MqttClientStatus_Type } from "../types/mqtt/mqttClientStatus.type.js";
@@ -8,22 +11,6 @@ import type { MqttClientStatus_Type } from "../types/mqtt/mqttClientStatus.type.
  * Pour le moment on met des valeurs par défaut.
 */
 const MQTT_URL = process.env.MQTT_URL ?? "mqtt://localhost:1883";
-const MQTT_USER = process.env.MQTT_USER ?? "express_power_flow";
-const MQTT_PASS = process.env.MQTT_PASS ?? "super_secure_password";
-
-/**
- * Options MQTT pour la connexion.
- * On les gardera simples pour le moment (clean session, keepalive, etc.).
-*/
-const clientOptions: IClientOptions = {
-    username: MQTT_USER,
-    password: MQTT_PASS,
-    clean: true, /* Session propre à chaque connexion, permet d'oublier les anciens abonnements et message en attente */
-    reconnectPeriod: 1000, /* Période de reconnexion en cas de perte de connexion de 1s */
-    connectTimeout: 10_000, /* Délai d'attente pour la connexion de 10s */
-    keepalive: 30, /* Intervalle de maintien de la connexion de 30s */
-    clientId: `epf-client-${Math.random().toString(16).slice(2)}`, /* Identifiant unique du client généré automatiquement a chaque connexion */
-};
 
 /* ============================ Variables internes ============================ */
 let client: MqttClient | null = null;   /* Contiendra l'instance MQTT active */
@@ -32,7 +19,7 @@ let status: MqttClientStatus_Type = {
     reconnecting: false,
     lastError: undefined,
     url: MQTT_URL,
-    clientId: String(clientOptions.clientId),
+    clientId: String(clientOptions_MQTT.clientId),
 };
 
 /* ============================= Fonctions internes =========================== */
