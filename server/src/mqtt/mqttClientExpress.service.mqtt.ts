@@ -1,5 +1,6 @@
 /* Import des Composants */
 import { clientOptions_MQTT } from "./mqttClientExpress.config.mqtt.js";
+import { init_MQTT } from "./init.mqtt.js";
 
 /* Import des Logs : */
 import { logInfo, logWarn, logError } from "../log/mqtt/logMqtt.log.js";
@@ -29,45 +30,7 @@ let status: MqttClientStatus_Type = {
  * Établit la connexion au broker et enregistre les événements de base.
  * Idempotent : si déjà initialisé, ne refait rien.
  */
-function init(): void {
-    if (client) {
-        logWarn("init() appelé mais le client est déjà initialisé.");
-        return;
-    }
-
-    logInfo(`Connexion au broker: ${MQTT_URL} (clientId=${status.clientId})`);
-    client = mqtt.connect(MQTT_URL, clientOptions_MQTT);
-
-    client.on("connect", () => {
-        status.connected = true;
-        status.reconnecting = false;
-        status.lastError = undefined;
-        logInfo("Connecté ✅");
-    });
-
-    client.on("reconnect", () => {
-        status.reconnecting = true;
-        logWarn("Tentative de reconnexion…");
-    });
-
-    client.on("close", () => {
-        status.connected = false;
-        logWarn("Connexion fermée.");
-    });
-
-    client.on("offline", () => {
-        status.connected = false;
-        logWarn("Client offline.");
-    });
-
-    client.on("error", (err) => {
-        status.connected = false;
-        status.lastError = err?.message ?? "Unknown MQTT error";
-        logError(`Erreur: ${status.lastError}`);
-    });
-
-    /* on("message") viendra à l’étape C */
-}
+init_MQTT(client, status, MQTT_URL);
 
 /* ============================ Accesseurs simples ============================ */
 function isConnected(): boolean {
