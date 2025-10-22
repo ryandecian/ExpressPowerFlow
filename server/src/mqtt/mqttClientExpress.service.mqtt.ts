@@ -1,6 +1,17 @@
 /* Import des Types : */
 import mqtt, { MqttClient, IClientOptions } from "mqtt";
-import type { MqttClientStatus } from "../types/mqtt/mqttClientStatus.type.js";
+
+/* =============================== Types internes ============================= */
+/**
+ * Représente l'état interne du client MQTT (utile pour le monitoring).
+*/
+type MqttClientStatus = {
+    connected: boolean;        /* True si la connexion au broker est établie */
+    reconnecting: boolean;     /* True pendant les tentatives de reconnexion */
+    lastError?: string;        /* Dernière erreur rencontrée (optionnelle) */
+    url: string;               /* Adresse du broker MQTT */
+    clientId: string;          /* Identifiant unique de ce client */
+};
 
 /* =============================== Configuration ============================== */
 /**
