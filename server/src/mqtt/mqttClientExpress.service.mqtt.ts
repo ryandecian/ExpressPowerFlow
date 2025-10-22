@@ -6,6 +6,7 @@ import { publish_MQTT } from "./publish.mqtt.js";
 import { ensureClient_MQTT } from "./ensureClient.mqtt.js";
 import { isConnected_MQTT } from "./isConnected.mqtt.js";
 import { getStatus_MQTT } from "./getStatus.mqtt.js";
+import { setMessageHandler_MQTT, clearMessageHandler_MQTT } from "./onMessage.mqtt.js";
 
 /* Import des Logs */
 import { logInfo, logWarn } from "../log/mqtt/logMqtt.log.js";
@@ -85,6 +86,23 @@ function getStatus(): Readonly<MqttClientStatus_Type> {
     return getStatus_MQTT(status);
 }
 
+/**
+ * Enregistre un handler unique pour tous les messages MQTT reçus
+ * par le client interne.
+ */
+function setMessageHandler(handler: (topic: string, payload: Buffer) => void): void {
+    const cli = ensureClient_MQTT(client);
+    setMessageHandler_MQTT(cli, handler);
+}
+
+/**
+ * Supprime tout handler "message" actuellement enregistré.
+ */
+function clearMessageHandler(): void {
+    const cli = ensureClient_MQTT(client);
+    clearMessageHandler_MQTT(cli);
+}
+
 /* ============================== API publique ================================ */
 export const mqttClientExpress_Service = {
     init,
@@ -92,7 +110,8 @@ export const mqttClientExpress_Service = {
     publish,
     isConnected,
     getStatus,
-    /* Étape suivante : setMessageHandler (réception des messages) */
+    setMessageHandler,
+    clearMessageHandler,
 };
 
 /* =========================================================================
