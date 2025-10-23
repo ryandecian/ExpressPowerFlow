@@ -36,7 +36,7 @@ function start_Broker(
 
     /* Vérifie que la config est active */
     if (!config || !config.enabled) {
-        console.info("[MQTT] Broker désactivé par la configuration.");
+        console.info("[BROKER] Broker désactivé par la configuration.");
         return { broker: null, tcpServer: null, ...(config ? { config } : {}) };
 
     }
@@ -118,16 +118,16 @@ function start_Broker(
 
     /* ---------- LOGS (optionnels) ---------- */
     b.on("client", (c: AedesClient) => {
-        console.log(`[MQTT] Client connecté : ${c?.id ?? "unknown"}`);
+        console.log(`[BROKER] Client connecté : ${c?.id ?? "unknown"}`);
     });
     b.on("clientDisconnect", (c: AedesClient) => {
-        console.log(`[MQTT] Client déconnecté : ${c?.id ?? "unknown"}`);
+        console.log(`[BROKER] Client déconnecté : ${c?.id ?? "unknown"}`);
     });
 
     /* ---------- SERVEUR TCP ---------- */
     const s = createServer(b.handle);
     s.listen(config.port, "0.0.0.0", () => {
-    console.log(`[MQTT] Broker embarqué en écoute sur 0.0.0.0:${config.port}`);
+    console.log(`[BROKER] Broker embarqué en écoute sur 0.0.0.0:${config.port}`);
     });
 
     /* Retourne les références (nouveau broker et serveur) */
