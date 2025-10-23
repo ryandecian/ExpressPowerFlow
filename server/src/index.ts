@@ -4,6 +4,7 @@ import { ENV_SAFE } from "./config/ENV.config.js";
 
 /* Import des Composants */
 import { createMqttBroker_Broker } from "./broker/createMqttBroker.broker.js";
+import { mqttClientExpress_Service } from "./mqtt/mqttClientExpress.service.mqtt.js";
 
 /* Import des dépendances : */
 import chalk from "chalk";
@@ -31,6 +32,9 @@ app.use("/", router);
 /* --- Création et démarrage du broker --- */
 const mqttBroker = createMqttBroker_Broker();
 mqttBroker.start();
+
+/* --- Création et démarrage du broker --- */
+mqttClientExpress_Service.init();
 
 /**
  * Route de base

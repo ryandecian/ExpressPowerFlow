@@ -9,7 +9,7 @@ import { getStatus_MQTT } from "./getStatus.mqtt.js";
 import { setMessageHandler_MQTT, clearMessageHandler_MQTT } from "./onMessage.mqtt.js";
 
 /* Import des Logs */
-import { logInfo, logWarn } from "../log/mqtt/logMqtt.log.js";
+import { logInfo } from "../log/mqtt/logMqtt.log.js";
 
 /* Import des Types */
 import { MqttClient } from "mqtt";
@@ -20,7 +20,7 @@ import type { MqttClientStatus_Type } from "../types/mqtt/mqttClientStatus.type.
  * Adresse du broker MQTT local par défaut.
  * En production, cette valeur sera remplacée via une variable d’environnement.
 */
-const MQTT_URL = process.env.MQTT_URL ?? "mqtt://localhost:1883";
+const MQTT_URL = process.env.MQTT_URL ?? "mqtt://127.0.0.1:1883";
 
 /* ============================ Variables internes ============================ */
 let client: MqttClient | null = null;   /* Instance active du client MQTT */
