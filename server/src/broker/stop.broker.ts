@@ -12,7 +12,7 @@ function stop_Broker(
         return Promise.resolve({ broker: null, tcpServer: null });
     }
 
-    console.log("[MQTT] Arrêt du broker…");
+    console.log("[BROKER] Arrêt du broker…");
     const tasks: Array<Promise<void>> = [];
 
     if (tcpServer) {
@@ -27,7 +27,7 @@ function stop_Broker(
 
     return Promise.all(tasks)
         .then(() => {
-            console.log("[MQTT] Broker arrêté.");
+            console.log("[BROKER] Broker arrêté.");
             return { broker: null, tcpServer: null };
         })
         .catch(() => {
