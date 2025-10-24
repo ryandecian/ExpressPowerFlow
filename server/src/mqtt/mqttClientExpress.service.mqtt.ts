@@ -1,5 +1,5 @@
 /* Import des Composants */
-import { clientOptions_MQTT } from "./mqttClientExpress.config.mqtt.js";
+import { mqttConfig } from "../config/mqtt.config.js";
 import { init_MQTT } from "./init.mqtt.js";
 import { subscribe_MQTT } from "./subscribe.mqtt.js";
 import { publish_MQTT } from "./publish.mqtt.js";
@@ -29,7 +29,7 @@ let status: MqttClientStatus_Type = {
     reconnecting: false,
     lastError: undefined,
     url: MQTT_URL,
-    clientId: String(clientOptions_MQTT.clientId),
+    clientId: String(mqttConfig.clientId),
 };
 
 /* ================================ init() ==================================== */

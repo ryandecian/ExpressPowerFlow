@@ -1,10 +1,10 @@
 /* Import des Config : */
-import { ENV_SAFE } from "../config/ENV.config.js";
+import { ENV_SAFE } from "./ENV.config.js";
 
 /* Import des Types : */
 import type { IClientOptions } from "mqtt";
 
-const clientOptions_MQTT: IClientOptions = {
+const mqttConfig: IClientOptions = {
     username: ENV_SAFE("MQTT_USER_EXPRESSPOWERFLOW"),           /* Identifiant du client MQTT */
     password: ENV_SAFE("MQTT_PASSWORD_EXPRESSPOWERFLOW"),       /* Mot de passe d’authentification */
     clean: true,                   /* Session non persistante */
@@ -14,4 +14,4 @@ const clientOptions_MQTT: IClientOptions = {
     clientId: `${ENV_SAFE("MQTT_USER_EXPRESSPOWERFLOW")}-${Math.random().toString(16).slice(2)}`, /* Identifiant unique */
 };
 
-export { clientOptions_MQTT };
+export { mqttConfig };

@@ -1,5 +1,5 @@
 /* Import des Composants */
-import { clientOptions_MQTT } from "./mqttClientExpress.config.mqtt.js";
+import { clientOptions_MQTT } from "../config/mqtt.config.js";
 
 /* Import des Logs : */
 import { logInfo, logWarn, logError } from "../log/mqtt/logMqtt.log.js";
