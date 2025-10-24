@@ -11,6 +11,7 @@ const envVariablesListe = [
     /* DOMAINE des serveurs */
     "VITE_DOMAIN_CLIENT",
     "VITE_DOMAIN_API_SERVER",
+    "DOMAIN_BROKER",
     /* Port du serveur Express */
     "VITE_PORT_API_SERVER",
     /* DB */
