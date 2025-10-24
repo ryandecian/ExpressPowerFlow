@@ -25,7 +25,7 @@ function init_MQTT(
         status.connected = true;
         status.reconnecting = false;
         status.lastError = undefined;
-        logInfo("Connecté ✅");
+        logInfo("MQTT Express connecté ✅");
     });
 
     cli.on("reconnect", () => {
