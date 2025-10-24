@@ -1,3 +1,6 @@
+/* Import des Config : */
+import { ENV_SAFE } from "../config/ENV.config.js";
+
 /* Configuration du broker MQTT embarqué (Express = broker) */
 const mqttConfig = {
     "enabled": true, /* Active/désactive le broker intégré (true = on, false = off) */
@@ -14,8 +17,8 @@ const mqttConfig = {
             "password": "zendure_pw"     /* Mot de passe MQTT de la batterie Solarflow 2400AC */
         },
         {                                      
-            "username": "express_power_flow",         /* Identifiant utilisé par ton client interne Express */
-            "password": "super_secure_password"     /* Mot de passe MQTT du serveur Express */
+            "username": ENV_SAFE("MQTT_USER_EXPRESSPOWERFLOW"),         /* Identifiant utilisé par ton client interne Express */
+            "password": ENV_SAFE("MQTT_PASSWORD_EXPRESSPOWERFLOW")     /* Mot de passe MQTT du serveur Express */
         }
     ],
     /* ACL = Access Control List (droits de publish/subscribe par user) */
