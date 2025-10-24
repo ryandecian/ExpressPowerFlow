@@ -1,13 +1,13 @@
 /* Import des Config : */
-import { mqttConfig } from "../database/mqtt.config.js";
+import { brokerConfig } from "../config/broker.config.js";
 
 /* Import des Types : */
 import type { MqttConfigBrocker_Type } from "../types/broker/mqttConfigBroker.type.js";
 
 function loadConfig_Broker(): MqttConfigBrocker_Type {
-    const configMQTT: MqttConfigBrocker_Type = { ...mqttConfig };
-    configMQTT.clientsMax = configMQTT.clientsMax ?? 50;
-    return configMQTT;
+    const configBROKER: MqttConfigBrocker_Type = { ...brokerConfig };
+    configBROKER.clientsMax = configBROKER.clientsMax ?? 50;
+    return configBROKER;
 }
 
 export { loadConfig_Broker };

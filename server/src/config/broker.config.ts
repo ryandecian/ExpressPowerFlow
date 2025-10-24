@@ -1,8 +1,8 @@
 /* Import des Config : */
-import { ENV_SAFE } from "../config/ENV.config.js";
+import { ENV_SAFE } from "./ENV.config.js";
 
 /* Configuration du broker MQTT embarqué (Express = broker) */
-const mqttConfig = {
+const brokerConfig = {
     "enabled": true, /* Active/désactive le broker intégré (true = on, false = off) */
     "port": 1883, /* Port TCP d’écoute (1883 = MQTT sans TLS) */
     "clientsMax": 50, /* Nombre max de clients MQTT simultanés autorisés */
@@ -46,4 +46,4 @@ const mqttConfig = {
     ]
 };
 
-export { mqttConfig };
+export { brokerConfig };
