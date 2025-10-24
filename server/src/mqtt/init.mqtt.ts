@@ -1,5 +1,5 @@
 /* Import des Composants */
-import { clientOptions_MQTT } from "../config/mqtt.config.js";
+import { mqttConfig } from "../config/mqtt.config.js";
 
 /* Import des Logs : */
 import { logInfo, logWarn, logError } from "../log/mqtt/logMqtt.log.js";
@@ -19,7 +19,7 @@ function init_MQTT(
     }
 
     logInfo(`Connexion au broker: ${MQTT_URL} (clientId=${status.clientId})`);
-    const cli = mqtt.connect(MQTT_URL, clientOptions_MQTT);
+    const cli = mqtt.connect(MQTT_URL, mqttConfig);
 
     cli.on("connect", () => {
         status.connected = true;
