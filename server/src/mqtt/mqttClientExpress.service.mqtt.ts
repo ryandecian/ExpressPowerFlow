@@ -1,3 +1,6 @@
+/* Import des Config : */
+import { ENV_SAFE } from "../config/ENV.config.js";
+
 /* Import des Composants */
 import { mqttConfig } from "../config/mqtt.config.js";
 import { init_MQTT } from "./init.mqtt.js";
@@ -20,7 +23,7 @@ import type { MqttClientStatus_Type } from "../types/mqtt/mqttClientStatus.type.
  * Adresse du broker MQTT local par défaut.
  * En production, cette valeur sera remplacée via une variable d’environnement.
 */
-const MQTT_URL = process.env.MQTT_URL ?? "mqtt://127.0.0.1:1883";
+const MQTT_URL = ENV_SAFE("DOMAIN_BROKER");
 
 /* ============================ Variables internes ============================ */
 let client: MqttClient | null = null;   /* Instance active du client MQTT */
