@@ -6,11 +6,8 @@
     "build": "concurrently --raw \"npm run build --prefix client\" \"npm run build --prefix server\"",
     "commit": "bash ./npm-run-commit.sh",
     "pull-force": "bash ./npm-run-pull-force.sh",
-
     "nas": "ssh -p 44218 \"Ryan DECIAN\"@decian.ddnsfree.com",
-
     "dev": "concurrently --raw \"npm run dev --prefix client\" \"npm run dev --prefix server\"",
-
     "dev:client": "npm run dev --prefix client",
     "dev:server": "npm run dev --prefix server"
   },
