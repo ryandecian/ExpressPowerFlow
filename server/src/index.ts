@@ -11,6 +11,8 @@ import express, { Request, Response } from "express";
 /* Import des Routers */
 import router from "./router/router.js";
 
+import { shellyPower_Controller } from "./controller/shelly_controller/shellyPower.controller.js";
+
 const app = express();
 const port = ENV_SAFE("VITE_PORT_API_SERVER");
 
@@ -34,6 +36,9 @@ app.use("/", router);
 app.get("/", (req: Request, res: Response) => {
     res.status(200).send("API de ExpressPowerFlow !");
 })
+
+/* Appel de controller automatique */
+setInterval(shellyPower_Controller, 1000);
 
 /**
  * Gestion des routes innexistante
