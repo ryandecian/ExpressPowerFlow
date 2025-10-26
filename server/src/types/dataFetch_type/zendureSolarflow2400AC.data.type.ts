@@ -11,7 +11,7 @@ type ZendureSolarflow2400AC_data_Type = {
         outputHomePower: number, /* Puissance fournie à la maison (W) */
         remainOutTime: number, /* Temps restant estimé de charge/décharge (secondes) */
         packState: number, /* État du pack batterie (2 = en charge, 3 = en décharge, etc.) */
-        electricLevel: number, /* Niveau de charge batterie (en %) */
+        electricLevel: number, /* ⚠️ Niveau de charge batterie (en %) */
         gridInputPower: number, /* Puissance tirée du réseau (W) */
         solarInputPower: number, /* Puissance totale provenant des panneaux solaires (W) */
         solarPower1: number, /* Puissance du panneau solaire 1 (W) */
