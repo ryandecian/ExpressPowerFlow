@@ -1,9 +1,9 @@
 /* Import des Types : */
-import type { Shelly3EM_emeter_data_Type } from "../../types/dataFetch_type/shelly3EM.emeter.data.type.js";
+import type { Shelly3EM_data_memory_Type } from "../../types/dataMemory_type/shelly3EM.data.memory.type.js";
 import type { ZendureSolarflow2400AC_data_memory_Type } from "../../types/dataMemory_type/zendureSolarflow2400AC.data.memory.type.js";
 
 type DataState = {
-    shelly3EM?: Shelly3EM_emeter_data_Type;
+    shelly3EM?: Shelly3EM_data_memory_Type;
     zendureSolarflow2400AC?: ZendureSolarflow2400AC_data_memory_Type;
 };
 
@@ -20,7 +20,7 @@ function setZendurePower(power: number): void {
 }
 
 /* ------- Getters (copies immuables) ------- */
-function getShellyPower(): Shelly3EM_emeter_data_Type | undefined {
+function getShellyPower(): Shelly3EM_data_memory_Type | undefined {
     return stateMemory.shelly3EM ? { ...stateMemory.shelly3EM } : undefined;
 }
 
