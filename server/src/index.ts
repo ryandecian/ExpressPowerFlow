@@ -2,9 +2,6 @@
 import "./config/dotenv.config.js";
 import { ENV_SAFE } from "./config/ENV.config.js";
 
-/* Import des Composants */
-import { createMqttBroker_Broker } from "./broker/createMqttBroker.broker.js";
-
 /* Import des dépendances : */
 import chalk from "chalk";
 import cookieParser from "cookie-parser";
@@ -13,6 +10,8 @@ import express, { Request, Response } from "express";
 
 /* Import des Routers */
 import router from "./router/router.js";
+
+import { shellyPower_Controller } from "./controller/shelly_controller/shellyPower.controller.js";
 
 const app = express();
 const port = ENV_SAFE("VITE_PORT_API_SERVER");
@@ -28,10 +27,6 @@ app.use(express.json());
 app.use(cookieParser());
 app.use("/", router);
 
-/* --- Création et démarrage du broker --- */
-const mqttBroker = createMqttBroker_Broker();
-mqttBroker.start();
-
 /**
  * Route de base
  * Path: /
@@ -41,6 +36,9 @@ mqttBroker.start();
 app.get("/", (req: Request, res: Response) => {
     res.status(200).send("API de ExpressPowerFlow !");
 })
+
+/* Appel de controller automatique */
+setInterval(shellyPower_Controller, 1000);
 
 /**
  * Gestion des routes innexistante
