@@ -1,16 +1,16 @@
 /* Import des Types : */
 import type { Shelly3EM_emeter_data_Type } from "../../types/dataFetch_type/shelly3EM.emeter.data.type.js";
-import type { ZendureSolarflow2400AC_data_Type } from "../../types/dataFetch_type/zendureSolarflow2400AC.data.type.js";
+import type { ZendureSolarflow2400AC_data_memory_Type } from "../../types/dataMemory_type/zendureSolarflow2400AC.data.memory.type.js";
 
 type DataState = {
     shelly3EM?: Shelly3EM_emeter_data_Type;
-    zendureSolarflow2400AC?: ZendureSolarflow2400AC_data_Type;
+    zendureSolarflow2400AC?: ZendureSolarflow2400AC_data_memory_Type;
 };
 
 /* État module-scopé (singleton via cache des modules) */
 const stateMemory: DataState = {};
 
-/* ------- Setters ------- */
+/* ------- Setters (Ecriture) ------- */
 function setShellyPower(power: number, phase?: 1 | 2 | 3): void {
     stateMemory.shelly3EM = { ts: Date.now(), power, source: "shelly", phase };
 }
@@ -24,7 +24,7 @@ function getShellyPower(): Shelly3EM_emeter_data_Type | undefined {
     return stateMemory.shelly3EM ? { ...stateMemory.shelly3EM } : undefined;
 }
 
-function getZendurePower(): ZendureSolarflow2400AC_data_Type | undefined {
+function getZendurePower(): ZendureSolarflow2400AC_data_memory_Type | undefined {
     return stateMemory.zendureSolarflow2400AC ? { ...stateMemory.zendureSolarflow2400AC } : undefined;
 }
 
