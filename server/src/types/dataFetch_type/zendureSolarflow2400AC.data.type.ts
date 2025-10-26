@@ -1,9 +1,9 @@
 type ZendureSolarflow2400AC_data_Type = {
-    timestamp: number, /* Horodatage UNIX du message (en secondes) */
+    timestamp: number, /* ⚠️ Horodatage UNIX du message (en secondes) */
     messageId: number, /* Identifiant du message envoyé (incrémental) */
-    sn: string, /* Numéro de série de l’appareil principal (onduleur SolarFlow 2400 AC) */
+    sn: string, /* ⚠️ Numéro de série de l’appareil principal (onduleur SolarFlow 2400 AC) */
     version: number, /* Version du protocole ou firmware de communication */
-    product: string, /* Nom du modèle de l’appareil Zendure */
+    product: string, /* ⚠️ Nom du modèle de l’appareil Zendure */
     properties: {
         heatState: number, /* État thermique global (0 = normal, 1 = surchauffe) */
         packInputPower: number, /* Puissance entrant dans la batterie (W) → charge */
