@@ -8,18 +8,27 @@ import chalk from "chalk";
 
 /* Liste des variable d'environnement du serveur à récupérer et tester */
 const envVariablesListe = [
+    /* DOMAINE des serveurs */
     "VITE_DOMAIN_CLIENT",
     "VITE_DOMAIN_API_SERVER",
+    "DOMAIN_BROKER",
+    /* Port du serveur Express */
     "VITE_PORT_API_SERVER",
+    /* DB */
     "DB_HOST",
     "DB_PORT",
     "DB_USER",
     "DB_PASSWORD",
     "DB_NAME",
+    /* Mail */
     "MAIL_SERVER_ADMIN",
     "MAIL_PASSWORD",
+    /* JWT */
     "SECRET_KEY_TOKEN_CLIENT",
-    "SECRET_KEY_TOKEN_API_SERVER"
+    "SECRET_KEY_TOKEN_API_SERVER",
+    /* MQTT / BROKER */
+    "MQTT_USER_EXPRESSPOWERFLOW",
+    "MQTT_PASSWORD_EXPRESSPOWERFLOW"
 ]
 
 /* Création des types à partir du tableau. */
