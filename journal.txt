@@ -5,18 +5,12 @@ Avancement :
 - Construction DB a effectuer pour la connexion utilisateur
 
 -------------------------------------------------------------------------
-Le broker est maintenant prêt, il va falloir configurer le démarrage propre du broker
-dans le serveur express en même temps que le démarrage de express
+Le composant de mémoire ram étant terminé, il faut construire le controlleur et le renommer. 
 
-Problème de test a prévoir, le broker en dev n'est accessible que sur mon pc, il faut donc
-comprendre comment il fonctionne en local PC et comment lui attribuer un port pour que le 
-Shelly s'y connecte pour les test. 
+Il faut créer un composant fetch comme dans React
 
-configurer la dépendance mqtt pour se connecter en tant que client express
-console log les données retourné par shelly
+Il faut créer un composant utils pour convertir la date timtamps en strin de type "jj/mm/year/h/m/s
 
+Il faudra intégrer la dépendance node pour gérer les modes de 15h à 17h
 
------------------------------------------------------------------------------
-Pour controller le broker (start, stop etc... il faut utiliser la fonction creatMqttBroker)
-
-Pour faire les tests sur shelly, il faut faire pointer le mqtt sur l'ip du pc
+Il faudra créer une variable boolean en mémoire qui permettra de déclancher des logique ou non
