@@ -1,21 +1,12 @@
-/* Import des dépendances */
+/* Import des Types : */
+import type { Shelly3EM_emeter_data_Type } from "../../types/dataFetch_type/shelly3EM.emeter.data.type.js";
 
 const SHELLY_URL = "http://192.168.1.23/emeter/0";
-
-type DataShellyPower = {
-    power: number;
-    pf: number;
-    current: number;
-    voltage: number;
-    is_valid: boolean;
-    total: number;
-    total_returned: number;
-};
 
 async function shellyPower_Controller(): Promise<void> {
     try {
         const response = await fetch(SHELLY_URL);
-        const data = (await response.json()) as DataShellyPower;
+        const data = (await response.json()) as Shelly3EM_emeter_data_Type;
 
         const power = data?.power ?? 0;
         console.log(`🔌 Puissance actuelle : ${power} W`);
