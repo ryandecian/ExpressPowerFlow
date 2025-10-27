@@ -35,14 +35,22 @@ async function fetch_Utils<T>(methode: MethodeType, url: string, body?: Record<s
                 /* Cela évite un plantage si ce n'est pas le cas */
                 const contentType = response.headers.get("Content-Type") || "";
             /* Etape 2 : */
-                /* Si c'est le cas on le récupère son contenu */
+                /* Si c'est du application/json on le récupère son contenu */
                 if (contentType.includes("application/json")) {
                     data = await response.json() as T;
                 }
-                /* Si ce n'est pas le cas, on met un objet vide par convention */
                 else {
-                    data = {} as T;
-                }
+                    /* On tente de récupérer le contenu brut sous forme de texte */
+                    const rawText = await response.text();
+
+                    try {
+                        /* On tente de parser quand même (cas JSON mal formé ou content-type incorrect) */
+                        data = JSON.parse(rawText) as T;
+                    } catch {
+                        /* Sinon on le stocke tel quel dans une clé raw */
+                        data = { raw: rawText } as T;
+                    }
+        }
             /* Logique 3 : Gestion des erreurs */
                 if (!response.ok) {
                     throw new Error(
