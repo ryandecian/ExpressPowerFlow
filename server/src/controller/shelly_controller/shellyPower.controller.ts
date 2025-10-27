@@ -1,3 +1,6 @@
+/* Import des Datas */
+import { setShelly3EMSnapshot } from "../../database/data_memory/memory.data.js";
+
 /* Import des Types : */
 
 /* Import des Utils */

@@ -7,13 +7,13 @@ import type { ZendureSolarflow2400AC_data_memory_Type } from "../../types/dataMe
    ------------------------------- */
 type Shelly3EM_Snapshot = {
     ts: number;                                      // Date.now() (ms)
-    source: "shelly";
+    source: "Compteur Shelly 3EM";
     data: Shelly3EM_data_memory_Type;                // payload RAW complet Shelly
 };
 
 type ZendureSolarflow2400AC_Snapshot = {
     ts: number;                                      // Aligné sur ms ; converti depuis payload.timestamp (s)
-    source: "zendure";
+    source: "Batterie Zendure Solarflow 2400AC";
     data: ZendureSolarflow2400AC_data_memory_Type;   // payload RAW complet Zendure
 };
 
@@ -30,7 +30,7 @@ const stateMemory: DataState = {};
 function setShelly3EMSnapshot(raw: Shelly3EM_data_memory_Type): void {
     stateMemory.shelly3EM = {
         ts: Date.now(),
-        source: "shelly",
+        source: "Compteur Shelly 3EM",
         data: { ...raw },
     };
 }
@@ -45,7 +45,7 @@ function setZendureSolarflow2400ACSnapshot(raw: ZendureSolarflow2400AC_data_memo
 
     stateMemory.zendureSolarflow2400AC = {
         ts: tsMs,
-        source: "zendure",
+        source: "Batterie Zendure Solarflow 2400AC",
         data: { ...raw },
     };
 }
