@@ -1,4 +1,4 @@
-type Shelly3EM_emeter_data_Type = {
+type GetShelly3EM_emeter_data_Type = {
     power: number, /* Puissance instantanée active (W) — positive = consommation, négative = injection */
     pf: number, /* Facteur de puissance (Power Factor) — proche de 1 = charge résistive, <1 = charge inductive/capacitive */
     current: number, /* Courant mesuré (A) sur la phase correspondante */
@@ -8,4 +8,4 @@ type Shelly3EM_emeter_data_Type = {
     total_returned: number /* Énergie totale réinjectée (Wh) vers le réseau depuis la mise en service ou le dernier reset */
 }
 
-export { Shelly3EM_emeter_data_Type }
+export { GetShelly3EM_emeter_data_Type }
