@@ -1,5 +1,6 @@
 /* Import des Types (RAW, tels que renvoyés par tes devices) : */
 import type { Shelly3EM_data_memory_Type } from "../../types/dataMemory_type/shelly3EM.data.memory.type.js";
+import type { ShellyPlugSGen3_data_memory_Type } from "../../types/dataMemory_type/shellyPlugSGen3.data.memory.type.js";
 import type { ZendureSolarflow2400AC_data_memory_Type } from "../../types/dataMemory_type/zendureSolarflow2400AC.data.memory.type.js";
 
 /* -------------------------------
@@ -7,19 +8,26 @@ import type { ZendureSolarflow2400AC_data_memory_Type } from "../../types/dataMe
    ------------------------------- */
 type Shelly3EM_Snapshot = {
     ts: number;                                      // Date.now() (ms)
-    source: "shelly";
+    source: "Compteur Shelly 3EM";
     data: Shelly3EM_data_memory_Type;                // payload RAW complet Shelly
+};
+
+type ShellyPlugSGen3_BatterieZendureSolarflow2400AC_Snapshot = {
+    ts: number;                                      // Date.now() (ms)
+    source: "Prise Shelly Plug S Gen3 Batterie Zendure Solarflow 2400AC";
+    data: ShellyPlugSGen3_data_memory_Type;         // payload RAW complet Shelly
 };
 
 type ZendureSolarflow2400AC_Snapshot = {
     ts: number;                                      // Aligné sur ms ; converti depuis payload.timestamp (s)
-    source: "zendure";
+    source: "Batterie Zendure Solarflow 2400AC";
     data: ZendureSolarflow2400AC_data_memory_Type;   // payload RAW complet Zendure
 };
 
 /* Etat global (singleton via cache des modules) */
 type DataState = {
     shelly3EM?: Shelly3EM_Snapshot;
+    shellyPlugSGen3_BatterieZendureSolarflow2400AC?: ShellyPlugSGen3_BatterieZendureSolarflow2400AC_Snapshot;
     zendureSolarflow2400AC?: ZendureSolarflow2400AC_Snapshot;
 };
 
@@ -30,7 +38,16 @@ const stateMemory: DataState = {};
 function setShelly3EMSnapshot(raw: Shelly3EM_data_memory_Type): void {
     stateMemory.shelly3EM = {
         ts: Date.now(),
-        source: "shelly",
+        source: "Compteur Shelly 3EM",
+        data: { ...raw },
+    };
+}
+
+/** Enregistre le dernier snapshot Shelly (RAW + métadonnées uniformes). */
+function setShellyPlugSGen3Snapshot(raw: ShellyPlugSGen3_data_memory_Type): void {
+    stateMemory.shellyPlugSGen3_BatterieZendureSolarflow2400AC = {
+        ts: Date.now(),
+        source: "Prise Shelly Plug S Gen3 Batterie Zendure Solarflow 2400AC",
         data: { ...raw },
     };
 }
@@ -45,7 +62,7 @@ function setZendureSolarflow2400ACSnapshot(raw: ZendureSolarflow2400AC_data_memo
 
     stateMemory.zendureSolarflow2400AC = {
         ts: tsMs,
-        source: "zendure",
+        source: "Batterie Zendure Solarflow 2400AC",
         data: { ...raw },
     };
 }
@@ -56,6 +73,15 @@ function getShelly3EMSnapshot(): Shelly3EM_Snapshot | undefined {
         ? {
               ...stateMemory.shelly3EM,
               data: { ...stateMemory.shelly3EM.data },
+          }
+        : undefined;
+}
+
+function getShellyPlugSGen3Snapshot(): ShellyPlugSGen3_BatterieZendureSolarflow2400AC_Snapshot | undefined {
+    return stateMemory.shellyPlugSGen3_BatterieZendureSolarflow2400AC
+        ? {
+              ...stateMemory.shellyPlugSGen3_BatterieZendureSolarflow2400AC,
+              data: { ...stateMemory.shellyPlugSGen3_BatterieZendureSolarflow2400AC.data },
           }
         : undefined;
 }
@@ -84,6 +110,7 @@ function toJSON(): DataState {
 
 function resetStore(): void {
     stateMemory.shelly3EM = undefined;
+    stateMemory.shellyPlugSGen3_BatterieZendureSolarflow2400AC = undefined;
     stateMemory.zendureSolarflow2400AC = undefined;
 }
 
@@ -91,9 +118,11 @@ function resetStore(): void {
 export {
     // setters
     setShelly3EMSnapshot,
+    setShellyPlugSGen3Snapshot,
     setZendureSolarflow2400ACSnapshot,
     // getters
     getShelly3EMSnapshot,
+    getShellyPlugSGen3Snapshot,
     getZendureSolarflow2400ACSnapshot,
     // utils
     ageMsOf,
@@ -104,5 +133,6 @@ export {
 export type {
     DataState,
     Shelly3EM_Snapshot,
+    ShellyPlugSGen3_BatterieZendureSolarflow2400AC_Snapshot,
     ZendureSolarflow2400AC_Snapshot,
 };
