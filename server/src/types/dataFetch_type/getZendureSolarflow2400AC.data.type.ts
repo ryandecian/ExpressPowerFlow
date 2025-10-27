@@ -1,4 +1,4 @@
-type ZendureSolarflow2400AC_data_Type = {
+type GetZendureSolarflow2400AC_data_Type = {
     timestamp: number, /* ⚠️ Horodatage UNIX du message (en secondes) */
     messageId: number, /* Identifiant du message envoyé (incrémental) */
     sn: string, /* ⚠️ Numéro de série de l’appareil principal (onduleur SolarFlow 2400 AC) */
@@ -77,4 +77,4 @@ type ZendureSolarflow2400AC_data_Type = {
     }[]
 }
 
-export { ZendureSolarflow2400AC_data_Type }
+export { GetZendureSolarflow2400AC_data_Type }
