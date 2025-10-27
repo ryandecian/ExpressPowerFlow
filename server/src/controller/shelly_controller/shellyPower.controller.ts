@@ -5,6 +5,7 @@ import { getShelly3EMSnapshot } from "../../database/data_memory/memory.data.js"
 /* Import des Types : */
 import type { GetShelly3EM_emeter_data_Type } from "../../types/dataFetch_type/getShelly3EM.emeter.data.type.js";
 import type { Shelly3EM_data_memory_Type } from "../../types/dataMemory_type/shelly3EM.data.memory.type.js";
+
 /* Import des Utils */
 import { fetch_Utils } from "../../utils/fetch.utils.js";
 
