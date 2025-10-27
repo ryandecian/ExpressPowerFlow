@@ -1,4 +1,4 @@
-type ZendureSolarflow2400AC_data_Type = {
+type GetZendureSolarflow2400AC_data_Type = {
     timestamp: number, /* ⚠️ Horodatage UNIX du message (en secondes) */
     messageId: number, /* Identifiant du message envoyé (incrémental) */
     sn: string, /* ⚠️ Numéro de série de l’appareil principal (onduleur SolarFlow 2400 AC) */
@@ -62,13 +62,13 @@ type ZendureSolarflow2400AC_data_Type = {
         is_error: number, /* Code d’erreur global (0 = aucun) */
     },
     packData: {
-        sn: string, /* Numéro de série du pack batterie */
+        sn: string, /* ⚠️ Numéro de série du pack batterie */
         packType: number, /* Type du pack (5 = AB300X) */
-        socLevel: number, /* Niveau de charge batterie (%) */
-        state: number, /* État de la batterie (2 = en charge, 3 = décharge) */
+        socLevel: number, /* ⚠️ Niveau de charge batterie (%) */
+        state: number, /* ⚠️ État de la batterie (2 = en charge, 3 = décharge) */
         power: number, /* Puissance nette actuelle de la batterie (W) */
         maxTemp: number, /* Température max des cellules (~30,8°C si /100) */
-        totalVol: number, /* Tension totale du pack (mV → 4970 ≈ 49,7V) */
+        totalVol: number, /* ⚠️ Tension totale du pack (mV → 4970 ≈ 49,7V) */
         batcur: number, /* Courant de charge brut (peut être signé, ex: 65493 ≈ -43A) */
         maxVol: number, /* Tension cellule la plus haute (3,32V) */
         minVol: number, /* Tension cellule la plus basse (3,31V) */
@@ -77,4 +77,4 @@ type ZendureSolarflow2400AC_data_Type = {
     }[]
 }
 
-export { ZendureSolarflow2400AC_data_Type }
+export { GetZendureSolarflow2400AC_data_Type }
