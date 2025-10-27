@@ -12,7 +12,13 @@ type ZendureSolarflow2400AC_data_memory_Type = {
         outputLimit: number, /* ⚠️ Limite de puissance de sortie configurée vers maison (W) */
         socSet: number, /* ⚠️ SoC cible paramétré (1000 ≈ 100%) */
         minSoc: number, /* ⚠️ Seuil minimum avant arrêt de décharge (50 ≈ 5%) */
-    };
+    },
+    packData: {
+        sn: string, /* ⚠️ Numéro de série du pack batterie */
+        socLevel: number, /* ⚠️ Niveau de charge batterie (%) */
+        state: number, /* ⚠️ État de la batterie (2 = en charge, 3 = décharge) */
+        totalVol: number, /* ⚠️ Tension totale du pack (mV → 4970 ≈ 49,7V) */
+    }[];
 };
 
 export { ZendureSolarflow2400AC_data_memory_Type };
