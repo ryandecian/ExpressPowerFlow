@@ -1,4 +1,6 @@
 /* Import des Datas */
+import { setShellyPlugSGen3Snapshot } from "../../database/data_memory/memory.data.js";
+import { getShellyPlugSGen3Snapshot } from "../../database/data_memory/memory.data.js";
 
 /* Import des Types : */
 import type { GetShellyPlugSGen3_data_Type } from "../../types/dataFetch_type/getShellyPlugSGen3.data.type.js";
@@ -32,6 +34,14 @@ async function shellyPriseZendure_Controller(): Promise<void> {
                 freq: dataSwitch.freq,
                 current: dataSwitch.current,
             }
+    
+        /* Logique métier 3 : Enregistrement des données dans la mémoire */
+            setShellyPlugSGen3Snapshot(dataSelected);
+
+        /* Logique métier 4 : Récupération des données depuis la mémoire pour vérification */
+            const data = getShellyPlugSGen3Snapshot();
+
+            console.log(`Compteur Shelly Plug S Gen 3 : ${data?.data.apower} W`);
     }
     catch (error) {
         console.error("Erreur dans shellyPriseZendure_Controller :", error);
