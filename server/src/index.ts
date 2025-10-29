@@ -41,8 +41,8 @@ app.get("/", (req: Request, res: Response) => {
 
 /* Appel de controller automatique */
 // setInterval(shellyPower_Controller, 1000);
-setInterval(shellyPriseZendure_Controller, 1000);
-setInterval(zendureSolarflow2400AC_Controller, 1000);
+// setInterval(shellyPriseZendure_Controller, 1000);
+// setInterval(zendureSolarflow2400AC_Controller, 1000);
 
 /**
  * Gestion des routes innexistante
