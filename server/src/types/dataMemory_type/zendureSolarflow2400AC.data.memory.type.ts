@@ -3,8 +3,8 @@ type ZendureSolarflow2400AC_data_memory_Type = {
     sn: string, /* ⚠️ Numéro de série de l’appareil principal (onduleur SolarFlow 2400 AC) */
     product: string, /* ⚠️ Nom du modèle de l’appareil Zendure */
     properties: {
-        packInputPower: number, /* ⚠️ Puissance entrant dans la batterie (W) → charge */
-        outputPackPower: number; /* ⚠️ Puissance sortant de la batterie (W) → décharge */
+        packInputPower: number, /* ⚠️ Puissance sortant de la batterie (W) → décharge */
+        outputPackPower: number, /* ⚠️ Puissance entrant dans la batterie (W) → charge */
         electricLevel: number, /* ⚠️ Niveau de charge batterie (en %) */
         hyperTmp: number, /* ⚠️ Température interne brute (3071 = 30,71°C) */
         gridState: number, /* ⚠️ État du réseau détecté (1 = présent) */
