@@ -5,7 +5,11 @@ Avancement :
 - Construction DB a effectuer pour la connexion utilisateur
 
 -------------------------------------------------------------------------
-Le composant de mémoire ram étant terminé, il faut construire le controlleur et le renommer. 
+Stratégie : 
+La puissance prise en compte pour le calcul de la puissance a demander a zendure doit 
+passer par puissance du compteur et puissance de la prise shelly. Seul le post sera
+utilisée pour zendure et envoyer les commandes dans le controller. 
+-------------------------------------------------------------------------
 
 Il faudra limiter la puissance de la batterie à 2400w pour la charge et décharge
 

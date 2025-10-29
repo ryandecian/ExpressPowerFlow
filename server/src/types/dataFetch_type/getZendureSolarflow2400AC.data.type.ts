@@ -6,8 +6,8 @@ type GetZendureSolarflow2400AC_data_Type = {
     product: string, /* ⚠️ Nom du modèle de l’appareil Zendure */
     properties: {
         heatState: number, /* État thermique global (0 = normal, 1 = surchauffe) */
-        packInputPower: number, /* Puissance entrant dans la batterie (W) → charge */
-        outputPackPower: number, /* Puissance sortant de la batterie (W) → décharge */
+        packInputPower: number, /* ⚠️ Puissance sortant de la batterie (W) → décharge */
+        outputPackPower: number, /* ⚠️ Puissance entrant dans la batterie (W) → charge */
         outputHomePower: number, /* Puissance fournie à la maison (W) */
         remainOutTime: number, /* Temps restant estimé de charge/décharge (secondes) */
         packState: number, /* État du pack batterie (2 = en charge, 3 = en décharge, etc.) */
