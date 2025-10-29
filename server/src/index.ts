@@ -12,6 +12,8 @@ import express, { Request, Response } from "express";
 import router from "./router/router.js";
 
 import { shellyPower_Controller } from "./controller/shelly_controller/shellyPower.controller.js";
+import { shellyPriseZendure_Controller } from "./controller/shelly_controller/shellyPriseZendure.controller.js";
+import { zendureSolarflow2400AC_Controller } from "./controller/zendure_controller/zendureSolarflow2400AC.controller.js";
 
 const app = express();
 const port = ENV_SAFE("VITE_PORT_API_SERVER");
@@ -38,7 +40,9 @@ app.get("/", (req: Request, res: Response) => {
 })
 
 /* Appel de controller automatique */
-setInterval(shellyPower_Controller, 1000);
+// setInterval(shellyPower_Controller, 1000);
+setInterval(shellyPriseZendure_Controller, 1000);
+setInterval(zendureSolarflow2400AC_Controller, 1000);
 
 /**
  * Gestion des routes innexistante
