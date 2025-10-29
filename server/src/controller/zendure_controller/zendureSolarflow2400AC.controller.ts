@@ -64,7 +64,7 @@ async function zendureSolarflow2400AC_Controller(): Promise<void> {
         /* Logique métier 4 : Récupération des données depuis la mémoire pour vérification */
             const data = getZendureSolarflow2400ACSnapshot();
 
-            console.log(`Batterie Zendure entrée: ${data?.data.properties?.packInputPower} W, sortie: ${data?.data.properties?.outputPackPower} W`);
+            console.log(`Batterie Zendure entrée: ${data?.data.properties?.outputPackPower} W, sortie: ${data?.data.properties?.packInputPower} W`);
     }
     catch (error) {
         console.error("Erreur dans zendureSolarflow2400AC_Controller :", error);
