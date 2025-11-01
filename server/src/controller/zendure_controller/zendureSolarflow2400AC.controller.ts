@@ -1,6 +1,7 @@
 /* Import des Datas */
-import { setZendureSolarflow2400ACSnapshot } from "../../database/data_memory/memory.data.js";
-import { getZendureSolarflow2400ACSnapshot } from "../../database/data_memory/memory.data.js";
+import { setZendureSolarflow2400AC_1_Snapshot } from "../../database/data_memory/memory.data.js";
+import { statusZendureSolarflow2400AC_1 } from "../../database/data_memory/memory.data.js";
+import { getZendureSolarflow2400AC_1_Snapshot } from "../../database/data_memory/memory.data.js";
 
 /* Import des Types : */
 import type { GetZendureSolarflow2400AC_data_Type } from "../../types/dataFetch_type/getZendureSolarflow2400AC.data.type.js";
@@ -19,6 +20,7 @@ async function zendureSolarflow2400AC_Controller(): Promise<void> {
             /* Vérification si le fetch a échoué */
             if (dataZendureResult.data == null) {
                 console.error("Erreur dans la récupération des données de la Batterie Zendure Solarflow 2400 AC :", dataZendureResult.error);
+                statusZendureSolarflow2400AC_1(false);
                 return;
             }
 
@@ -57,12 +59,14 @@ async function zendureSolarflow2400AC_Controller(): Promise<void> {
                     },
                 ],
             }
+
+            const status = true;
         
         /* Logique métier 3 : Enregistrement des données dans la mémoire */
-            setZendureSolarflow2400ACSnapshot(dataSelected);
+            setZendureSolarflow2400AC_1_Snapshot(dataSelected, status);
 
         /* Logique métier 4 : Récupération des données depuis la mémoire pour vérification */
-            const data = getZendureSolarflow2400ACSnapshot();
+            const data = getZendureSolarflow2400AC_1_Snapshot();
 
             console.log(`Batterie Zendure entrée: ${data?.data.properties?.outputPackPower} W, sortie: ${data?.data.properties?.packInputPower} W`);
     }
