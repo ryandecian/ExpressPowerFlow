@@ -73,6 +73,25 @@ function setZendureSolarflow2400ACSnapshot(raw: ZendureSolarflow2400AC_data_memo
     };
 }
 
+/* ------------- Status  ------------- */
+function statusShelly3EM(status: boolean): void {
+    if (stateMemory.shelly3EM) {
+        stateMemory.shelly3EM.status = status;
+    }
+}
+
+function statusShellyPlugSGen3_BatterieZSF2400AC_1(status: boolean): void {
+    if (stateMemory.shellyPlugSGen3_BatterieZendureSolarflow2400AC) {
+        stateMemory.shellyPlugSGen3_BatterieZendureSolarflow2400AC.status = status;
+    }
+}
+
+function statusZendureSolarflow2400AC(status: boolean): void {
+    if (stateMemory.zendureSolarflow2400AC) {
+        stateMemory.zendureSolarflow2400AC.status = status;
+    }
+}
+
 /* ------------- Getters (copies immuables) ------------- */
 function getShelly3EMSnapshot(): Shelly3EM_Snapshot | undefined {
     return stateMemory.shelly3EM
@@ -126,6 +145,10 @@ export {
     setShelly3EMSnapshot,
     setShellyPlugSGen3_BatterieZSF2400AC_1_Snapshot,
     setZendureSolarflow2400ACSnapshot,
+    // status setters
+    statusShelly3EM,
+    statusShellyPlugSGen3_BatterieZSF2400AC_1,
+    statusZendureSolarflow2400AC,
     // getters
     getShelly3EMSnapshot,
     getShellyPlugSGen3_BatterieZSF2400AC_1_Snapshot,

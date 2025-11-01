@@ -1,5 +1,6 @@
 /* Import des Datas */
 import { setShelly3EMSnapshot } from "../../database/data_memory/memory.data.js";
+import { statusShelly3EM } from "../../database/data_memory/memory.data.js";
 import { getShelly3EMSnapshot } from "../../database/data_memory/memory.data.js";
 
 /* Import des Types : */
@@ -19,6 +20,8 @@ async function shellyPower_Controller(): Promise<void> {
             /* Vérification si le fetch a échoué */
             if (typeof dataShellyResult.error === "string") {
                 console.error("shellyPower_Controller - Erreur de fetch :", dataShellyResult.error);
+                statusShelly3EM(false);
+                return;
             }
 
             const dataShelly = dataShellyResult.data as GetShelly3EM_emeter_data_Type;
