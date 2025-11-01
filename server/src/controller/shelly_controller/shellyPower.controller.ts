@@ -29,10 +29,11 @@ async function shellyPower_Controller(): Promise<void> {
                 pf: dataShelly.pf,
                 current: dataShelly.current,
                 voltage: dataShelly.voltage,
-            }
+            };
+            const status = true;
 
         /* Logique métier 3 : Enregistrement des données dans la mémoire */
-            setShelly3EMSnapshot(dataSelected);
+            setShelly3EMSnapshot(dataSelected, status);
 
         /* Logique métier 4 : Récupération des données depuis la mémoire pour vérification */
             const data = getShelly3EMSnapshot();

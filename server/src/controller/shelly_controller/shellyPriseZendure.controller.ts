@@ -1,6 +1,6 @@
 /* Import des Datas */
-import { setShellyPlugSGen3Snapshot } from "../../database/data_memory/memory.data.js";
-import { getShellyPlugSGen3Snapshot } from "../../database/data_memory/memory.data.js";
+import { setShellyPlugSGen3_BatterieZSF2400AC_1_Snapshot } from "../../database/data_memory/memory.data.js";
+import { getShellyPlugSGen3_BatterieZSF2400AC_1_Snapshot } from "../../database/data_memory/memory.data.js";
 
 /* Import des Types : */
 import type { GetShellyPlugSGen3_data_Type } from "../../types/dataFetch_type/getShellyPlugSGen3.data.type.js";
@@ -34,12 +34,14 @@ async function shellyPriseZendure_Controller(): Promise<void> {
                 freq: dataSwitch.freq,
                 current: dataSwitch.current,
             }
+
+            const status = true;
     
         /* Logique métier 3 : Enregistrement des données dans la mémoire */
-            setShellyPlugSGen3Snapshot(dataSelected);
+            setShellyPlugSGen3_BatterieZSF2400AC_1_Snapshot(dataSelected, status);
 
         /* Logique métier 4 : Récupération des données depuis la mémoire pour vérification */
-            const data = getShellyPlugSGen3Snapshot();
+            const data = getShellyPlugSGen3_BatterieZSF2400AC_1_Snapshot();
 
             console.log(`Compteur Shelly Plug S Gen 3 : ${data?.data.apower} W`);
     }

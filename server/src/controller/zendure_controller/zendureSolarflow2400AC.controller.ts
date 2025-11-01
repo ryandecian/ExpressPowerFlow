@@ -57,9 +57,11 @@ async function zendureSolarflow2400AC_Controller(): Promise<void> {
                     },
                 ],
             }
+
+            const status = true;
         
         /* Logique métier 3 : Enregistrement des données dans la mémoire */
-            setZendureSolarflow2400ACSnapshot(dataSelected);
+            setZendureSolarflow2400ACSnapshot(dataSelected, status);
 
         /* Logique métier 4 : Récupération des données depuis la mémoire pour vérification */
             const data = getZendureSolarflow2400ACSnapshot();
