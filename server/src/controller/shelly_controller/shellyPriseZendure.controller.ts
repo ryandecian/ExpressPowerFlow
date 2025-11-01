@@ -1,5 +1,6 @@
 /* Import des Datas */
 import { setShellyPlugSGen3_BatterieZSF2400AC_1_Snapshot } from "../../database/data_memory/memory.data.js";
+import { statusZendureSolarflow2400AC } from "../../database/data_memory/memory.data.js";
 import { getShellyPlugSGen3_BatterieZSF2400AC_1_Snapshot } from "../../database/data_memory/memory.data.js";
 
 /* Import des Types : */
