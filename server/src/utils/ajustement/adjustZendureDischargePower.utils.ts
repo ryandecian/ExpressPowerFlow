@@ -1,0 +1,1 @@
+function adjustZendureDischargePower(power: number): number {}
