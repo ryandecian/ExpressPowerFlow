@@ -1,5 +1,13 @@
 function adjustZendureDischargePower(targetCharge: number): number {
-    const commande = (targetCharge + 22.5) / 1.03;
+    let commande = (targetCharge + 22.5) / 1.03;
+
+    /* Limite la commande a la puissance maximale de décharge de la batterie */
+    if (commande > 2400) {
+        commande = 2400;
+    }
+
+    /* Arrondi la au nombre entier le plus proche */
+    commande = Math.round(commande);
 
     return commande;
 }
