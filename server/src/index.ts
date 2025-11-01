@@ -7,6 +7,7 @@ import chalk from "chalk";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express, { Request, Response } from "express";
+import cron from "node-cron";
 
 /* Import des Routers */
 import router from "./router/router.js";
@@ -43,6 +44,11 @@ app.get("/", (req: Request, res: Response) => {
 // setInterval(shellyPower_Controller, 1000);
 // setInterval(shellyPriseZendure_Controller, 1000);
 // setInterval(zendureSolarflow2400AC_Controller, 1000);
+cron.schedule(
+    "*/1 * 0-14,17-23 * * *",
+    shellyPower_Controller,
+    { timezone: "Europe/Paris" }
+);
 
 /**
  * Gestion des routes innexistante
