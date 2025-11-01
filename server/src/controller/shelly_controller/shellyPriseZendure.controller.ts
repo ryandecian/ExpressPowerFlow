@@ -1,6 +1,6 @@
 /* Import des Datas */
 import { setShellyPlugSGen3_BatterieZSF2400AC_1_Snapshot } from "../../database/data_memory/memory.data.js";
-import { statusZendureSolarflow2400AC } from "../../database/data_memory/memory.data.js";
+import { statusZendureSolarflow2400AC_1 } from "../../database/data_memory/memory.data.js";
 import { getShellyPlugSGen3_BatterieZSF2400AC_1_Snapshot } from "../../database/data_memory/memory.data.js";
 
 /* Import des Types : */
@@ -20,6 +20,7 @@ async function shellyPriseZendure_Controller(): Promise<void> {
             /* Vérification si le fetch a échoué */
             if (dataShellyResult.data == null) {
                 console.error("shellyPower_Controller - Erreur de fetch :", dataShellyResult.error);
+                statusZendureSolarflow2400AC_1(false);
                 return;
             }
 
