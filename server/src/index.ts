@@ -15,7 +15,7 @@ import router from "./router/router.js";
 import { shellyPower_Controller } from "./controller/shelly_controller/shellyPower.controller.js";
 import { shellyPriseZendure_Controller } from "./controller/shelly_controller/shellyPriseZendure.controller.js";
 import { zendureSolarflow2400AC_Controller } from "./controller/zendure_controller/zendureSolarflow2400AC.controller.js";
-import { getShellyPlugSGen3_BatterieZSF2400AC_1_Snapshot } from "./database/data_memory/memory.data.js";
+import { home_Controller } from "./controller/home.controller.js";
 
 const app = express();
 const port = ENV_SAFE("VITE_PORT_API_SERVER");
@@ -47,7 +47,7 @@ setInterval(shellyPriseZendure_Controller, 1000);
 setInterval(zendureSolarflow2400AC_Controller, 1000);
 cron.schedule(
     "*/1 * 0-14,17-23 * * *",
-    shellyPriseZendure_Controller,
+    home_Controller,
     { timezone: "Europe/Paris" }
 );
 
