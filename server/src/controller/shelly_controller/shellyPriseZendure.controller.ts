@@ -45,7 +45,7 @@ async function shellyPriseZendure_Controller(): Promise<void> {
         /* Logique métier 4 : Récupération des données depuis la mémoire pour vérification */
             const data = getShellyPlugSGen3_BatterieZSF2400AC_1_Snapshot();
 
-            console.log(`Compteur Shelly Plug S Gen 3 : ${data?.data.apower} W`);
+            // console.log(`Compteur Shelly Plug S Gen 3 : ${data?.data.apower} W`);
     }
     catch (error) {
         console.error("Erreur dans shellyPriseZendure_Controller :", error);
