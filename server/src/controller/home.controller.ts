@@ -43,8 +43,8 @@ async function home_Controller(): Promise<void> {
             }
 
         /* Logique métier 3 : Calcul de la consommation réelle de la maison */
-            const shellyPlugZendure_1_Power = shellyPlugZendure_1_Data.data.apower;
-            const shellyPower = shelly3EMData.data.power;
+            const shellyPlugZendure_1_Power = shellyPlugZendure_1_Data.data.apower; /* Etat de la puissance fournie par la Batterie */
+            const shellyPower = shelly3EMData.data.power; /* Etat de la puissance totale de la maison */
             const homePower = shellyPower - shellyPlugZendure_1_Power; /* Valeur positive = consomation EDF et Valeur négative = injection EDF */
 
         /* Logique métier 4 : Préparation de la commande à envoyer aux batteries */
@@ -83,6 +83,12 @@ async function home_Controller(): Promise<void> {
                 console.error("Une erreur est survenue lors de l'envoi de la commande à la Batterie Zendure Solarflow 2400 AC :", postZendureResult.error);
                 return;
             }
+
+            console.log({
+                "Compteur Shelly 3EM": `${shellyPower} W`,
+                "Prise Shelly Batterie": `${shellyPlugZendure_1_Power} W`,
+                "Consommation maison": `${homePower} W`,
+            })
     }
     catch (error) {
         console.error("Une erreur inconnue est survenue dans home_Controller :", error);
