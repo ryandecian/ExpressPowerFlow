@@ -42,9 +42,9 @@ app.get("/", (req: Request, res: Response) => {
 })
 
 /* Appel de controller automatique */
-// setInterval(shellyPower_Controller, 1000);
-// setInterval(shellyPriseZendure_Controller, 1000);
-// setInterval(zendureSolarflow2400AC_Controller, 1000);
+setInterval(shellyPower_Controller, 1000);
+setInterval(shellyPriseZendure_Controller, 1000);
+setInterval(zendureSolarflow2400AC_Controller, 1000);
 cron.schedule(
     "*/1 * 0-14,17-23 * * *",
     shellyPriseZendure_Controller,
