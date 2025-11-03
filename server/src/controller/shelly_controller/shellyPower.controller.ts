@@ -41,7 +41,7 @@ async function shellyPower_Controller(): Promise<void> {
         /* Logique métier 4 : Récupération des données depuis la mémoire pour vérification */
             const data = getShelly3EMSnapshot();
 
-            console.log(`Compteur Shelly 3EM : ${data?.data.power} W`);
+            // console.log(`Compteur Shelly 3EM : ${data?.data.power} W`);
     }
     catch (error) {
         console.error("Erreur dans shellyPower_Controller :", error);
