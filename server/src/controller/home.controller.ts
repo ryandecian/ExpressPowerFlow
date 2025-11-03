@@ -88,6 +88,7 @@ async function home_Controller(): Promise<void> {
                 "Compteur Shelly 3EM": `${shellyPower} W`,
                 "Prise Shelly Batterie": `${shellyPlugZendure_1_Power} W`,
                 "Consommation maison": `${homePower} W`,
+                "Commande Batterie Zendure": commande ? `${commande} W` : "0 W",
             })
     }
     catch (error) {
