@@ -1,4 +1,4 @@
-/* Cette fonction reçois un nombre positif ou négatif */
+/* Cette fonction reçois un nombre positif = charge batterie */
 function adjustZendureChargePower(targetCharge: number): number {
     let commande = (targetCharge * 0.966) + 22;
 

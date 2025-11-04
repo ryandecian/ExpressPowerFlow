@@ -1,4 +1,4 @@
-/* Cette fonction reçois un nombre positif ou négatif */
+/* Cette fonction reçois un nombre négatif donc décharge de la batterie */
 function adjustZendureDischargePower(targetDischarge: number): number {
     let commande = (targetDischarge * 0.975) + 21;
 
