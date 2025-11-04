@@ -8,19 +8,18 @@ import { getZendureSolarflow2400AC_1_Snapshot } from "../database/data_memory/me
 import type { PostZendureSolarflow2400AC_data_Type } from "../types/dataFetch_type/postZendureSorlarflow2400AC.data.type.js";
 
 /* Import des Utils */
-import { adjustZendureChargePower } from "../utils/ajustement/adjustZendureChargePower.utils.js";
-import { adjustZendureDischargePower } from "../utils/ajustement/adjustZendureDischargePower.utils.js";
 import { requestZSF2400AC_Utils } from "../utils/requestZSF2400AC/requestZSF2400AC.utils.js";
 import { fetch_Utils } from "../utils/fetch.utils.js";
 
-const ZENDURE_URL_POST = "http://192.168.1.26/properties/write";
+const ZSF2400AC_1_URL_POST = "http://192.168.1.26/properties/write";
+const ZSF2400AC_2_URL_POST = "http://192.168.1.83/properties/write";
 
 async function home_Controller(): Promise<void> {
     try {
         /* Logique métier 1 : Récupération des données du compteur et des prises de batteries */
-            const shelly3EMData = await getShelly3EMSnapshot();
-            const shellyPlugZendure_1_Data = await getShellyPlugSGen3_BatterieZSF2400AC_1_Snapshot();
-            const zendureSolarflow2400AC_1_Data = await getZendureSolarflow2400AC_1_Snapshot();
+            const shelly3EMData = getShelly3EMSnapshot();
+            const shellyPlugZendure_1_Data = getShellyPlugSGen3_BatterieZSF2400AC_1_Snapshot();
+            const zendureSolarflow2400AC_1_Data = getZendureSolarflow2400AC_1_Snapshot();
 
             if (shelly3EMData == null || shellyPlugZendure_1_Data == null || zendureSolarflow2400AC_1_Data == null) {
                 console.error("home_Controller - Les données du compteur ou des prises de batteries ne sont pas encore disponibles.");
@@ -57,10 +56,18 @@ async function home_Controller(): Promise<void> {
             }
 
         /* Logique métier 5 : Envoi de la commande aux batteries */
-            const postZendureResult = await fetch_Utils<PostZendureSolarflow2400AC_data_Type>("POST", ZENDURE_URL_POST, body);
+            const [postZendure_1_Result, postZendure_2_Result] = await Promise.all ([
+                fetch_Utils<PostZendureSolarflow2400AC_data_Type>("POST", ZSF2400AC_1_URL_POST, body),
+                fetch_Utils<PostZendureSolarflow2400AC_data_Type>("POST", ZSF2400AC_2_URL_POST, body),
+            ]);
 
-            if (typeof postZendureResult.error === "string") {
-                console.error("Une erreur est survenue lors de l'envoi de la commande à la Batterie Zendure Solarflow 2400 AC :", postZendureResult.error);
+            if (typeof postZendure_1_Result.error === "string") {
+                console.error("Une erreur est survenue lors de l'envoi de la commande à la Batterie Zendure Solarflow 2400 AC N1 :", postZendure_1_Result.error);
+                return;
+            }
+
+            if (typeof postZendure_2_Result.error === "string") {
+                console.error("Une erreur est survenue lors de l'envoi de la commande à la Batterie Zendure Solarflow 2400 AC N2 :", postZendure_2_Result.error);
                 return;
             }
 
