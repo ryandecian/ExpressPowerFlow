@@ -19,7 +19,7 @@ async function shellyPriseZSF2400ACN1_Controller(): Promise<void> {
 
             /* Vérification si le fetch a échoué */
             if (dataShellyResult.data == null) {
-                console.error("shellyPower_Controller - Erreur de fetch :", dataShellyResult.error);
+                console.error("Erreur de fetch de shellyPriseZSF2400ACN1_Controller :", dataShellyResult.error);
                 statusShellyPrise_BatterieZSF2400AC_N1(false);
                 return;
             }
@@ -48,7 +48,7 @@ async function shellyPriseZSF2400ACN1_Controller(): Promise<void> {
             console.log(`Compteur Shelly Plug S Gen 3 de la batterie Zendure Solarflow 2400AC N1 : ${data?.data.apower} W`);
     }
     catch (error) {
-        console.error("Erreur dans shellyPriseZendure_Controller :", error);
+        console.error("Erreur dans shellyPriseZSF2400ACN1_Controller :", error);
     }
 }
 
