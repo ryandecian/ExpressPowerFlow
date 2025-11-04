@@ -11,10 +11,10 @@ import { adjustZendureDischargePower } from "../ajustement/adjustZendureDischarg
 
 /* Attention, les valeurs sont interpreté d'un point de vue de la batterie. */
 /* Valeur positive = charge batterie / Valeur négative = décharge batterie. */
-function requestZSF2400AC_Utils(sn: string, targetPower: number): BodyRequestChargeZSF2400AC_Type | BodyRequestDischargeZSF2400AC_Type {
+function requestZSF2400AC_Utils(sn: string, targetPower: number): BodyRequestChargeZSF2400AC_Type | BodyRequestDischargeZSF2400AC_Type | null {
     /* Initialisation des variables */
         let valueCommande: number = 0; /* Valeur de la commande à envoyer dans le body */
-        let body = {}; /* Corps de la requête */
+        let body: BodyRequestChargeZSF2400AC_Type | BodyRequestDischargeZSF2400AC_Type | null = null; /* Corps de la requête */
 
     /* Logique métier 1 : Préparation des variables */
         /* Arrondissement de la valeur cible (targetPower) en un nombre entier */
@@ -42,8 +42,32 @@ function requestZSF2400AC_Utils(sn: string, targetPower: number): BodyRequestCha
             }
     
     /* Logique métier 3 : Préparation du body de la requête */
-        /* Option 1 :  */
+        /* Option 1 : targetPower est négatif donc préparation du requête avec commande de décharge batterie */
+        if (targetPower < 0) {
+            body = {
+                sn: sn, /* Numéro de série de l'appareil cible */
+                properties: {
+                    acMode: 2, /* Commande décharge */
+                    outputLimit: valueCommande, /* Commande : puissance de décharge demandée */
+                }
+            };
+            return body; /* Envois du corps de la requête créer au controller */
+        }
 
+        /* Option 2 : targetPower est positif donc préparation du requête avec commande de charge batterie */
+        if (targetPower > 0) {
+            body = {
+                sn: sn, /* Numéro de série de l'appareil cible */
+                properties: {
+                    acMode: 1, /* Commande charge */
+                    inputLimit: valueCommande, /* Commande : puissance de charge demandée */
+                }
+            };
+            return body; /* Envois du corps de la requête créer au controller */
+        }
+
+    /* Si targetPower est égale à 0, body est null, on renvois null car pas d'instruction batterie a créer */
+    return body;
 }
 
 export { requestZSF2400AC_Utils };
