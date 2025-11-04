@@ -1,7 +1,7 @@
 /* Import des Datas */
-import { getShellyPrise_BatterieZSF2400AC_N1 } from "../../database/data_memory/memory.data.js";
-import { setShellyPrise_BatterieZSF2400AC_N1 } from "../../database/data_memory/memory.data.js";
-import { statusShellyPrise_BatterieZSF2400AC_N1 } from "../../database/data_memory/memory.data.js";
+import { getShellyPrise_BatterieZSF2400AC_N2 } from "../../database/data_memory/memory.data.js";
+import { setShellyPrise_BatterieZSF2400AC_N2 } from "../../database/data_memory/memory.data.js";
+import { statusShellyPrise_BatterieZSF2400AC_N2 } from "../../database/data_memory/memory.data.js";
 
 /* Import des Types : */
 import type { GetShellyPlugSGen3_data_Type } from "../../types/dataFetch_type/getShellyPlugSGen3.data.type.js";
@@ -10,17 +10,17 @@ import type { ShellyPlugSGen3_data_memory_Type } from "../../types/dataMemory_ty
 /* Import des Utils */
 import { fetch_Utils } from "../../utils/fetch.utils.js";
 
-const ShellyPlugSGen3_Solarflow2400AC = "http://192.168.1.68/rpc/Shelly.GetStatus";
+const shellyPrise_N2_URL_GET = "http://192.168.1.84/rpc/Shelly.GetStatus";
 
 async function shellyPriseZSF2400ACN2_Controller(): Promise<void> {
     try {
         /* Logique métier 1 : Récupération des données du compteur */
-            const dataShellyResult = await fetch_Utils<GetShellyPlugSGen3_data_Type>("GET", ShellyPlugSGen3_Solarflow2400AC);
+            const dataShellyResult = await fetch_Utils<GetShellyPlugSGen3_data_Type>("GET", shellyPrise_N2_URL_GET);
 
             /* Vérification si le fetch a échoué */
             if (dataShellyResult.data == null) {
-                console.error("shellyPower_Controller - Erreur de fetch :", dataShellyResult.error);
-                statusShellyPrise_BatterieZSF2400AC_N1(false);
+                console.error("Erreur de fetch de shellyPriseZSF2400ACN2_Controller :", dataShellyResult.error);
+                statusShellyPrise_BatterieZSF2400AC_N2(false);
                 return;
             }
 
@@ -40,15 +40,15 @@ async function shellyPriseZSF2400ACN2_Controller(): Promise<void> {
             const status = true;
     
         /* Logique métier 3 : Enregistrement des données dans la mémoire */
-            setShellyPrise_BatterieZSF2400AC_N1(dataSelected, status);
+            setShellyPrise_BatterieZSF2400AC_N2(dataSelected, status);
 
         /* Logique métier 4 : Récupération des données depuis la mémoire pour vérification */
-            const data = getShellyPrise_BatterieZSF2400AC_N1();
+            const data = getShellyPrise_BatterieZSF2400AC_N2();
 
-            console.log(`Compteur Shelly Plug S Gen 3 de la batterie Zendure Solarflow 2400AC N1 : ${data?.data.apower} W`);
+            // console.log(`Compteur Shelly Plug S Gen 3 de la batterie Zendure Solarflow 2400AC N2 : ${data?.data.apower} W`);
     }
     catch (error) {
-        console.error("Erreur dans shellyPriseZendure_Controller :", error);
+        console.error("Erreur dans shellyPriseZSF2400ACN2_Controller :", error);
     }
 }
 
