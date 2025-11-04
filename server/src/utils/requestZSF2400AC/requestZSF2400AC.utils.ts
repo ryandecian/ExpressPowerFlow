@@ -9,6 +9,8 @@ import type { BodyRequestDischargeZSF2400AC_Type } from "../../types/bodyRequest
 import { adjustZendureChargePower } from "../ajustement/adjustZendureChargePower.utils.js";
 import { adjustZendureDischargePower } from "../ajustement/adjustZendureDischargePower.utils.js";
 
+/* Attention, les valeurs sont interpreté d'un point de vue de la batterie. */
+/* Valeur positive = charge batterie / Valeur négative = décharge batterie. */
 function requestZSF2400AC_Utils(sn: string, targetPower: number): BodyRequestChargeZSF2400AC_Type | BodyRequestDischargeZSF2400AC_Type {
     /* Initialisation des variables */
         let valueCommande: number = 0; /* Valeur de la commande à envoyer dans le body */
@@ -38,6 +40,9 @@ function requestZSF2400AC_Utils(sn: string, targetPower: number): BodyRequestCha
             if (targetPower > 0) {
                 valueCommande = adjustZendureDischargePower(targetPower) /* Valeur positive et nb entier */
             }
+    
+    /* Logique métier 3 : Préparation du body de la requête */
+        /* Option 1 :  */
 
 }
 

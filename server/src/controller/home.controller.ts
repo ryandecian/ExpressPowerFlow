@@ -46,6 +46,7 @@ async function home_Controller(): Promise<void> {
             const shellyPlugZendure_1_Power = shellyPlugZendure_1_Data.data.apower; /* Etat de la puissance fournie par la Batterie */
             const shellyPower = shelly3EMData.data.power; /* Etat de la puissance totale de la maison */
             const homePower = shellyPower - shellyPlugZendure_1_Power; /* Valeur positive = consomation EDF et Valeur négative = injection EDF */
+            const targetPower = -homePower; /* Inversion de la valeur pour la gestion de la batterie */
 
         /* Logique métier 4 : Préparation de la commande à envoyer aux batteries */
             let commande: number = 0;
