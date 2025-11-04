@@ -10,12 +10,12 @@ import type { ShellyPlugSGen3_data_memory_Type } from "../../types/dataMemory_ty
 /* Import des Utils */
 import { fetch_Utils } from "../../utils/fetch.utils.js";
 
-const ShellyPlugSGen3_Solarflow2400AC = "http://192.168.1.68/rpc/Shelly.GetStatus";
+const shellyPrise_N1_URL_GET = "http://192.168.1.68/rpc/Shelly.GetStatus";
 
 async function shellyPriseZSF2400ACN1_Controller(): Promise<void> {
     try {
         /* Logique métier 1 : Récupération des données du compteur */
-            const dataShellyResult = await fetch_Utils<GetShellyPlugSGen3_data_Type>("GET", ShellyPlugSGen3_Solarflow2400AC);
+            const dataShellyResult = await fetch_Utils<GetShellyPlugSGen3_data_Type>("GET", shellyPrise_N1_URL_GET);
 
             /* Vérification si le fetch a échoué */
             if (dataShellyResult.data == null) {
