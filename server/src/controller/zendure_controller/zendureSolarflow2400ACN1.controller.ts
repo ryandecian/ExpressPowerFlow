@@ -12,7 +12,7 @@ import { fetch_Utils } from "../../utils/fetch.utils.js";
 
 const ZENDURE_URL = "http://192.168.1.26/properties/report"
 
-async function zendureSolarflow2400AC_Controller(): Promise<void> {
+async function zendureSolarflow2400ACN1_Controller(): Promise<void> {
     try {
         /* Logique métier 1 : Récupération des données de la Batterie Zendure Solarflow 2400 AC */
             const dataZendureResult = await fetch_Utils<GetZendureSolarflow2400AC_data_Type>("GET", ZENDURE_URL);
@@ -75,4 +75,4 @@ async function zendureSolarflow2400AC_Controller(): Promise<void> {
     }
 }
 
-export { zendureSolarflow2400AC_Controller };
+export { zendureSolarflow2400ACN1_Controller };
