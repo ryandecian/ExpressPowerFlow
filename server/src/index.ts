@@ -13,7 +13,8 @@ import cron from "node-cron";
 import router from "./router/router.js";
 
 import { shellyPower_Controller } from "./controller/shelly_controller/shellyPower.controller.js";
-import { shellyPriseZendure_Controller } from "./controller/shelly_controller/shellyPriseZendure.controller.js";
+import { shellyPriseZSF2400ACN1_Controller } from "./controller/shelly_controller/shellyPriseZSF2400ACN1.controller.js";
+import { shellyPriseZSF2400ACN2_Controller } from "./controller/shelly_controller/shellyPriseZSF2400ACN2.controller.js";
 import { zendureSolarflow2400AC_Controller } from "./controller/zendure_controller/zendureSolarflow2400AC.controller.js";
 import { home_Controller } from "./controller/home.controller.js";
 
@@ -45,7 +46,8 @@ app.get("/", (req: Request, res: Response) => {
     /* Compteur Shelly 3EM */
         setInterval(shellyPower_Controller, 1000);
     /* Prise Shelly Plug s Gen 3 raccordée aux batteries Zendure */
-        setInterval(shellyPriseZendure_Controller, 1000);
+        setInterval(shellyPriseZSF2400ACN1_Controller, 1000);
+        setInterval(shellyPriseZSF2400ACN2_Controller, 1000);
     /* Batterie Zendure Solarflow 2400AC */
         setInterval(zendureSolarflow2400AC_Controller, 1000);
     /* Logique métier centrale */
