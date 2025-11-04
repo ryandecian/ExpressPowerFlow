@@ -10,6 +10,7 @@ import type { PostZendureSolarflow2400AC_data_Type } from "../types/dataFetch_ty
 /* Import des Utils */
 import { adjustZendureChargePower } from "../utils/ajustement/adjustZendureChargePower.utils.js";
 import { adjustZendureDischargePower } from "../utils/ajustement/adjustZendureDischargePower.utils.js";
+import { requestZSF2400AC_Utils } from "../utils/requestZSF2400AC/requestZSF2400AC.utils.js";
 import { fetch_Utils } from "../utils/fetch.utils.js";
 
 const ZENDURE_URL_POST = "http://192.168.1.26/properties/write";
@@ -49,32 +50,10 @@ async function home_Controller(): Promise<void> {
             const targetPower = -homePower; /* Inversion de la valeur pour la gestion de la batterie */
 
         /* Logique métier 4 : Préparation de la commande à envoyer aux batteries */
-            let commande: number = 0;
-            const homePowerAbs = Math.abs(homePower); /* Conversion de la valeur en positif */
-            let body = {};
+            const body = requestZSF2400AC_Utils(zendureSolarflow2400AC_1_Data.data.sn, targetPower);
 
-            /* Si la consommation de la maison est négative, on charge la batterie */
-            if (homePower < 0) {
-                commande = adjustZendureChargePower(homePowerAbs);
-                body = {
-                    sn: getZendureSolarflow2400AC_1_Snapshot()?.data.sn, /* Numéro de série de l'appareil cible */
-                    properties: {
-                        acMode: 1, /* Commande charge */
-                        inputLimit: commande, /* Commande : puissance de charge demandée */
-                    }
-                };
-            }
-
-            /* Si la consommation de la maison est positive, on décharge la batterie */
-            if (homePower > 0) {
-                commande = adjustZendureDischargePower(homePowerAbs);
-                body = {
-                    sn: getZendureSolarflow2400AC_1_Snapshot()?.data.sn, /* Numéro de série de l'appareil cible */
-                    properties: {
-                        acMode: 2, /* Commande décharge */
-                        outputLimit: commande, /* Commande : puissance de décharge demandée */
-                    }
-                };
+            if (body == null) {
+                return
             }
 
         /* Logique métier 5 : Envoi de la commande aux batteries */
@@ -89,7 +68,6 @@ async function home_Controller(): Promise<void> {
                 "Compteur Shelly 3EM": `${shellyPower} W`,
                 "Prise Shelly Batterie": `${shellyPlugZendure_1_Power} W`,
                 "Consommation maison": `${homePower} W`,
-                "Commande Batterie Zendure": commande ? `${commande} W` : "0 W",
             })
     }
     catch (error) {
