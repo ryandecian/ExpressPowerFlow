@@ -1,8 +1,8 @@
 
 /* Import des Datas */
-import { getShelly3EMSnapshot } from "../database/data_memory/memory.data.js";
-import { getShellyPlugSGen3_BatterieZSF2400AC_1_Snapshot } from "../database/data_memory/memory.data.js";
-import { getZendureSolarflow2400AC_1_Snapshot } from "../database/data_memory/memory.data.js";
+import { getShelly3EM } from "../database/data_memory/memory.data.js";
+import { getShellyPrise_BatterieZSF2400AC_N1 } from "../database/data_memory/memory.data.js";
+import { getZendureSolarflow2400AC_N1 } from "../database/data_memory/memory.data.js";
 
 /* Import des Types : */
 import type { PostZendureSolarflow2400AC_data_Type } from "../types/dataFetch_type/postZendureSorlarflow2400AC.data.type.js";
@@ -17,39 +17,39 @@ const ZSF2400AC_2_URL_POST = "http://192.168.1.83/properties/write";
 async function home_Controller(): Promise<void> {
     try {
         /* Logique métier 1 : Récupération des données du compteur et des prises de batteries */
-            const shelly3EMData = getShelly3EMSnapshot();
-            const shellyPlugZendure_1_Data = getShellyPlugSGen3_BatterieZSF2400AC_1_Snapshot();
-            const zendureSolarflow2400AC_1_Data = getZendureSolarflow2400AC_1_Snapshot();
+            const shelly3EM_Data = getShelly3EM();
+            const shellyPrise_BatterieZSF2400AC_N1_Data = getShellyPrise_BatterieZSF2400AC_N1();
+            const zendureSolarflow2400AC_N1_Data = getZendureSolarflow2400AC_N1();
 
-            if (shelly3EMData == null || shellyPlugZendure_1_Data == null || zendureSolarflow2400AC_1_Data == null) {
+            if (shelly3EM_Data == null || shellyPrise_BatterieZSF2400AC_N1_Data == null || zendureSolarflow2400AC_N1_Data == null) {
                 console.error("home_Controller - Les données du compteur ou des prises de batteries ne sont pas encore disponibles.");
                 return;
             }
 
         /* Logique métier 2 : Vérification du status de connection */
-            if (shelly3EMData.status === false) {
+            if (shelly3EM_Data.status === false) {
                 console.error("home_Controller - Le compteur Shelly 3EM n'est pas connecté.");
                 return;
             }
 
-            if (shellyPlugZendure_1_Data.status === false) {
+            if (shellyPrise_BatterieZSF2400AC_N1_Data.status === false) {
                 console.error("home_Controller - La prise Shelly Plug S Gen 3 de la Batterie Zendure numéro 1 n'est pas connectée.");
                 return;
             }
 
-            if (zendureSolarflow2400AC_1_Data.status === false) {
+            if (zendureSolarflow2400AC_N1_Data.status === false) {
                 console.error("home_Controller - La batterie Zendure Solarflow 2400 AC numéro 1 n'est pas connectée.");
                 return;
             }
 
         /* Logique métier 3 : Calcul de la consommation réelle de la maison */
-            const shellyPlugZendure_1_Power = shellyPlugZendure_1_Data.data.apower; /* Etat de la puissance fournie par la Batterie */
-            const shellyPower = shelly3EMData.data.power; /* Etat de la puissance totale de la maison */
-            const homePower = shellyPower - shellyPlugZendure_1_Power; /* Valeur positive = consomation EDF et Valeur négative = injection EDF */
+            const shellyPrise_BatterieZSF2400AC_N1_Power = shellyPrise_BatterieZSF2400AC_N1_Data.data.apower; /* Etat de la puissance fournie par la Batterie */
+            const shellyPower = shelly3EM_Data.data.power; /* Etat de la puissance totale de la maison */
+            const homePower = shellyPower - shellyPrise_BatterieZSF2400AC_N1_Power; /* Valeur positive = consomation EDF et Valeur négative = injection EDF */
             const targetPower = -homePower; /* Inversion de la valeur pour la gestion de la batterie */
 
         /* Logique métier 4 : Préparation de la commande à envoyer aux batteries */
-            const body = requestZSF2400AC_Utils(zendureSolarflow2400AC_1_Data.data.sn, targetPower);
+            const body = requestZSF2400AC_Utils(zendureSolarflow2400AC_N1_Data.data.sn, targetPower);
 
             if (body == null) {
                 return
@@ -73,7 +73,7 @@ async function home_Controller(): Promise<void> {
 
             console.log({
                 "Compteur Shelly 3EM": `${shellyPower} W`,
-                "Prise Shelly Batterie": `${shellyPlugZendure_1_Power} W`,
+                "Prise Shelly Batterie": `${shellyPrise_BatterieZSF2400AC_N1_Power} W`,
                 "Consommation maison": `${homePower} W`,
             })
     }
