@@ -12,7 +12,7 @@ import { fetch_Utils } from "../../utils/fetch.utils.js";
 
 const ShellyPlugSGen3_Solarflow2400AC = "http://192.168.1.68/rpc/Shelly.GetStatus";
 
-async function shellyPriseZendure_Controller(): Promise<void> {
+async function shellyPriseZSF2400ACN1_Controller(): Promise<void> {
     try {
         /* Logique métier 1 : Récupération des données du compteur */
             const dataShellyResult = await fetch_Utils<GetShellyPlugSGen3_data_Type>("GET", ShellyPlugSGen3_Solarflow2400AC);
@@ -53,4 +53,4 @@ async function shellyPriseZendure_Controller(): Promise<void> {
 }
 
 
-export { shellyPriseZendure_Controller };
+export { shellyPriseZSF2400ACN1_Controller };
