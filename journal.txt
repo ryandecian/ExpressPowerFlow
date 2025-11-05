@@ -13,6 +13,8 @@ utilisée pour zendure et envoyer les commandes dans le controller.
 Il faudra créer un utils qui va prendre pour valeur une valeur positif ou négatif et le sn. 
 Il fera un return du body de la requete. La requete partira alors par le controller avec fetch_Utils
 
+Les datas ayant été édité, il faudra tester avec les formules élaboré une fois les utils développés.
+
 Il faudra limiter la puissance de la batterie à 2400w pour la charge et décharge
 
 Il faut créer un composant utils pour convertir la date timtamps en strin de type "jj/mm/year/h/m/s
