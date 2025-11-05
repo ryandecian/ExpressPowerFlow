@@ -1,7 +1,7 @@
 /* Import des Datas */
-import { setZendureSolarflow2400AC_1_Snapshot } from "../../database/data_memory/memory.data.js";
-import { statusZendureSolarflow2400AC_1 } from "../../database/data_memory/memory.data.js";
-import { getZendureSolarflow2400AC_1_Snapshot } from "../../database/data_memory/memory.data.js";
+import { getZendureSolarflow2400AC_N1 } from "../../database/data_memory/memory.data.js";
+import { setZendureSolarflow2400AC_N1 } from "../../database/data_memory/memory.data.js";
+import { statusZendureSolarflow2400AC_N1 } from "../../database/data_memory/memory.data.js";
 
 /* Import des Types : */
 import type { GetZendureSolarflow2400AC_data_Type } from "../../types/dataFetch_type/getZendureSolarflow2400AC.data.type.js";
@@ -12,7 +12,7 @@ import { fetch_Utils } from "../../utils/fetch.utils.js";
 
 const ZENDURE_URL = "http://192.168.1.26/properties/report"
 
-async function zendureSolarflow2400AC_Controller(): Promise<void> {
+async function zendureSolarflow2400ACN1_Controller(): Promise<void> {
     try {
         /* Logique métier 1 : Récupération des données de la Batterie Zendure Solarflow 2400 AC */
             const dataZendureResult = await fetch_Utils<GetZendureSolarflow2400AC_data_Type>("GET", ZENDURE_URL);
@@ -20,7 +20,7 @@ async function zendureSolarflow2400AC_Controller(): Promise<void> {
             /* Vérification si le fetch a échoué */
             if (dataZendureResult.data == null) {
                 console.error("Erreur dans la récupération des données de la Batterie Zendure Solarflow 2400 AC :", dataZendureResult.error);
-                statusZendureSolarflow2400AC_1(false);
+                statusZendureSolarflow2400AC_N1(false);
                 return;
             }
 
@@ -63,10 +63,10 @@ async function zendureSolarflow2400AC_Controller(): Promise<void> {
             const status = true;
         
         /* Logique métier 3 : Enregistrement des données dans la mémoire */
-            setZendureSolarflow2400AC_1_Snapshot(dataSelected, status);
+            setZendureSolarflow2400AC_N1(dataSelected, status);
 
         /* Logique métier 4 : Récupération des données depuis la mémoire pour vérification */
-            const data = getZendureSolarflow2400AC_1_Snapshot();
+            const data = getZendureSolarflow2400AC_N1();
 
             // console.log(`Batterie Zendure entrée: ${data?.data.properties?.outputPackPower} W, sortie: ${data?.data.properties?.packInputPower} W`);
     }
@@ -75,4 +75,4 @@ async function zendureSolarflow2400AC_Controller(): Promise<void> {
     }
 }
 
-export { zendureSolarflow2400AC_Controller };
+export { zendureSolarflow2400ACN1_Controller };
