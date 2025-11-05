@@ -1,7 +1,7 @@
 /* Import des Datas */
-import { setShelly3EMSnapshot } from "../../database/data_memory/memory.data.js";
+import { getShelly3EM } from "../../database/data_memory/memory.data.js";
+import { setShelly3EM } from "../../database/data_memory/memory.data.js";
 import { statusShelly3EM } from "../../database/data_memory/memory.data.js";
-import { getShelly3EMSnapshot } from "../../database/data_memory/memory.data.js";
 
 /* Import des Types : */
 import type { GetShelly3EM_emeter_data_Type } from "../../types/dataFetch_type/getShelly3EM.emeter.data.type.js";
@@ -36,10 +36,10 @@ async function shellyPower_Controller(): Promise<void> {
             const status = true;
 
         /* Logique métier 3 : Enregistrement des données dans la mémoire */
-            setShelly3EMSnapshot(dataSelected, status);
+            setShelly3EM(dataSelected, status);
 
         /* Logique métier 4 : Récupération des données depuis la mémoire pour vérification */
-            const data = getShelly3EMSnapshot();
+            const data = getShelly3EM();
 
             // console.log(`Compteur Shelly 3EM : ${data?.data.power} W`);
     }
