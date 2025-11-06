@@ -7,6 +7,7 @@ Avancement :
 -------------------------------------------------------------------------
 Entre la batterie N1 et N2, il y a 5w de dif sur commande par rapport au N1. 
 Exemple commande N1 = -50 équivaux à -55 en commande sur N2
+Faire attention a la requete du N2 ou il manque le sn, sinon cela ne fonctionnera pas
 -------------------------------------------------------------------------
 Stratégie : 
 La puissance prise en compte pour le calcul de la puissance a demander a zendure doit 
