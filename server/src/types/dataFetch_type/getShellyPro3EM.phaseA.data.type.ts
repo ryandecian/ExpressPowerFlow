@@ -1,4 +1,4 @@
-type ShellyPro3EM_PhaseA_data_Type = {
+type GetShellyPro3EM_PhaseA_data_Type = {
     id: number;                 /* Identifiant de la phase (0 = L1, 1 = L2, 2 = L3) */
     voltage: number;            /* Tension instantanée de la phase (en volts, V) */
     current: number;            /* Courant instantané mesuré sur la phase (en ampères, A) */
@@ -8,3 +8,5 @@ type ShellyPro3EM_PhaseA_data_Type = {
     freq: number;               /* Fréquence du réseau (en hertz, Hz), généralement 50.0 Hz */
     calibration: string;        /* Type de calibration : "factory" (usine) ou "custom" (utilisateur) */
 };
+
+export type { GetShellyPro3EM_PhaseA_data_Type }
