@@ -51,11 +51,11 @@ app.get("/", (req: Request, res: Response) => {
     /* Batterie Zendure Solarflow 2400AC */
         setInterval(zendureSolarflow2400ACN1_Controller, 1000);
     /* Logique métier centrale */
-        cron.schedule(
-            "*/1 * 0-14,17-23 * * *",
-            home_Controller,
-            { timezone: "Europe/Paris" }
-        );
+        // cron.schedule(
+        //     "*/1 * 0-14,17-23 * * *",
+        //     home_Controller,
+        //     { timezone: "Europe/Paris" }
+        // );
 
 /**
  * Gestion des routes innexistante

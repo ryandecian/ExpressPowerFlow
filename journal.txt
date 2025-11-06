@@ -5,6 +5,9 @@ Avancement :
 - Construction DB a effectuer pour la connexion utilisateur
 
 -------------------------------------------------------------------------
+Entre la batterie N1 et N2, il y a 5w de dif sur commande par rapport au N1. 
+Exemple commande N1 = -50 équivaux à -55 en commande sur N2
+-------------------------------------------------------------------------
 Stratégie : 
 La puissance prise en compte pour le calcul de la puissance a demander a zendure doit 
 passer par puissance du compteur et puissance de la prise shelly. Seul le post sera

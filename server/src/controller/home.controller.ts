@@ -2,7 +2,9 @@
 /* Import des Datas */
 import { getShelly3EM } from "../database/data_memory/memory.data.js";
 import { getShellyPrise_BatterieZSF2400AC_N1 } from "../database/data_memory/memory.data.js";
+import { getShellyPrise_BatterieZSF2400AC_N2 } from "../database/data_memory/memory.data.js";
 import { getZendureSolarflow2400AC_N1 } from "../database/data_memory/memory.data.js";
+import { getZendureSolarflow2400AC_N2 } from "../database/data_memory/memory.data.js";
 
 /* Import des Types : */
 import type { PostZendureSolarflow2400AC_data_Type } from "../types/dataFetch_type/postZendureSorlarflow2400AC.data.type.js";
@@ -19,31 +21,88 @@ async function home_Controller(): Promise<void> {
         /* Logique métier 1 : Récupération des données du compteur et des prises de batteries */
             const shelly3EM_Data = getShelly3EM();
             const shellyPrise_BatterieZSF2400AC_N1_Data = getShellyPrise_BatterieZSF2400AC_N1();
+            const shellyPrise_BatterieZSF2400AC_N2_Data = getShellyPrise_BatterieZSF2400AC_N2();
             const zendureSolarflow2400AC_N1_Data = getZendureSolarflow2400AC_N1();
+            const zendureSolarflow2400AC_N2_Data = getZendureSolarflow2400AC_N2();
 
-            if (shelly3EM_Data == null || shellyPrise_BatterieZSF2400AC_N1_Data == null || zendureSolarflow2400AC_N1_Data == null) {
-                console.error("home_Controller - Les données du compteur ou des prises de batteries ne sont pas encore disponibles.");
-                return;
-            }
+        /* Logique métier 2 : Vérification des données mémoires disponibles */
+            /* Vérification 1 : Compteur Shelly 3EM */
+                if (shelly3EM_Data == null) {
+                    console.error("home_Controller - Les données du compteur Shelly 3EM ne sont pas encore disponibles.");
+                    return;
+                }
 
-        /* Logique métier 2 : Vérification du status de connection */
-            if (shelly3EM_Data.status === false) {
-                console.error("home_Controller - Le compteur Shelly 3EM n'est pas connecté.");
-                return;
-            }
+            /* Vérification 2 : Prises Shelly Plug S Gen 3 des batteries */
+                if (shellyPrise_BatterieZSF2400AC_N1_Data == null && shellyPrise_BatterieZSF2400AC_N2_Data == null) {
+                    console.error("home_Controller - Aucunes données des prises Shelly des batteries ne sont pas encore disponibles.");
+                    return;
+                }
 
-            if (shellyPrise_BatterieZSF2400AC_N1_Data.status === false) {
-                console.error("home_Controller - La prise Shelly Plug S Gen 3 de la Batterie Zendure numéro 1 n'est pas connectée.");
-                return;
-            }
+                if (shellyPrise_BatterieZSF2400AC_N1_Data == null) {
+                    console.info("home_Controller - Les données de la prise Shelly Plug S Gen 3 de la Batterie Zendure numéro 1 ne sont pas encore disponibles.");
+                }
 
-            if (zendureSolarflow2400AC_N1_Data.status === false) {
-                console.error("home_Controller - La batterie Zendure Solarflow 2400 AC numéro 1 n'est pas connectée.");
-                return;
-            }
+                if (shellyPrise_BatterieZSF2400AC_N2_Data == null) {
+                    console.info("home_Controller - Les données de la prise Shelly Plug S Gen 3 de la Batterie Zendure numéro 2 ne sont pas encore disponibles.");
+                }
 
-        /* Logique métier 3 : Calcul de la consommation réelle de la maison */
-            const shellyPrise_BatterieZSF2400AC_N1_Power = shellyPrise_BatterieZSF2400AC_N1_Data.data.apower; /* Etat de la puissance fournie par la Batterie */
+            /* Vérification 3 : Batteries Zendure Solarflow 2400 AC */
+                if (zendureSolarflow2400AC_N1_Data == null && zendureSolarflow2400AC_N2_Data == null) {
+                    console.error("home_Controller - Aucunes données des batteries Zendure Solarflow 2400 AC ne sont pas encore disponibles.");
+                    return;
+                }
+
+                if (zendureSolarflow2400AC_N1_Data == null) {
+                    console.info("home_Controller - Les données de la Batterie Zendure Solarflow 2400 AC numéro 1 ne sont pas encore disponibles.");
+                }
+
+                if (zendureSolarflow2400AC_N2_Data == null) {
+                    console.info("home_Controller - Les données de la Batterie Zendure Solarflow 2400 AC numéro 2 ne sont pas encore disponibles.");
+                }
+
+        /* Logique métier 3 : Vérification du status de connection */
+            /* Vérification 1 : Status du compteur Shelly 3EM */
+                if (shelly3EM_Data.status === false) {
+                    console.error("home_Controller - Le compteur Shelly 3EM est déconnecté.");
+                    return;
+                }
+
+            /* Vérification 2 : Status des prises Shelly Plug S Gen 3 sur lequel les batteries sont branchées*/
+                if (shellyPrise_BatterieZSF2400AC_N1_Data?.status === false && shellyPrise_BatterieZSF2400AC_N2_Data?.status === false) {
+                    console.error("home_Controller - Aucunes prises Shelly Plug S Gen 3 des batteries ne sont connectées.");
+                    return;
+                }
+                if (shellyPrise_BatterieZSF2400AC_N1_Data?.status === false) {
+                    console.info("home_Controller - La prise Shelly Plug S Gen 3 de la Batterie Zendure numéro 1 est déconnectée.");
+                }
+
+                if (shellyPrise_BatterieZSF2400AC_N2_Data?.status === false) {
+                    console.info("home_Controller - La prise Shelly Plug S Gen 3 de la Batterie Zendure numéro 2 est déconnectée.");
+                }
+
+                /* Vérification 3 : Status des batteries Zendure Solarflow 2400 AC */
+                     if (zendureSolarflow2400AC_N1_Data?.status === false && zendureSolarflow2400AC_N2_Data?.status === false) {
+                    console.error("home_Controller - Aucunes batteries Zendure Solarflow 2400 AC ne sont connectées.");
+                    return;
+                }
+
+                if (zendureSolarflow2400AC_N1_Data?.status === false) {
+                    console.info("home_Controller - La batterie Zendure Solarflow 2400 AC numéro 1 n'est pas connectée.");
+                }
+
+                if (zendureSolarflow2400AC_N2_Data?.status === false) {
+                    console.info("home_Controller - La batterie Zendure Solarflow 2400 AC numéro 2 n'est pas connectée.");
+                }
+
+        /* Logique métier 4 : Calcul de la consommation réelle de la maison */
+            /* Puissance des batteries Zendure vue sur les prises */
+            let shellyPrise_BatterieZSF2400AC_N1_Power: number = 0; /* Etat de la puissance fournie par la batterie Zendure Solarflow2400AC N1 */
+
+            // let shellyPrise_BatterieZSF2400AC_N1_Power = shellyPrise_BatterieZSF2400AC_N1_Data?.data.apower;
+
+
+
+
             const shellyPower = shelly3EM_Data.data.power; /* Etat de la puissance totale de la maison */
             const homePower = shellyPower - shellyPrise_BatterieZSF2400AC_N1_Power; /* Valeur positive = consomation EDF et Valeur négative = injection EDF */
             const targetPower = -homePower; /* Inversion de la valeur pour la gestion de la batterie */
