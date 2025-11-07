@@ -162,9 +162,21 @@ async function home_Controller(): Promise<void> {
                 }
 
             /* Modification du signe de la puissance pour un bon traitement dans l'utils requestZSF2400AC */
+                /* Point de vue batterie */
                 const targetPower = -homePower; /* Inversion de la valeur pour la gestion de la batterie */
 
-        /* Logique métier 6 : Préparation de la commande à envoyer aux batteries */
+        /* Logique métier 6 : Préparation  des commandes à envoyer et sélections des batteries et puissance a demander a chacune d'elles */
+            /* Situation 1 : Le besoin est situé entre -50w et 50w. Dans ce cas on attribue le travail à une seul batterie */
+                if (targetPower >= -50 && targetPower <= 50) {
+                    /* Option 1 : targetPower est négatif donc on doit décharger la batterie avec % le plus élevé */
+                        if (targetPower < 0) {
+                            if (selectBattery.zendureSolarflow2400AC_N1.electricLevel >= selectBattery.zendureSolarflow2400AC_N2.electricLevel) {
+                                body
+                        }
+                }
+
+
+        /* Logique métier 7 : Préparation de la commande à envoyer aux batteries */
             /* Option 1 :  */
             // const body = requestZSF2400AC_Utils(zendureSolarflow2400AC_N1_Data.data.sn, targetPower);
 

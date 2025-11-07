@@ -11,11 +11,22 @@ import { adjustZendureDischargePower } from "../ajustement/adjustZendureDischarg
 
 /* Attention, les valeurs sont interpreté d'un point de vue de la batterie. */
 /* Valeur positive = charge batterie / Valeur négative = décharge batterie. */
-function requestZSF2400AC_Utils(sn: string, targetPower: number): BodyRequestChargeZSF2400AC_Type | BodyRequestDischargeZSF2400AC_Type | null {
+function requestZSF2400AC_Utils(sn: string, targetPower: number): BodyRequestChargeZSF2400AC_Type | BodyRequestDischargeZSF2400AC_Type {
     /* Initialisation des variables */
         let valueCommande: number = 0; /* Valeur de la commande à envoyer dans le body */
-        let body: BodyRequestChargeZSF2400AC_Type | BodyRequestDischargeZSF2400AC_Type | null = null; /* Corps de la requête */
+        let body: BodyRequestChargeZSF2400AC_Type | BodyRequestDischargeZSF2400AC_Type; /* Corps de la requête */
 
+    /* Logique métier 0 : Si targetPower = 0 */
+        if (targetPower === 0) {
+            body = {
+                sn: sn, /* Numéro de série de l'appareil cible */
+                properties: {
+                    acMode: 2, /* Commande décharge */
+                    outputLimit: 0, /* Commande : puissance de décharge demandée */
+                }
+            };
+            return body; /* Envois du corps de la requête créer au controller */
+        }
     /* Logique métier 1 : Préparation des variables */
         /* Arrondissement de la valeur cible (targetPower) en un nombre entier */
         targetPower = Math.round(targetPower);
@@ -29,16 +40,17 @@ function requestZSF2400AC_Utils(sn: string, targetPower: number): BodyRequestCha
             if (targetPowerString in refPowerZSF2400AC) {
             valueCommande = refPowerZSF2400AC[targetPowerString as keyof typeof refPowerZSF2400AC]; /* On dit a typescript tkt, la clé existe bien dans refPowerZSF2400AC */
             }
-        
         /* Option 2 : Si la valeur n'existe pas dans les datas, on fait une approximation linéaire avec utils */
-            /* Possibilité 1 : La valeur est inférieure à 0 donc négative, on doit charger la batterie */
-            if (targetPower < 0) {
-                valueCommande = adjustZendureChargePower(targetPower) /* Valeur positive et nb entier */
-            }
+            else {
+                /* Possibilité 1 : La valeur est inférieure à 0 donc négative, on doit charger la batterie */
+                    if (targetPower < 0) {
+                        valueCommande = adjustZendureChargePower(targetPower) /* Valeur positive et nb entier */
+                    }
 
-            /* Possibilité 2 : La valeur est supérieure à 0 donc positive, on doit décharger la batterie */
-            if (targetPower > 0) {
-                valueCommande = adjustZendureDischargePower(targetPower) /* Valeur positive et nb entier */
+                /* Possibilité 2 : La valeur est supérieure à 0 donc positive, on doit décharger la batterie */
+                    if (targetPower > 0) {
+                        valueCommande = adjustZendureDischargePower(targetPower) /* Valeur positive et nb entier */
+                    }
             }
     
     /* Logique métier 3 : Préparation du body de la requête */
@@ -55,7 +67,7 @@ function requestZSF2400AC_Utils(sn: string, targetPower: number): BodyRequestCha
         }
 
         /* Option 2 : targetPower est positif donc préparation du requête avec commande de charge batterie */
-        if (targetPower > 0) {
+        else if (targetPower > 0) {
             body = {
                 sn: sn, /* Numéro de série de l'appareil cible */
                 properties: {
@@ -66,8 +78,7 @@ function requestZSF2400AC_Utils(sn: string, targetPower: number): BodyRequestCha
             return body; /* Envois du corps de la requête créer au controller */
         }
 
-    /* Si targetPower est égale à 0, body est null, on renvois null car pas d'instruction batterie a créer */
-    return body;
+    return body!; /* Juste pour satisfaire Typescript, ce return ne sera jamais atteint */
 }
 
 export { requestZSF2400AC_Utils };
