@@ -6,7 +6,7 @@ import type { SelectBattery_Type } from "../../../types/services/selectBattery.t
 import { requestZSF2400AC_Utils } from "../../../utils/requestZSF2400AC/requestZSF2400AC.utils.js";
 
 /* targetPower compris entre -50 et -1w de charge */
-function handlePowerRange_0_To_50_Service(selectBattery: SelectBattery_Type, body: BodyRequestHomeController_Type, targetPower: number): BodyRequestHomeController_Type {
+function handlePowerRange_Neg50_To_0_Service(selectBattery: SelectBattery_Type, body: BodyRequestHomeController_Type, targetPower: number): BodyRequestHomeController_Type {
     /* Si les 2 batteries sont disponibles on décharge la batterie avec le niveau de charge le plus haut */
         if (selectBattery.zendureSolarflow2400AC_N1.status === true && selectBattery.zendureSolarflow2400AC_N2.status === true) {
             /* Si la batterie N1 a un niveau de charge plus élevé que la batterie 2, c'est lui qui va travailler */
@@ -32,4 +32,4 @@ function handlePowerRange_0_To_50_Service(selectBattery: SelectBattery_Type, bod
     return body;
 }
 
-export { handlePowerRange_0_To_50_Service };
+export { handlePowerRange_Neg50_To_0_Service };
