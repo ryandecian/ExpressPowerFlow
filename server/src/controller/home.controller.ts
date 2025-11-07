@@ -6,9 +6,10 @@ import { getShellyPrise_BatterieZSF2400AC_N2 } from "../database/data_memory/mem
 import { getZendureSolarflow2400AC_N1 } from "../database/data_memory/memory.data.js";
 import { getZendureSolarflow2400AC_N2 } from "../database/data_memory/memory.data.js";
 
+/* Import des Services : */
+import { handlePowerRange_Equal_0_Service } from "../services/home_controller/handlePowerRange_Equal_0_Service/handlePowerRange_Equal_0.service.js";
+
 /* Import des Types : */
-import type { BodyRequestChargeZSF2400AC_Type } from "../types/bodyRequestZSF2400AC_type/bodyRequestChargeZSF2400AC.type.js";
-import type { BodyRequestDischargeZSF2400AC_Type } from "../types/bodyRequestZSF2400AC_type/bodyRequestDischargeZSF2400AC.type.js";
 import type { BodyRequestHomeController_Type } from "../types/services/bodyRequestHomeController.type.js";
 import type { PostZendureSolarflow2400AC_data_Type } from "../types/dataFetch_type/postZendureSorlarflow2400AC.data.type.js";
 import type { SelectBattery_Type } from "../types/services/selectBattery.type.js";
@@ -176,6 +177,10 @@ async function home_Controller(): Promise<void> {
                 ZSF2400AC_N1: null,
                 ZSF2400AC_N2: null,
             };
+
+            if (targetPower === 0) {
+                body = handlePowerRange_Equal_0_Service(selectBattery, body, targetPower);
+            }
             /* Situation 1 : Le besoin est situé entre -50w et 50w. Dans ce cas on attribue le travail à une seul batterie */
                 if (targetPower >= -50 && targetPower <= 50) {
                     /* Option 1 : targetPower est négatif donc on doit décharger la batterie avec % le plus élevé */
