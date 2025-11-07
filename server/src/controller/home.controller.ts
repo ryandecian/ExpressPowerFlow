@@ -9,6 +9,7 @@ import { getZendureSolarflow2400AC_N2 } from "../database/data_memory/memory.dat
 /* Import des Services : */
 import { handlePowerRange_Equal_0_Service } from "../services/home_controller/handlePowerRange_Equal_0_Service/handlePowerRange_Equal_0.service.js";
 import { handlePowerRange_0_To_50_Service } from "../services/home_controller/handlePowerRange_0_To_50_Service/handlePowerRange_0_To_50.service.js";
+import { handlePowerRange_Neg50_To_0_Service } from "../services/home_controller/handlePowerRange_Neg50_To_0_Service/handlePowerRange_Neg50_To_0.service.js";
 
 /* Import des Types : */
 import type { BodyRequestHomeController_Type } from "../types/services/bodyRequestHomeController.type.js";
@@ -187,33 +188,10 @@ async function home_Controller(): Promise<void> {
             if (targetPower > 0 && targetPower <= 50) {
                 body = handlePowerRange_0_To_50_Service(selectBattery, body, targetPower);
             }
-
-            /* Situation 1 : Le besoin est situé entre -50w et 50w. Dans ce cas on attribue le travail à une seul batterie */
-                if (targetPower >= -50 && targetPower <= 50) {
-                    /* Option 1 : targetPower est négatif donc on doit décharger la batterie avec % le plus élevé */
-                        if (targetPower < 0) {
-                            /* Si les 2 batteries sont disponibles */
-                                if (selectBattery.zendureSolarflow2400AC_N1.status === true && selectBattery.zendureSolarflow2400AC_N2.status === true) {
-                                    /* Si la batterie 1 a un niveau de charge plus élevé que la batterie 2, c'est lui qui va travailler */
-                                    if (selectBattery.zendureSolarflow2400AC_N1.electricLevel >= selectBattery.zendureSolarflow2400AC_N2.electricLevel) {
-                                        body.ZSF2400AC_N1 = requestZSF2400AC_Utils(zendureSolarflow2400AC_N1_Data!.data!.sn, targetPower);
-                                        body.ZSF2400AC_N2 = requestZSF2400AC_Utils(zendureSolarflow2400AC_N2_Data!.data!.sn, 0); /* Commande pour mise en veille */
-                                    } 
-                                    else {
-                                        body.ZSF2400AC_N1 = requestZSF2400AC_Utils(zendureSolarflow2400AC_N1_Data!.data!.sn, 0); /* Commande pour mise en veille */
-                                        body.ZSF2400AC_N2 = requestZSF2400AC_Utils(zendureSolarflow2400AC_N2_Data!.data!.sn, targetPower);
-                                    }
-                                }
-                            /* Si seul la batterie 1 est disponible */
-                                else if (selectBattery.zendureSolarflow2400AC_N1.status === true) {
-                                    body.ZSF2400AC_N1 = requestZSF2400AC_Utils(zendureSolarflow2400AC_N1_Data!.data!.sn, targetPower);
-                                }
-                            /* Si seul la batterie 2 est disponible */
-                                else {
-                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(zendureSolarflow2400AC_N2_Data!.data!.sn, targetPower);
-                                }
-                        }
-                    }
+            /* Décharge */
+            if (targetPower < 0 && targetPower >= -50) {
+                body = handlePowerRange_Neg50_To_0_Service(selectBattery, body, targetPower);
+            }
 
             /* Situation 2 : Le besoin est supérieur à 50w en charge ou en décharge. Dans ce cas on répartie le travail entre les 2 batteries */
                 else {
