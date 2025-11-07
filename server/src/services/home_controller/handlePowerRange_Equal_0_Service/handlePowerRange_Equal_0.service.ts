@@ -1,12 +1,11 @@
 /* Import des Types : */
-import type { BodyRequestChargeZSF2400AC_Type } from "../../../types/bodyRequestZSF2400AC_type/bodyRequestChargeZSF2400AC.type.js";
-import type { BodyRequestDischargeZSF2400AC_Type } from "../../../types/bodyRequestZSF2400AC_type/bodyRequestDischargeZSF2400AC.type.js";
 import type { BodyRequestHomeController_Type } from "../../../types/services/bodyRequestHomeController.type.js";
 import type { SelectBattery_Type } from "../../../types/services/selectBattery.type.js";
 
 /* Import des Utils */
 import { requestZSF2400AC_Utils } from "../../../utils/requestZSF2400AC/requestZSF2400AC.utils.js";
 
+/* targetPower === 0 */
 function handlePowerRange_Equal_0_Service(selectBattery: SelectBattery_Type, body: BodyRequestHomeController_Type, targetPower: number): BodyRequestHomeController_Type {
     /* Si les 2 batteries sont disponibles */
         if (selectBattery.zendureSolarflow2400AC_N1.status === true && selectBattery.zendureSolarflow2400AC_N2.status === true) {
