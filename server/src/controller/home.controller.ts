@@ -7,14 +7,14 @@ import { getZendureSolarflow2400AC_N1 } from "../database/data_memory/memory.dat
 import { getZendureSolarflow2400AC_N2 } from "../database/data_memory/memory.data.js";
 
 /* Import des Types : */
-import type { PostZendureSolarflow2400AC_data_Type } from "../types/dataFetch_type/postZendureSorlarflow2400AC.data.type.js";
 import type { BodyRequestChargeZSF2400AC_Type } from "../types/bodyRequestZSF2400AC_type/bodyRequestChargeZSF2400AC.type.js";
 import type { BodyRequestDischargeZSF2400AC_Type } from "../types/bodyRequestZSF2400AC_type/bodyRequestDischargeZSF2400AC.type.js";
+import type { PostZendureSolarflow2400AC_data_Type } from "../types/dataFetch_type/postZendureSorlarflow2400AC.data.type.js";
+import type { SelectBattery_Type } from "../types/services/selectBattery.type.js";
 
 /* Import des Utils */
 import { requestZSF2400AC_Utils } from "../utils/requestZSF2400AC/requestZSF2400AC.utils.js";
 import { fetch_Utils } from "../utils/fetch.utils.js";
-import { request } from "http";
 
 const ZSF2400AC_1_URL_POST = "http://192.168.1.26/properties/write";
 const ZSF2400AC_2_URL_POST = "http://192.168.1.83/properties/write";
@@ -28,12 +28,14 @@ async function home_Controller(): Promise<void> {
             const zendureSolarflow2400AC_N1_Data = getZendureSolarflow2400AC_N1();
             const zendureSolarflow2400AC_N2_Data = getZendureSolarflow2400AC_N2();
 
-            let selectBattery = {
+            let selectBattery : SelectBattery_Type = {
                 zendureSolarflow2400AC_N1: {
+                    sn: zendureSolarflow2400AC_N1_Data?.data.sn || "",
                     status: true,
                     electricLevel: 0,
                 },
                 zendureSolarflow2400AC_N2: {
+                    sn: zendureSolarflow2400AC_N2_Data?.data.sn || "",
                     status: true,
                     electricLevel: 0,
                 },
