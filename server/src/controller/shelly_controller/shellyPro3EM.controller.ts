@@ -42,7 +42,7 @@ async function shellyPro3EM_Controller(): Promise<void> {
         /* Logique métier 4 : Récupération des données depuis la mémoire pour vérification */
             const data = getShellyPro3EM();
 
-            console.log(`Compteur Shelly Pro 3EM : ${data?.data.act_power} W`);
+            // console.log(`Compteur Shelly Pro 3EM : ${data?.data.act_power} W`);
     }
     catch (error) {
         console.error("Erreur dans shellyPro3EM_Controller :", error);
