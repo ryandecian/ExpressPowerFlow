@@ -9,6 +9,7 @@ import { getZendureSolarflow2400AC_N2 } from "../database/data_memory/memory.dat
 /* Import des Types : */
 import type { BodyRequestChargeZSF2400AC_Type } from "../types/bodyRequestZSF2400AC_type/bodyRequestChargeZSF2400AC.type.js";
 import type { BodyRequestDischargeZSF2400AC_Type } from "../types/bodyRequestZSF2400AC_type/bodyRequestDischargeZSF2400AC.type.js";
+import type { BodyRequestHomeController_Type } from "../types/services/bodyRequestHomeController.type.js";
 import type { PostZendureSolarflow2400AC_data_Type } from "../types/dataFetch_type/postZendureSorlarflow2400AC.data.type.js";
 import type { SelectBattery_Type } from "../types/services/selectBattery.type.js";
 
@@ -171,10 +172,7 @@ async function home_Controller(): Promise<void> {
                 const targetPower = -homePower; /* Inversion de la valeur pour la gestion de la batterie */
 
         /* Logique métier 6 : Préparation  des commandes à envoyer et sélections des batteries et puissance a demander a chacune d'elles */
-            let body: {
-                ZSF2400AC_N1: BodyRequestChargeZSF2400AC_Type | BodyRequestDischargeZSF2400AC_Type | null;
-                ZSF2400AC_N2: BodyRequestChargeZSF2400AC_Type | BodyRequestDischargeZSF2400AC_Type | null;
-            } = {
+            let body: BodyRequestHomeController_Type = {
                 ZSF2400AC_N1: null,
                 ZSF2400AC_N2: null,
             };
