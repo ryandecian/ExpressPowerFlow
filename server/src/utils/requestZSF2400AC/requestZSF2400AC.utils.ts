@@ -67,7 +67,7 @@ function requestZSF2400AC_Utils(sn: string, targetPower: number): BodyRequestCha
         }
 
         /* Option 2 : targetPower est positif donc préparation du requête avec commande de charge batterie */
-        else if (targetPower > 0) {
+        if (targetPower > 0) {
             body = {
                 sn: sn, /* Numéro de série de l'appareil cible */
                 properties: {

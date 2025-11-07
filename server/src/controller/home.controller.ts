@@ -8,10 +8,13 @@ import { getZendureSolarflow2400AC_N2 } from "../database/data_memory/memory.dat
 
 /* Import des Types : */
 import type { PostZendureSolarflow2400AC_data_Type } from "../types/dataFetch_type/postZendureSorlarflow2400AC.data.type.js";
+import type { BodyRequestChargeZSF2400AC_Type } from "../types/bodyRequestZSF2400AC_type/bodyRequestChargeZSF2400AC.type.js";
+import type { BodyRequestDischargeZSF2400AC_Type } from "../types/bodyRequestZSF2400AC_type/bodyRequestDischargeZSF2400AC.type.js";
 
 /* Import des Utils */
 import { requestZSF2400AC_Utils } from "../utils/requestZSF2400AC/requestZSF2400AC.utils.js";
 import { fetch_Utils } from "../utils/fetch.utils.js";
+import { request } from "http";
 
 const ZSF2400AC_1_URL_POST = "http://192.168.1.26/properties/write";
 const ZSF2400AC_2_URL_POST = "http://192.168.1.83/properties/write";
@@ -166,13 +169,153 @@ async function home_Controller(): Promise<void> {
                 const targetPower = -homePower; /* Inversion de la valeur pour la gestion de la batterie */
 
         /* Logique métier 6 : Préparation  des commandes à envoyer et sélections des batteries et puissance a demander a chacune d'elles */
+            let body: {
+                ZSF2400AC_N1: BodyRequestChargeZSF2400AC_Type | BodyRequestDischargeZSF2400AC_Type | null;
+                ZSF2400AC_N2: BodyRequestChargeZSF2400AC_Type | BodyRequestDischargeZSF2400AC_Type | null;
+            } = {
+                ZSF2400AC_N1: null,
+                ZSF2400AC_N2: null,
+            };
             /* Situation 1 : Le besoin est situé entre -50w et 50w. Dans ce cas on attribue le travail à une seul batterie */
                 if (targetPower >= -50 && targetPower <= 50) {
                     /* Option 1 : targetPower est négatif donc on doit décharger la batterie avec % le plus élevé */
                         if (targetPower < 0) {
-                            if (selectBattery.zendureSolarflow2400AC_N1.electricLevel >= selectBattery.zendureSolarflow2400AC_N2.electricLevel) {
-                                body
+                            /* Si les 2 batteries sont disponibles */
+                                if (selectBattery.zendureSolarflow2400AC_N1.status === true && selectBattery.zendureSolarflow2400AC_N2.status === true) {
+                                    /* Si la batterie 1 a un niveau de charge plus élevé que la batterie 2, c'est lui qui va travailler */
+                                    if (selectBattery.zendureSolarflow2400AC_N1.electricLevel >= selectBattery.zendureSolarflow2400AC_N2.electricLevel) {
+                                        body.ZSF2400AC_N1 = requestZSF2400AC_Utils(zendureSolarflow2400AC_N1_Data!.data!.sn, targetPower);
+                                        body.ZSF2400AC_N2 = requestZSF2400AC_Utils(zendureSolarflow2400AC_N2_Data!.data!.sn, 0); /* Commande pour mise en veille */
+                                    } 
+                                    else {
+                                        body.ZSF2400AC_N1 = requestZSF2400AC_Utils(zendureSolarflow2400AC_N1_Data!.data!.sn, 0); /* Commande pour mise en veille */
+                                        body.ZSF2400AC_N2 = requestZSF2400AC_Utils(zendureSolarflow2400AC_N2_Data!.data!.sn, targetPower);
+                                    }
+                                }
+                            /* Si seul la batterie 1 est disponible */
+                                else if (selectBattery.zendureSolarflow2400AC_N1.status === true) {
+                                    body.ZSF2400AC_N1 = requestZSF2400AC_Utils(zendureSolarflow2400AC_N1_Data!.data!.sn, targetPower);
+                                }
+                            /* Si seul la batterie 2 est disponible */
+                                else {
+                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(zendureSolarflow2400AC_N2_Data!.data!.sn, targetPower);
+                                }
                         }
+                    /* Option 2 : targetPower est positif donc on doit charger la batterie avec % le plus bas */
+                        else if (targetPower > 0) {
+                            /* Si les 2 batteries sont disponibles */
+                                if (selectBattery.zendureSolarflow2400AC_N1.status === true && selectBattery.zendureSolarflow2400AC_N2.status === true) {
+                                    /* Si la batterie 1 a un niveau de charge plus élevé que la batterie 2, c'est lui qui va travailler */
+                                        if (selectBattery.zendureSolarflow2400AC_N1.electricLevel >= selectBattery.zendureSolarflow2400AC_N2.electricLevel) {
+                                            body.ZSF2400AC_N1 = requestZSF2400AC_Utils(zendureSolarflow2400AC_N1_Data!.data!.sn, targetPower);
+                                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(zendureSolarflow2400AC_N2_Data!.data!.sn, 0); /* Commande pour mise en veille */
+                                        }
+                                        else {
+                                            body.ZSF2400AC_N1 = requestZSF2400AC_Utils(zendureSolarflow2400AC_N1_Data!.data!.sn, 0); /* Commande pour mise en veille */
+                                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(zendureSolarflow2400AC_N2_Data!.data!.sn, targetPower);
+                                        }
+                                }
+                            /* Si seul la batterie 1 est disponible */
+                                else if (selectBattery.zendureSolarflow2400AC_N1.status === true) {
+                                    body.ZSF2400AC_N1 = requestZSF2400AC_Utils(zendureSolarflow2400AC_N1_Data!.data!.sn, targetPower);
+                                }
+                            /* Si seul la batterie 2 est disponible */
+                                else {
+                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(zendureSolarflow2400AC_N2_Data!.data!.sn, targetPower);
+                                }
+                        }
+                    /* Option 3 : targetPower est === 0 */
+                        else {
+                            /* Si les 2 batteries sont disponibles */
+                                if (selectBattery.zendureSolarflow2400AC_N1.status === true && selectBattery.zendureSolarflow2400AC_N2.status === true) {
+                                    body.ZSF2400AC_N1 = requestZSF2400AC_Utils(zendureSolarflow2400AC_N1_Data!.data!.sn, 0); /* Commande pour mise en veille */
+                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(zendureSolarflow2400AC_N2_Data!.data!.sn, 0); /* Commande pour mise en veille */
+                                }
+                            /* Si seul la batterie 1 est disponible */
+                                else if (selectBattery.zendureSolarflow2400AC_N1.status === true) {
+                                    body.ZSF2400AC_N1 = requestZSF2400AC_Utils(zendureSolarflow2400AC_N1_Data!.data!.sn, 0); /* Commande pour mise en veille */
+                                }
+                            /* Si seul la batterie 2 est disponible */
+                                else {
+                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(zendureSolarflow2400AC_N2_Data!.data!.sn, 0); /* Commande pour mise en veille */
+                                }
+                        }
+                }
+            /* Situation 2 : Le besoin est supérieur à 50w en charge ou en décharge. Dans ce cas on répartie le travail entre les 2 batteries */
+                else {
+                    /* Option 1 : targetPower est négatif donc on doit décharger les batteries en foction de la différence de % */
+                        if (targetPower < -50) {
+                            /* Si les 2 batteries sont disponibles */
+                                if (selectBattery.zendureSolarflow2400AC_N1.status === true && selectBattery.zendureSolarflow2400AC_N2.status === true) {
+                                    /* Si les batteries ont des niveaux de charge identique */
+                                        if (selectBattery.zendureSolarflow2400AC_N1.electricLevel === selectBattery.zendureSolarflow2400AC_N2.electricLevel) {
+                                            body.ZSF2400AC_N1 = requestZSF2400AC_Utils(zendureSolarflow2400AC_N1_Data!.data!.sn, targetPower * 0.5);
+                                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(zendureSolarflow2400AC_N2_Data!.data!.sn, targetPower * 0.5);
+                                        }
+                                    /* Si la batterie 1 est plus chargée que la batterie 2, on décharge la batterie 1 plus vite que la batterie 2 */
+                                        else if (selectBattery.zendureSolarflow2400AC_N1.electricLevel > selectBattery.zendureSolarflow2400AC_N2.electricLevel) {
+                                            const deltaElectricLevel: number = selectBattery.zendureSolarflow2400AC_N1.electricLevel - selectBattery.zendureSolarflow2400AC_N2.electricLevel;
+                                            
+                                            /* Si la différence de % est de 5 ou plus la batterie prend tout le travail */
+                                                if (deltaElectricLevel >= 5) {
+                                                    body.ZSF2400AC_N1 = requestZSF2400AC_Utils(zendureSolarflow2400AC_N1_Data!.data!.sn, targetPower);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(zendureSolarflow2400AC_N2_Data!.data!.sn, 0); /* Commande pour mise en veille */
+                                                }
+                                            /* Si la différence de 4% : N1 = 90% et N2 = 10% */
+                                                else if (deltaElectricLevel === 4) {
+                                                    body.ZSF2400AC_N1 = requestZSF2400AC_Utils(zendureSolarflow2400AC_N1_Data!.data!.sn, targetPower * 0.9);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(zendureSolarflow2400AC_N2_Data!.data!.sn, targetPower * 0.1);
+                                                }
+                                            /* Si la différence de 3% : N1 = 80% et N2 = 20% */
+                                                else if (deltaElectricLevel === 3) {
+                                                    body.ZSF2400AC_N1 = requestZSF2400AC_Utils(zendureSolarflow2400AC_N1_Data!.data!.sn, targetPower * 0.8);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(zendureSolarflow2400AC_N2_Data!.data!.sn, targetPower * 0.2);
+                                                }
+                                            /* Si la différence de 2% : N1 = 70% et N2 = 30% */
+                                                else if (deltaElectricLevel === 2) {
+                                                    body.ZSF2400AC_N1 = requestZSF2400AC_Utils(zendureSolarflow2400AC_N1_Data!.data!.sn, targetPower * 0.7);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(zendureSolarflow2400AC_N2_Data!.data!.sn, targetPower * 0.3);
+                                                }
+                                            /* Si la différence de 1% : N1 = 60% et N2 = 40% */
+                                                else {
+                                                    body.ZSF2400AC_N1 = requestZSF2400AC_Utils(zendureSolarflow2400AC_N1_Data!.data!.sn, targetPower * 0.6);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(zendureSolarflow2400AC_N2_Data!.data!.sn, targetPower * 0.4);
+                                                }
+                                        }
+                                    /* Si la batterie 2 est plus chargée que la batterie 1, on décharge la batterie 2 plus vite que la batterie 1 */
+                                        else {
+                                            const deltaElectricLevel: number = selectBattery.zendureSolarflow2400AC_N2.electricLevel - selectBattery.zendureSolarflow2400AC_N1.electricLevel;
+                                            
+                                            /* Si la différence de % est de 5 ou plus la batterie prend tout le travail */
+                                                if (deltaElectricLevel >= 5) {
+                                                    body.ZSF2400AC_N1 = requestZSF2400AC_Utils(zendureSolarflow2400AC_N1_Data!.data!.sn, 0); /* Commande pour mise en veille */
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(zendureSolarflow2400AC_N2_Data!.data!.sn, targetPower);
+                                                }
+                                            /* Si la différence de 4% : N2 = 90% et N1 = 10% */
+                                                else if (deltaElectricLevel === 4) {
+                                                    body.ZSF2400AC_N1 = requestZSF2400AC_Utils(zendureSolarflow2400AC_N1_Data!.data!.sn, targetPower * 0.1);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(zendureSolarflow2400AC_N2_Data!.data!.sn, targetPower * 0.9);
+                                                }
+                                            /* Si la différence de 3% : N2 = 80% et N1 = 20% */
+                                                else if (deltaElectricLevel === 3) {
+                                                    body.ZSF2400AC_N1 = requestZSF2400AC_Utils(zendureSolarflow2400AC_N1_Data!.data!.sn, targetPower * 0.2);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(zendureSolarflow2400AC_N2_Data!.data!.sn, targetPower * 0.8);
+                                                }
+                                            /* Si la différence de 2% : N2 = 70% et N1 = 30% */
+                                                else if (deltaElectricLevel === 2) {
+                                                    body.ZSF2400AC_N1 = requestZSF2400AC_Utils(zendureSolarflow2400AC_N1_Data!.data!.sn, targetPower * 0.3);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(zendureSolarflow2400AC_N2_Data!.data!.sn, targetPower * 0.7);
+                                                }
+                                            /* Si la différence de 1% : N2 = 60% et N1 = 40% */
+                                                else {
+                                                    body.ZSF2400AC_N1 = requestZSF2400AC_Utils(zendureSolarflow2400AC_N1_Data!.data!.sn, targetPower * 0.4);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(zendureSolarflow2400AC_N2_Data!.data!.sn, targetPower * 0.6);
+                                                }
+                                        }
+
+                                }
+                        }
+                    /* Option 2 : targetPower est positif on doit donc charger les batteries en fonctions de la différence de % */
                 }
 
 
