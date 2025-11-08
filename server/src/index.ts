@@ -12,7 +12,7 @@ import cron from "node-cron";
 /* Import des Routers */
 import router from "./router/router.js";
 
-import { shellyPower_Controller } from "./controller/shelly_controller/shellyPower.controller.js";
+import { shellyPro3EM_Controller } from "./controller/shelly_controller/shellyPro3EM.controller.js";
 import { shellyPriseZSF2400ACN1_Controller } from "./controller/shelly_controller/shellyPriseZSF2400ACN1.controller.js";
 import { shellyPriseZSF2400ACN2_Controller } from "./controller/shelly_controller/shellyPriseZSF2400ACN2.controller.js";
 import { zendureSolarflow2400ACN1_Controller } from "./controller/zendure_controller/zendureSolarflow2400ACN1.controller.js";
@@ -43,19 +43,19 @@ app.get("/", (req: Request, res: Response) => {
 })
 
 /* Appel de controller automatique */
-    /* Compteur Shelly 3EM */
-        setInterval(shellyPower_Controller, 1000);
+    /* Compteur Shelly Pro 3EM */
+        setInterval(shellyPro3EM_Controller, 1000);
     /* Prise Shelly Plug s Gen 3 raccordée aux batteries Zendure */
         setInterval(shellyPriseZSF2400ACN1_Controller, 1000);
         setInterval(shellyPriseZSF2400ACN2_Controller, 1000);
     /* Batterie Zendure Solarflow 2400AC */
         setInterval(zendureSolarflow2400ACN1_Controller, 1000);
     /* Logique métier centrale */
-        cron.schedule(
-            "*/1 * 0-14,17-23 * * *",
-            home_Controller,
-            { timezone: "Europe/Paris" }
-        );
+        // cron.schedule(
+        //     "*/1 * 0-14,17-23 * * *",
+        //     home_Controller,
+        //     { timezone: "Europe/Paris" }
+        // );
 
 /**
  * Gestion des routes innexistante
