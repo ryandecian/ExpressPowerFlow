@@ -291,7 +291,7 @@ const refPowerZSF2400AC = {
     "-19": 3,
     "-20": 2,
     "-21": 1,
-    "-22": 0, /* ne pas utiliser */
+    "-22": -1, /* Valeur qu'on ne peux pas atteindre avec 0 donc on lui retire 1w */
     "-23": -1,
     "-24": -2,
     "-25": -3,

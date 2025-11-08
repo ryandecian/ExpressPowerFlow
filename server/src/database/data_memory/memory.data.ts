@@ -1,16 +1,17 @@
 /* Import des Types (RAW, tels que renvoyés par tes devices) : */
 import type { Shelly3EM_data_memory_Type } from "../../types/dataMemory_type/shelly3EM.data.memory.type.js";
+import type { ShellyPro3EM_data_memory_Type } from "../../types/dataMemory_type/shellyPro3EM.data.memory.type.js";
 import type { ShellyPlugSGen3_data_memory_Type } from "../../types/dataMemory_type/shellyPlugSGen3.data.memory.type.js";
 import type { ZendureSolarflow2400AC_data_memory_Type } from "../../types/dataMemory_type/zendureSolarflow2400AC.data.memory.type.js";
 
 /* -------------------------------
    Snapshots mémoires uniformisés
    ------------------------------- */
-type Shelly3EM_Snapshot = {
+type ShellyPro3EM_Snapshot = {
     ts: number;                                      // Date.now() (ms)
-    source: "Compteur Shelly 3EM";
+    source: "Compteur Shelly Pro 3EM";
     status: boolean;
-    data: Shelly3EM_data_memory_Type;                // payload RAW complet Shelly
+    data: ShellyPro3EM_data_memory_Type;                // payload RAW complet Shelly
 };
 
 type ShellyPlugSGen3_Snapshot = {
@@ -29,7 +30,7 @@ type ZendureSolarflow2400AC_Snapshot = {
 
 /* Etat global (singleton via cache des modules) */
 type DataState = {
-    shelly3EM?: Shelly3EM_Snapshot;
+    shellyPro3EM?: ShellyPro3EM_Snapshot;
     shellyPrise_BatterieZSF2400AC_N1?: ShellyPlugSGen3_Snapshot;
     shellyPrise_BatterieZSF2400AC_N2?: ShellyPlugSGen3_Snapshot;
     zendureSolarflow2400AC_N1?: ZendureSolarflow2400AC_Snapshot;
@@ -40,10 +41,10 @@ const stateMemory: DataState = {};
 
 /* ------------- Setters (Écriture) ------------- */
 /** Enregistre le dernier snapshot Shelly (RAW + métadonnées uniformes). */
-function setShelly3EM(raw: Shelly3EM_data_memory_Type, status: boolean): void {
-    stateMemory.shelly3EM = {
+function setShellyPro3EM(raw: ShellyPro3EM_data_memory_Type, status: boolean): void {
+    stateMemory.shellyPro3EM = {
         ts: Date.now(),
-        source: "Compteur Shelly 3EM",
+        source: "Compteur Shelly Pro 3EM",
         status,
         data: { ...raw },
     };
@@ -98,9 +99,9 @@ function setZendureSolarflow2400AC_N2(raw: ZendureSolarflow2400AC_data_memory_Ty
 }
 
 /* ------------- Status  ------------- */
-function statusShelly3EM(status: boolean): void {
-    if (stateMemory.shelly3EM) {
-        stateMemory.shelly3EM.status = status;
+function statusShellyPro3EM(status: boolean): void {
+    if (stateMemory.shellyPro3EM) {
+        stateMemory.shellyPro3EM.status = status;
     }
 }
 
@@ -129,11 +130,11 @@ function statusZendureSolarflow2400AC_N2(status: boolean): void {
 }
 
 /* ------------- Getters (copies immuables) ------------- */
-function getShelly3EM(): Shelly3EM_Snapshot | undefined {
-    return stateMemory.shelly3EM
+function getShellyPro3EM(): ShellyPro3EM_Snapshot | undefined {
+    return stateMemory.shellyPro3EM
         ? {
-              ...stateMemory.shelly3EM,
-              data: { ...stateMemory.shelly3EM.data },
+              ...stateMemory.shellyPro3EM,
+              data: { ...stateMemory.shellyPro3EM.data },
           }
         : undefined;
 }
@@ -182,7 +183,7 @@ function ageMsOf(key: keyof DataState): number | undefined {
 
 function toJSON(): DataState {
     return {
-        shelly3EM: getShelly3EM(),
+        shellyPro3EM: getShellyPro3EM(),
         shellyPrise_BatterieZSF2400AC_N1: getShellyPrise_BatterieZSF2400AC_N1(),
         shellyPrise_BatterieZSF2400AC_N2: getShellyPrise_BatterieZSF2400AC_N2(),
         zendureSolarflow2400AC_N1: getZendureSolarflow2400AC_N1(),
@@ -191,7 +192,7 @@ function toJSON(): DataState {
 }
 
 function resetStore(): void {
-    stateMemory.shelly3EM = undefined;
+    stateMemory.shellyPro3EM = undefined;
     stateMemory.shellyPrise_BatterieZSF2400AC_N1 = undefined;
     stateMemory.shellyPrise_BatterieZSF2400AC_N2 = undefined;
     stateMemory.zendureSolarflow2400AC_N1 = undefined;
@@ -201,19 +202,19 @@ function resetStore(): void {
 /* ------------- Exports ------------- */
 export {
     // setters
-    setShelly3EM,
+    setShellyPro3EM,
     setShellyPrise_BatterieZSF2400AC_N1,
     setShellyPrise_BatterieZSF2400AC_N2,
     setZendureSolarflow2400AC_N1,
     setZendureSolarflow2400AC_N2,
     // status setters
-    statusShelly3EM,
+    statusShellyPro3EM,
     statusShellyPrise_BatterieZSF2400AC_N1,
     statusShellyPrise_BatterieZSF2400AC_N2,
     statusZendureSolarflow2400AC_N1,
     statusZendureSolarflow2400AC_N2,
     // getters
-    getShelly3EM,
+    getShellyPro3EM,
     getShellyPrise_BatterieZSF2400AC_N1,
     getShellyPrise_BatterieZSF2400AC_N2,
     getZendureSolarflow2400AC_N1,
@@ -226,7 +227,7 @@ export {
 
 export type {
     DataState,
-    Shelly3EM_Snapshot,
+    ShellyPro3EM_Snapshot,
     ShellyPlugSGen3_Snapshot,
     ZendureSolarflow2400AC_Snapshot,
 };
