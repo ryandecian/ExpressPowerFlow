@@ -5,8 +5,8 @@ import type { SelectBattery_Type } from "../../types/services/selectBattery.type
 /* Import des Utils */
 import { requestZSF2400AC_Utils } from "../../utils/requestZSF2400AC/requestZSF2400AC.utils.js";
 
-/* targetPower compris entre 600 et 1200w de charge */
-function handlePowerRange_600_To_1200_Service(selectBattery: SelectBattery_Type, body: BodyRequestHomeController_Type, targetPower: number): BodyRequestHomeController_Type {
+/* targetPower compris entre 600 et 1200w de décharge */
+function handlePowerRange_Neg600_To_Neg1200_Service(selectBattery: SelectBattery_Type, body: BodyRequestHomeController_Type, targetPower: number): BodyRequestHomeController_Type {
     /* Si les 2 batteries sont disponibles */
         if (selectBattery.zendureSolarflow2400AC_N1.status === true && selectBattery.zendureSolarflow2400AC_N2.status === true) {
             /* Cas 1 : Les 2 batteries ont des niveaux de charge identiques */
@@ -14,11 +14,11 @@ function handlePowerRange_600_To_1200_Service(selectBattery: SelectBattery_Type,
                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, targetPower * 0.5);
                     body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower * 0.5 + 5);
                 }
-            /* Cas numéro 2 : La batterie N1 à un niveau de charge moins élevé que la batterie N2 */
-                else if (selectBattery.zendureSolarflow2400AC_N1.electricLevel < selectBattery.zendureSolarflow2400AC_N2.electricLevel) {
-                    const deltaElectricLevel: number = selectBattery.zendureSolarflow2400AC_N2.electricLevel - selectBattery.zendureSolarflow2400AC_N1.electricLevel;
+            /* Cas numéro 2 : La batterie N1 à un niveau de charge plus élevé que la batterie N2 */
+                else if (selectBattery.zendureSolarflow2400AC_N1.electricLevel > selectBattery.zendureSolarflow2400AC_N2.electricLevel) {
+                    const deltaElectricLevel: number = selectBattery.zendureSolarflow2400AC_N1.electricLevel - selectBattery.zendureSolarflow2400AC_N2.electricLevel;
 
-                    /* Si la différence de % est de 5 ou plus sur la batterie N1 on répartie le travail avec max 600w de charge pour N1 */
+                    /* Si la différence de % est de 5 ou plus la batterie N1 on répartie le travail avec max 600w de charge pour N1 */
                         if (deltaElectricLevel >= 5) {
                             body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, 600);
                             body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower - 600 + 5);
@@ -167,4 +167,4 @@ function handlePowerRange_600_To_1200_Service(selectBattery: SelectBattery_Type,
     return body;
 }
 
-export { handlePowerRange_600_To_1200_Service };
+export { handlePowerRange_Neg600_To_Neg1200_Service };
