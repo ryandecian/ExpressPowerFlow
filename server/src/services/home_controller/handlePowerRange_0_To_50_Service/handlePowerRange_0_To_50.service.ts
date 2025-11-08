@@ -17,7 +17,7 @@ function handlePowerRange_0_To_50_Service(selectBattery: SelectBattery_Type, bod
             /* Si la batterie N2 a un niveau de charge plus élevé que la batterie N1, c'est lui qui va travailler */
                 else {
                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, 0); /* Commande pour mise en veille */
-                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower - 5);
+                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower + 5);
                 }
         }
     /* Si seul la batterie N1 est disponible */
@@ -26,7 +26,7 @@ function handlePowerRange_0_To_50_Service(selectBattery: SelectBattery_Type, bod
         }
     /* Si seul la batterie N2 est disponible */
         else {
-            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower - 5);
+            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower + 5);
         }
     
     return body;
