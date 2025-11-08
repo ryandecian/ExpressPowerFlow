@@ -10,9 +10,10 @@ import { getZendureSolarflow2400AC_N2 } from "../database/data_memory/memory.dat
 import { handlePowerRange_Equal_0_Service } from "../services/home_controller/handlePowerRange_Equal_0.service.js";
 import { handlePowerRange_0_To_50_Service } from "../services/home_controller/handlePowerRange_0_To_50.service.js";
 import { handlePowerRange_50_To_600_Service } from "../services/home_controller/handlePowerRange_50_To_600.service.js";
-import { handlePowerRange_Neg50_To_0_Service } from "../services/handlePowerRange_Neg50_To_0.service.js";
-import { handlePowerRange_Neg50_To_Neg600_Service } from "../services/home_controller/handlePowerRange_Neg50_To_Neg600.service.js";
 import { handlePowerRange_600_To_1200_Service } from "../services/home_controller/handlePowerRange_600_To_1200.service.js";
+import { handlePowerRange_Neg50_To_0_Service } from "../services/home_controller/handlePowerRange_Neg50_To_0.service.js";
+import { handlePowerRange_Neg50_To_Neg600_Service } from "../services/home_controller/handlePowerRange_Neg50_To_Neg600.service.js";
+import { handlePowerRange_Neg600_To_Neg1200_Service } from "../services/home_controller/handlePowerRange_Neg600_To_Neg1200.service.js";
 
 /* Import des Types : */
 import type { BodyRequestHomeController_Type } from "../types/services/bodyRequestHomeController.type.js";
@@ -203,6 +204,9 @@ async function home_Controller(): Promise<void> {
             }
             if (targetPower < -50 && targetPower >= -600) {
                 body = handlePowerRange_Neg50_To_Neg600_Service(selectBattery, body, targetPower);
+            }
+            if (targetPower < -600 && targetPower >= -1200) {
+                body = handlePowerRange_Neg600_To_Neg1200_Service(selectBattery, body, targetPower);
             }
 
 
