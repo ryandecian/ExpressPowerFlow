@@ -15,6 +15,7 @@ import { handlePowerRange_Albove_1200_Service } from "../services/home_controlle
 import { handlePowerRange_Neg50_To_0_Service } from "../services/home_controller/handlePowerRange_Neg50_To_0.service.js";
 import { handlePowerRange_Neg50_To_Neg600_Service } from "../services/home_controller/handlePowerRange_Neg50_To_Neg600.service.js";
 import { handlePowerRange_Neg600_To_Neg1200_Service } from "../services/home_controller/handlePowerRange_Neg600_To_Neg1200.service.js";
+import { handlePowerRange_Below_Neg1200_Service } from "../services/home_controller/handlePowerRange_Below_Neg1200.service.js";
 
 /* Import des Types : */
 import type { BodyRequestHomeController_Type } from "../types/services/bodyRequestHomeController.type.js";
@@ -211,6 +212,9 @@ async function home_Controller(): Promise<void> {
             }
             if (targetPower < -600 && targetPower >= -1200) {
                 body = handlePowerRange_Neg600_To_Neg1200_Service(selectBattery, body, targetPower);
+            }
+            if (targetPower < -1200) {
+                body = handlePowerRange_Below_Neg1200_Service(selectBattery, body, targetPower);
             }
 
 
