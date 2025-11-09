@@ -1,9 +1,9 @@
 /* Import des Types : */
-import type { BodyRequestHomeController_Type } from "../../../types/services/bodyRequestHomeController.type.js";
-import type { SelectBattery_Type } from "../../../types/services/selectBattery.type.js";
+import type { BodyRequestHomeController_Type } from "../../types/services/bodyRequestHomeController.type.js";
+import type { SelectBattery_Type } from "../../types/services/selectBattery.type.js";
 
 /* Import des Utils */
-import { requestZSF2400AC_Utils } from "../../../utils/requestZSF2400AC/requestZSF2400AC.utils.js";
+import { requestZSF2400AC_Utils } from "../../utils/requestZSF2400AC/requestZSF2400AC.utils.js";
 
 /* targetPower === 0 */
 function handlePowerRange_Equal_0_Service(selectBattery: SelectBattery_Type, body: BodyRequestHomeController_Type, targetPower: number): BodyRequestHomeController_Type {
