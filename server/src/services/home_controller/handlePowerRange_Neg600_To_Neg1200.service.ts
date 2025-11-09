@@ -23,7 +23,7 @@ function handlePowerRange_Neg600_To_Neg1200_Service(selectBattery: SelectBattery
                             body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, 600);
                             body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower - 600 + 5);
                         }
-                    /* Si la différence de 4% : N1 = 90% et N2 = 10% dans la limite des 600w pour N1*/
+                    /* Si la différence de 4% : N1 = 90% et N2 = 10% dans la limite des 600w pour N1 */
                         else if (deltaElectricLevel === 4) {
                             const deltaTargetPower = targetPower * 0.9;
 
