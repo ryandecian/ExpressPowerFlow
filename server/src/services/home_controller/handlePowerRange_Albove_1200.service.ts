@@ -688,6 +688,14 @@ function handlePowerRange_Albove_1200_Service(selectBattery: SelectBattery_Type,
                         }
                 }
         }
+    /* Si seul la batterie N1 est disponible */
+        else if (selectBattery.zendureSolarflow2400AC_N1.status === true) {
+            body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, targetPower);
+        }
+    /* Si seul la batterie N2 est disponible */
+        else {
+            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower + 5);
+        }
 
     return body;
 }
