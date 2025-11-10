@@ -1,7 +1,11 @@
 /* Import des Datas */
+import { get } from "http";
 import { getZendureSolarflow2400AC_N1 } from "../../database/data_memory/memory.data.js";
 import { setZendureSolarflow2400AC_N1 } from "../../database/data_memory/memory.data.js";
 import { statusZendureSolarflow2400AC_N1 } from "../../database/data_memory/memory.data.js";
+
+/* Import des Services : */
+import { statusAC_dataOn_ZSF2400AC_N1_Service } from "../../services/zendureSolarflow2400ACN1_controller/statusAC_dataOn_ZSF2400AC_N1.service.js";
 
 /* Import des Types : */
 import type { GetZendureSolarflow2400AC_data_Type } from "../../types/dataFetch_type/getZendureSolarflow2400AC.data.type.js";
@@ -62,36 +66,18 @@ async function zendureSolarflow2400ACN1_Controller(): Promise<void> {
             }
 
         /* Logique métier 3 : Analyse des données et vérification si la batterie est oppérationnel */
-            let status = true;
-            
-            /* Vérification 1 : La batterie détecte il le courant AC ? */
-                /* Vérification si le courant AC n'est pas détecté */
-                    if (dataZendure.properties.gridState === 0) {
-                        /* On vérifie le status précédent avant de loger */
-                            if (getZendureSolarflow2400AC_N1()?.data?.properties?.gridState === 0) {
-                                status = false;
-                            }
-                            else if (getZendureSolarflow2400AC_N1()?.data?.properties?.gridState === 1) {
-                                console.warn("zendureSolarflow2400ACN1_Controller - Le courant AC n'est pas détecté par la batterie Zendure Solarflow 2400 AC N1.");
-                                status = false;
-                            }
-                            else {
-                                console.error("zendureSolarflow2400ACN1_Controller - Mise en sécurité : Le server n'arrive pas à déterminer si la batterie Zendure Solarflow 2400 AC N1 détecte le courant AC.");
-                                status = false;
-                            }
-                    }
-                /* Si le courant AC est détecté */
-                    else {
-                        /* On vérifie le status précédent avant de loger */
-                            if (getZendureSolarflow2400AC_N1()?.data?.properties?.gridState === 1) {
-                                status = true;
-                            }
-                            else if (getZendureSolarflow2400AC_N1()?.data?.properties?.gridState === 0) {
-                                console.info("zendureSolarflow2400ACN1_Controller - Rétablissement : Le courant AC est de nouveau détecté par la batterie Zendure Solarflow 2400 AC N1.");
-                                status = true;
-                            }
-                    }
-            /* Vérification 2 : La batterie est elle synchronisée au courant AC ? */
+            let status: boolean = true;
+
+            /* Si les données en mémoire existent et ne sont pas undefined */
+                if (getZendureSolarflow2400AC_N1() !== undefined) {
+                    status = statusAC_dataOn_ZSF2400AC_N1_Service(dataZendure);
+                }
+            /* Si les données en mémoire n'existent pas ou sont undefined */
+                else {
+                    console.warn("zendureSolarflow2400ACN1_Controller : Première récupération des données de la batterie Zendure Solarflow 2400 AC N1, le status est mis par défaut à true.");
+                    status = true;
+                }
+
 
         
         /* Logique métier 3 : Enregistrement des données dans la mémoire */
