@@ -27,7 +27,7 @@ type GetZendureSolarflow2400AC_data_Type = {
         gridOffPower: number, /* Puissance fournie en mode hors-réseau (W) */
         dcStatus: number, /* Statut du circuit DC (1 = actif) */
         pvStatus: number, /* Statut de la production PV (0 = inactif) */
-        acStatus: number, /* Statut du module AC (1 = en marche) */
+        acStatus: number, /* ⚠️ Statut du module AC branché ou non ? (1 = en marche, 0 = déconnecté) */
         dataReady: number, /* Données prêtes à être lues (1 = oui) */
         gridState: number, /* ⚠️ État du réseau détecté (1 = présent) */
         BatVolt: number, /* ⚠️ Tension batterie (mV → 4971 ≈ 49,71V) */
