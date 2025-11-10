@@ -13,6 +13,7 @@ import type { ZendureSolarflow2400AC_data_memory_Type } from "../../types/dataMe
 
 /* Import des Utils */
 import { fetch_Utils } from "../../utils/fetch.utils.js";
+import { formulaTmp_ZSF2400AC } from "../../utils/temperature/formulaTmp_ZSF2400AC.utils.js";
 
 const ZENDURE_URL = "http://192.168.1.26/properties/report"
 
@@ -39,7 +40,7 @@ async function zendureSolarflow2400ACN1_Controller(): Promise<void> {
                     packInputPower: dataZendure.properties.packInputPower,
                     outputPackPower: dataZendure.properties.outputPackPower,
                     electricLevel: dataZendure.properties.electricLevel,
-                    hyperTmp: dataZendure.properties.hyperTmp,
+                    hyperTmp: formulaTmp_ZSF2400AC(dataZendure.properties.hyperTmp),
                     acStatus: dataZendure.properties.acStatus,
                     gridState: dataZendure.properties.gridState,
                     BatVolt: dataZendure.properties.BatVolt,
