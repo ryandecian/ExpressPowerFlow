@@ -1,11 +1,11 @@
 /* Import des Datas */
-import { get } from "http";
 import { getZendureSolarflow2400AC_N1 } from "../../database/data_memory/memory.data.js";
 import { setZendureSolarflow2400AC_N1 } from "../../database/data_memory/memory.data.js";
 import { statusZendureSolarflow2400AC_N1 } from "../../database/data_memory/memory.data.js";
 
 /* Import des Services : */
 import { statusAC_dataOn_ZSF2400AC_N1_Service } from "../../services/zendureSolarflow2400ACN1_controller/statusAC_dataOn_ZSF2400AC_N1.service.js";
+import { statusAC_dataOff_ZSF2400AC_N1_Service } from "../../services/zendureSolarflow2400ACN1_controller/statusAC_dataOff_ZSF2400AC.service.js";
 
 /* Import des Types : */
 import type { GetZendureSolarflow2400AC_data_Type } from "../../types/dataFetch_type/getZendureSolarflow2400AC.data.type.js";
@@ -74,8 +74,7 @@ async function zendureSolarflow2400ACN1_Controller(): Promise<void> {
                 }
             /* Si les données en mémoire n'existent pas ou sont undefined */
                 else {
-                    console.warn("zendureSolarflow2400ACN1_Controller : Première récupération des données de la batterie Zendure Solarflow 2400 AC N1, le status est mis par défaut à true.");
-                    status = true;
+                    status = statusAC_dataOff_ZSF2400AC_N1_Service(dataZendure);
                 }
 
 

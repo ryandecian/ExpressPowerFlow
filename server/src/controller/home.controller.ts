@@ -23,7 +23,6 @@ import type { PostZendureSolarflow2400AC_data_Type } from "../types/dataFetch_ty
 import type { SelectBattery_Type } from "../types/services/selectBattery.type.js";
 
 /* Import des Utils */
-import { requestZSF2400AC_Utils } from "../utils/requestZSF2400AC/requestZSF2400AC.utils.js";
 import { fetch_Utils } from "../utils/fetch.utils.js";
 
 const ZSF2400AC_1_URL_POST = "http://192.168.1.26/properties/write";
