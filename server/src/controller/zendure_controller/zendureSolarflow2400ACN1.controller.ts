@@ -5,7 +5,7 @@ import { statusZendureSolarflow2400AC_N1 } from "../../database/data_memory/memo
 
 /* Import des Services : */
 import { statusAC_dataOn_ZSF2400AC_N1_Service } from "../../services/zendureSolarflow2400ACN1_controller/statusAC_dataOn_ZSF2400AC_N1.service.js";
-import { statusAC_dataOff_ZSF2400AC_N1_Service } from "../../services/zendureSolarflow2400ACN1_controller/statusAC_dataOff_ZSF2400AC.service.js";
+import { statusAC_dataOff_ZSF2400AC_N1_Service } from "../../services/zendureSolarflow2400ACN1_controller/statusAC_dataOff_ZSF2400AC_N1.service.js";
 
 /* Import des Types : */
 import type { GetZendureSolarflow2400AC_data_Type } from "../../types/dataFetch_type/getZendureSolarflow2400AC.data.type.js";
