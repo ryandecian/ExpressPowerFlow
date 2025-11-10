@@ -79,11 +79,11 @@ async function zendureSolarflow2400ACN1_Controller(): Promise<void> {
 
 
         
-        /* Logique métier 3 : Enregistrement des données dans la mémoire */
+        /* Logique métier 4 : Enregistrement des données dans la mémoire */
             setZendureSolarflow2400AC_N1(dataSelected, status);
 
-        /* Logique métier 4 : Récupération des données depuis la mémoire pour vérification */
-            const data = getZendureSolarflow2400AC_N1();
+        /* Logique métier 5 : Récupération des données depuis la mémoire pour vérification */
+            // const data = getZendureSolarflow2400AC_N1();
 
             // console.log(`Batterie Zendure entrée: ${data?.data.properties?.outputPackPower} W, sortie: ${data?.data.properties?.packInputPower} W`);
     }
