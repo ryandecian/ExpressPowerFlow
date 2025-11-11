@@ -18,7 +18,7 @@ type DataState = {
 const stateMemory: DataState = {};
 
 /* ------------- Setters (Écriture) ------------- */
-function setLastRequest_ZSF2400AC(body: LastRequest_ZSF2400AC_Snapshot): void {
+function setLastRequest_ZSF2400AC_Memory(body: LastRequest_ZSF2400AC_Snapshot): void {
     stateMemory.lastRequest_ZSF2400AC = {
         ZSF2400AC_N1: body.ZSF2400AC_N1,
         ZSF2400AC_N2: body.ZSF2400AC_N2,
@@ -26,7 +26,7 @@ function setLastRequest_ZSF2400AC(body: LastRequest_ZSF2400AC_Snapshot): void {
 }
 
 /* ------------- Getters (copies immuables) ------------- */
-function getLastRequest_ZSF2400AC(): LastRequest_ZSF2400AC_Snapshot {
+function getLastRequest_ZSF2400AC_Memory(): LastRequest_ZSF2400AC_Snapshot {
     return structuredClone(
         stateMemory.lastRequest_ZSF2400AC ?? {
             ZSF2400AC_N1: null,
@@ -38,7 +38,7 @@ function getLastRequest_ZSF2400AC(): LastRequest_ZSF2400AC_Snapshot {
 /* ---------------- Utils ---------------- */
 function toJSON(): DataState {
     return {
-        lastRequest_ZSF2400AC: getLastRequest_ZSF2400AC(),
+        lastRequest_ZSF2400AC: getLastRequest_ZSF2400AC_Memory(),
     };
 }
 
@@ -49,9 +49,9 @@ function resetStore(): void {
 /* ------------- Exports ------------- */
 export {
     /* setters */
-    setLastRequest_ZSF2400AC,
+    setLastRequest_ZSF2400AC_Memory,
     /* getters */
-    getLastRequest_ZSF2400AC,
+    getLastRequest_ZSF2400AC_Memory,
     /* utils */
     toJSON,
     resetStore,

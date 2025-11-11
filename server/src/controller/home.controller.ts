@@ -5,6 +5,8 @@ import { getShellyPrise_BatterieZSF2400AC_N1 } from "../database/data_memory/mem
 import { getShellyPrise_BatterieZSF2400AC_N2 } from "../database/data_memory/memory.data.memory.js";
 import { getZendureSolarflow2400AC_N1 } from "../database/data_memory/memory.data.memory.js";
 import { getZendureSolarflow2400AC_N2 } from "../database/data_memory/memory.data.memory.js";
+import { getLastRequest_ZSF2400AC_Memory } from "../database/data_memory/batteryLastRequest.data.memory.js";
+import { setLastRequest_ZSF2400AC_Memory } from "../database/data_memory/batteryLastRequest.data.memory.js";
 
 /* Import des Services : */
 import { handlePowerRange_Equal_0_Service } from "../services/home_controller/handlePowerRange_Equal_0.service.js";
@@ -242,7 +244,50 @@ async function home_Controller(): Promise<void> {
                 body = handlePowerRange_Below_Neg1200_Service(selectBattery, body, targetPower);
             }
 
-        /* Logique métier 7 : Envoi de la commande aux batteries */
+        /* Logique métier 7 : Vérification des dernières commandes envoyées aux batteries pour éviter les doublons */
+            const lastRequest_ZSF2400AC = getLastRequest_ZSF2400AC_Memory();
+            let body_memory: BodyRequestHomeController_Type = {
+                ZSF2400AC_N1: null,
+                ZSF2400AC_N2: null,
+            }
+
+            /* Si body contient les commandes des deux batteries */
+                if (body.ZSF2400AC_N1 != null && body.ZSF2400AC_N2 != null) {
+                    /* Comparaison avec la dernière commande envoyée */
+                        /* Si la dernière commande de la batterie N1 est identique à ce qui doit être envoyé */
+                            if (body.ZSF2400AC_N1 === lastRequest_ZSF2400AC.ZSF2400AC_N1) {
+                                body_memory.ZSF2400AC_N1 = body.ZSF2400AC_N1;
+                                body.ZSF2400AC_N1 = null; /* Suppression de la commande à envoyer */
+                            }
+                            /* Si la dernière commande de la batterie N2 est identique à ce qui doit être envoyé */
+                            if (body.ZSF2400AC_N2 === lastRequest_ZSF2400AC.ZSF2400AC_N2) {
+                                body_memory.ZSF2400AC_N2 = body.ZSF2400AC_N2;
+                                body.ZSF2400AC_N2 = null; /* Suppression de la commande à envoyer */
+                            }
+                }
+                /* Si body ne contient que la commande de la batterie N1 */
+                else if (body.ZSF2400AC_N1 != null) {
+                    /* Si la dernière commande de la batterie N1 est identique à ce qui doit être envoyé */
+                        if (body.ZSF2400AC_N1 === lastRequest_ZSF2400AC.ZSF2400AC_N1) {
+                            body.ZSF2400AC_N1 = null; /* Suppression de la commande à envoyer */
+                        }
+                }
+                /* Si body ne contient que la commande de la batterie N2 */
+                else if (body.ZSF2400AC_N2 != null) {
+                    /* Si la dernière commande de la batterie N2 est identique à ce qui doit être envoyé */
+                        if (body.ZSF2400AC_N2 === lastRequest_ZSF2400AC.ZSF2400AC_N2) {
+                            body.ZSF2400AC_N2 = null; /* Suppression de la commande à envoyer */
+                        }
+                }
+                
+            /* On vérifie si body ne contient aucune commande à envoyer */
+                if (body.ZSF2400AC_N1 == null && body.ZSF2400AC_N2 == null) {
+                    return; /* On arrête le process pour éviter d'envoyer des commandes identiques */
+                }
+
+
+
+        /* Logique métier 8 : Envoi de la commande aux batteries */
             /* Si les 2 batteries sont actives */
                 if (body.ZSF2400AC_N1 != null && body.ZSF2400AC_N2 != null) {
                     const [postZendure_1_Result, postZendure_2_Result] = await Promise.all ([
@@ -280,6 +325,9 @@ async function home_Controller(): Promise<void> {
                     console.error("Aucune batterie n'a reçu de commande à exécuter.");
                     return;
                 }
+        
+        /* Logique métier 9 : Sauvegarde des dernières commandes envoyées en mémoire */
+            setLastRequest_ZSF2400AC_Memory(body);
 
             console.log({
                 "Compteur Shelly pro 3EM": `${shellyPower} W`,
