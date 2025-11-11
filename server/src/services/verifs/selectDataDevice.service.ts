@@ -22,12 +22,12 @@ function selectDataDevice_Service(logNameController: string): SelectDataDevice_T
             zendureSolarflow2400AC_N1: {
                 sn: zendureSolarflow2400AC_N1_Data?.data.sn || "",
                 status: true,
-                electricLevel: 0,
+                electricLevel: zendureSolarflow2400AC_N1_Data?.data.properties.electricLevel || 0,
             },
             zendureSolarflow2400AC_N2: {
                 sn: zendureSolarflow2400AC_N2_Data?.data.sn || "",
                 status: true,
-                electricLevel: 0,
+                electricLevel: zendureSolarflow2400AC_N2_Data?.data.properties.electricLevel || 0,
             },
         };
 
