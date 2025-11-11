@@ -37,23 +37,6 @@ function statusAC_dataOn_ZSF2400AC_N2_Service(dataZendure: GetZendureSolarflow24
                     }
             }
 
-    /* Logique métier 2 : La batterie est elle synchronisée au courant AC ? */
-        /* Si la batterie n'est pas synchronisée sur le courant AC */
-            if (dataZendure.properties.acStatus === 0) {
-                /* On vérifie le status précédent avant de loger */
-                    if (getZendureSolarflow2400AC_N2()!.data!.properties!.acStatus === 0) {
-                        status = false;
-                    }
-                    else if (getZendureSolarflow2400AC_N2()!.data!.properties!.acStatus === 1) {
-                        console.warn("zendureSolarflow2400ACN2_Controller => statusAC_dataOn_ZSF2400AC_N2_Service : La batterie Zendure Solarflow 2400 AC N2 n'est plus synchronisée au courant AC.");
-                        status = false;
-                    }
-                    else {
-                        console.error("zendureSolarflow2400ACN2_Controller => statusAC_dataOn_ZSF2400AC_N2_Service : Mise en sécurité : Le server n'arrive pas à déterminer si la batterie Zendure Solarflow 2400 AC N2 est synchronisée au courant AC.");
-                        status = false;
-                    }
-                }
-
     return status;
 }
 
