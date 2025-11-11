@@ -9,7 +9,7 @@ import { getZendureSolarflow2400AC_N2 } from "../../database/data_memory/memory.
 import type { SelectBattery_Type } from "../../types/services/selectBattery.type.js";
 
 
-function selectBattery_Service(logNameController: string): SelectBattery_Type | null {
+function selectDataDevice_Service(logNameController: string): SelectBattery_Type | null {
     /* Logique métier 1 : Récupération des données du compteur et des prises de batteries */
         const shellyPro3EM_Data = getShellyPro3EM();
         const shellyPrise_BatterieZSF2400AC_N1_Data = getShellyPrise_BatterieZSF2400AC_N1();
@@ -116,7 +116,9 @@ function selectBattery_Service(logNameController: string): SelectBattery_Type | 
                     }
                 }
 
+        /* Logique métier 4 : Préparation des données a renvoyer */
+
     return selectBattery;
 }
 
-export { selectBattery_Service };
+export { selectDataDevice_Service };
