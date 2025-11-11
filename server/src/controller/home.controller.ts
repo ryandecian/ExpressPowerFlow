@@ -19,6 +19,7 @@ import { handlePowerRange_Neg50_To_Neg600_Service } from "../services/home_contr
 import { handlePowerRange_Neg600_To_Neg1200_Service } from "../services/home_controller/handlePowerRange_Neg600_To_Neg1200.service.js";
 import { handlePowerRange_Below_Neg1200_Service } from "../services/home_controller/handlePowerRange_Below_Neg1200.service.js";
 import { verifLastRequest_ZSF2400AC_Service } from "../services/home_controller/verifLastRequest_ZSF2400AC.service.js";
+import { saveLastRequest_ZSF2400AC_Service } from "../services/home_controller/saveLastRequest_ZSF2400AC.service.js";
 
 /* Import des Types : */
 import type { BodyRequestHomeController_Type } from "../types/services/bodyRequestHomeController.type.js";
@@ -288,7 +289,7 @@ async function home_Controller(): Promise<void> {
                 }
         
         /* Logique métier 9 : Sauvegarde des dernières commandes envoyées en mémoire */
-            setLastRequest_ZSF2400AC_Memory(body);
+            saveLastRequest_ZSF2400AC_Service(selectBattery, body);
 
             console.log({
                 "Compteur Shelly pro 3EM": `${shellyPower} W`,
