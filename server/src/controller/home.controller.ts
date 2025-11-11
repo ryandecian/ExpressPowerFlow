@@ -1,10 +1,10 @@
 
 /* Import des Datas */
-import { getShellyPro3EM } from "../database/data_memory/memory.data.js";
-import { getShellyPrise_BatterieZSF2400AC_N1 } from "../database/data_memory/memory.data.js";
-import { getShellyPrise_BatterieZSF2400AC_N2 } from "../database/data_memory/memory.data.js";
-import { getZendureSolarflow2400AC_N1 } from "../database/data_memory/memory.data.js";
-import { getZendureSolarflow2400AC_N2 } from "../database/data_memory/memory.data.js";
+import { getShellyPro3EM } from "../database/data_memory/memory.data.memory.js";
+import { getShellyPrise_BatterieZSF2400AC_N1 } from "../database/data_memory/memory.data.memory.js";
+import { getShellyPrise_BatterieZSF2400AC_N2 } from "../database/data_memory/memory.data.memory.js";
+import { getZendureSolarflow2400AC_N1 } from "../database/data_memory/memory.data.memory.js";
+import { getZendureSolarflow2400AC_N2 } from "../database/data_memory/memory.data.memory.js";
 
 /* Import des Services : */
 import { handlePowerRange_Equal_0_Service } from "../services/home_controller/handlePowerRange_Equal_0.service.js";

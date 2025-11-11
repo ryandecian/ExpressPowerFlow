@@ -2,6 +2,8 @@
 import type { ShellyPro3EM_data_memory_Type } from "../../types/dataMemory_type/shellyPro3EM.data.memory.type.js";
 import type { ShellyPlugSGen3_data_memory_Type } from "../../types/dataMemory_type/shellyPlugSGen3.data.memory.type.js";
 import type { ZendureSolarflow2400AC_data_memory_Type } from "../../types/dataMemory_type/zendureSolarflow2400AC.data.memory.type.js";
+import { BodyRequestChargeZSF2400AC_Type } from "../../types/bodyRequestZSF2400AC_type/bodyRequestChargeZSF2400AC.type.js";
+import { BodyRequestDischargeZSF2400AC_Type } from "../../types/bodyRequestZSF2400AC_type/bodyRequestDischargeZSF2400AC.type.js";
 
 /* -------------------------------
    Snapshots mémoires uniformisés
@@ -24,6 +26,7 @@ type ZendureSolarflow2400AC_Snapshot = {
     ts: number;                                      // Aligné sur ms ; converti depuis payload.timestamp (s)
     source: string;
     status: boolean;
+    lastRequest?: BodyRequestChargeZSF2400AC_Type | BodyRequestDischargeZSF2400AC_Type | null;
     data: ZendureSolarflow2400AC_data_memory_Type;   // payload RAW complet Zendure
 };
 

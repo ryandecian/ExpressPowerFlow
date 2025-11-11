@@ -1,7 +1,7 @@
 /* Import des Datas */
-import { getZendureSolarflow2400AC_N1 } from "../../database/data_memory/memory.data.js";
-import { setZendureSolarflow2400AC_N1 } from "../../database/data_memory/memory.data.js";
-import { statusZendureSolarflow2400AC_N1 } from "../../database/data_memory/memory.data.js";
+import { getZendureSolarflow2400AC_N1 } from "../../database/data_memory/memory.data.memory.js";
+import { setZendureSolarflow2400AC_N1 } from "../../database/data_memory/memory.data.memory.js";
+import { statusZendureSolarflow2400AC_N1 } from "../../database/data_memory/memory.data.memory.js";
 
 /* Import des Services : */
 import { statusAC_dataOn_ZSF2400AC_N1_Service } from "../../services/zendureSolarflow2400ACN1_controller/statusAC_dataOn_ZSF2400AC_N1.service.js";

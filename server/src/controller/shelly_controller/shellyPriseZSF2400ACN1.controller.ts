@@ -1,7 +1,7 @@
 /* Import des Datas */
-import { getShellyPrise_BatterieZSF2400AC_N1 } from "../../database/data_memory/memory.data.js";
-import { setShellyPrise_BatterieZSF2400AC_N1 } from "../../database/data_memory/memory.data.js";
-import { statusShellyPrise_BatterieZSF2400AC_N1 } from "../../database/data_memory/memory.data.js";
+import { getShellyPrise_BatterieZSF2400AC_N1 } from "../../database/data_memory/memory.data.memory.js";
+import { setShellyPrise_BatterieZSF2400AC_N1 } from "../../database/data_memory/memory.data.memory.js";
+import { statusShellyPrise_BatterieZSF2400AC_N1 } from "../../database/data_memory/memory.data.memory.js";
 
 /* Import des Types : */
 import type { GetShellyPlugSGen3_data_Type } from "../../types/dataFetch_type/getShellyPlugSGen3.data.type.js";

@@ -1,5 +1,5 @@
 /* Import des Datas */
-import { getZendureSolarflow2400AC_N2 } from "../../database/data_memory/memory.data.js";
+import { getZendureSolarflow2400AC_N2 } from "../../database/data_memory/memory.data.memory.js";
 
 /* Import des Types */
 import type { GetZendureSolarflow2400AC_data_Type } from "../../types/dataFetch_type/getZendureSolarflow2400AC.data.type.js";
