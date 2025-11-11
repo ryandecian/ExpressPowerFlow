@@ -36,6 +36,7 @@ async function home_Controller(): Promise<void> {
             const shellyPro3EM_Data = getShellyPro3EM();
             const shellyPrise_BatterieZSF2400AC_N1_Data = getShellyPrise_BatterieZSF2400AC_N1();
             const shellyPrise_BatterieZSF2400AC_N2_Data = getShellyPrise_BatterieZSF2400AC_N2();
+            
             const zendureSolarflow2400AC_N1_Data = getZendureSolarflow2400AC_N1();
             const zendureSolarflow2400AC_N2_Data = getZendureSolarflow2400AC_N2();
 
