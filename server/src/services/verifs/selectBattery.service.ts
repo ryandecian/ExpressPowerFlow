@@ -7,13 +7,14 @@ import { getZendureSolarflow2400AC_N2 } from "../../database/data_memory/memory.
 
 /* Import des Types */
 import type { SelectBattery_Type } from "../../types/services/selectBattery.type.js";
+import type { SelectDataDevice_Type } from "../../types/services/selectDataDevice.type.js";
 
 
-function selectDataDevice_Service(logNameController: string): SelectBattery_Type | null {
+function selectDataDevice_Service(logNameController: string): SelectDataDevice_Type | null {
     /* Logique métier 1 : Récupération des données du compteur et des prises de batteries */
         const shellyPro3EM_Data = getShellyPro3EM();
-        const shellyPrise_BatterieZSF2400AC_N1_Data = getShellyPrise_BatterieZSF2400AC_N1();
-        const shellyPrise_BatterieZSF2400AC_N2_Data = getShellyPrise_BatterieZSF2400AC_N2();
+        let shellyPrise_BatterieZSF2400AC_N1_Data = getShellyPrise_BatterieZSF2400AC_N1();
+        let shellyPrise_BatterieZSF2400AC_N2_Data = getShellyPrise_BatterieZSF2400AC_N2();
         const zendureSolarflow2400AC_N1_Data = getZendureSolarflow2400AC_N1();
         const zendureSolarflow2400AC_N2_Data = getZendureSolarflow2400AC_N2();
 
@@ -43,7 +44,7 @@ function selectDataDevice_Service(logNameController: string): SelectBattery_Type
                 return null;
             }
 
-            if (shellyPrise_BatterieZSF2400AC_N1_Data == null) {
+            if (shellyPrise_BatterieZSF2400AC_N1_Data == null) { /* Si c'est null ou undefined */
                 console.info(`${logNameController} - Les données de la prise Shelly Plug S Gen 3 de la Batterie Zendure numéro 1 ne sont pas encore disponibles.`);
                 selectBattery.zendureSolarflow2400AC_N1.status = false;
             }
@@ -117,8 +118,14 @@ function selectDataDevice_Service(logNameController: string): SelectBattery_Type
                 }
 
         /* Logique métier 4 : Préparation des données a renvoyer */
+            const selectDataDevice: SelectDataDevice_Type = {
+                shellyPro3EM_Data: shellyPro3EM_Data,
+                shellyPrise_BatterieZSF2400AC_N1_Data: shellyPrise_BatterieZSF2400AC_N1_Data,
+                shellyPrise_BatterieZSF2400AC_N2_Data: shellyPrise_BatterieZSF2400AC_N2_Data,
+                selectBattery: selectBattery,
+            }
 
-    return selectBattery;
+    return selectDataDevice;
 }
 
 export { selectDataDevice_Service };

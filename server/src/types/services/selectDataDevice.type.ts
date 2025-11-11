@@ -5,8 +5,8 @@ import type { ShellyPlugSGen3_Snapshot } from "../../database/data_memory/memory
 
 type SelectDataDevice_Type = {
     shellyPro3EM_Data: ShellyPro3EM_Snapshot,
-    shellyPrise_BatterieZSF2400AC_N1_Data: ShellyPlugSGen3_Snapshot,
-    shellyPrise_BatterieZSF2400AC_N2_Data: ShellyPlugSGen3_Snapshot,
+    shellyPrise_BatterieZSF2400AC_N1_Data: ShellyPlugSGen3_Snapshot | undefined,
+    shellyPrise_BatterieZSF2400AC_N2_Data: ShellyPlugSGen3_Snapshot | undefined,
     selectBattery: SelectBattery_Type,
 }
 
