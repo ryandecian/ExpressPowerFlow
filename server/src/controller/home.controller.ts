@@ -37,7 +37,6 @@ async function home_Controller(): Promise<void> {
             const shellyPrise_BatterieZSF2400AC_N1_Data = selectDataDevice_Result.shellyPrise_BatterieZSF2400AC_N1_Data;
             const shellyPrise_BatterieZSF2400AC_N2_Data = selectDataDevice_Result.shellyPrise_BatterieZSF2400AC_N2_Data;
             let selectBattery: SelectBattery_Type = selectDataDevice_Result.selectBattery;
-            console.log(`Status N1 : ${selectBattery.zendureSolarflow2400AC_N1.status} et N2 : ${selectBattery.zendureSolarflow2400AC_N2.status}`);
 
         /* Logique métier 2 : Calcul de la consommation réelle de la maison */
             /* Encapsulation de la puissance détecté par le compteur Shelly dans une const */
@@ -81,13 +80,6 @@ async function home_Controller(): Promise<void> {
                         if (electricLevel_N2 === 100) {
                             selectBattery.zendureSolarflow2400AC_N2.status = false;
                         }
-
-                        if (electricLevel_N1 < 100) {
-                            selectBattery.zendureSolarflow2400AC_N1.electricLevel = electricLevel_N1;
-                        }
-                        if (electricLevel_N2 < 100) {
-                            selectBattery.zendureSolarflow2400AC_N2.electricLevel = electricLevel_N2;
-                        }
                     }
                 /* Si on doit décharger les batteries : */
                     if (targetPower > 0) {
@@ -97,13 +89,6 @@ async function home_Controller(): Promise<void> {
                         }
                         if (electricLevel_N2 <= 5) {
                             selectBattery.zendureSolarflow2400AC_N2.status = false;
-                        }
-
-                        if (electricLevel_N1 > 5) {
-                            selectBattery.zendureSolarflow2400AC_N1.electricLevel = electricLevel_N1;
-                        }
-                        if (electricLevel_N2 > 5) {
-                            selectBattery.zendureSolarflow2400AC_N2.electricLevel = electricLevel_N2;
                         }
                     }
             }
@@ -117,41 +102,32 @@ async function home_Controller(): Promise<void> {
             /* Neutre */
             if (targetPower === 0) {
                 body = handlePowerRange_Equal_0_Service(selectBattery, body, targetPower);
-                console.log("handlePowerRange_Equal_0_Service exécuté");
             }
             /* Charge */
             if (targetPower > 0 && targetPower <= 50) {
                 body = handlePowerRange_0_To_50_Service(selectBattery, body, targetPower);
-                console.log("handlePowerRange_0_To_50_Service exécuté");
             }
             if (targetPower > 50 && targetPower <= 600) {
                 body = handlePowerRange_50_To_600_Service(selectBattery, body, targetPower);
-                console.log("handlePowerRange_50_To_600_Service exécuté");
             }
             if (targetPower > 600 && targetPower <= 1200) {
                 body = handlePowerRange_600_To_1200_Service(selectBattery, body, targetPower);
-                console.log("handlePowerRange_600_To_1200_Service exécuté");
             }
             if (targetPower > 1200) {
                 body = handlePowerRange_Above_1200_Service(selectBattery, body, targetPower);
-                console.log("handlePowerRange_Above_1200_Service exécuté");
             }
             /* Décharge */
             if (targetPower < 0 && targetPower >= -50) {
                 body = handlePowerRange_Neg50_To_0_Service(selectBattery, body, targetPower);
-                console.log("handlePowerRange_Neg50_To_0_Service exécuté");
             }
             if (targetPower < -50 && targetPower >= -600) {
                 body = handlePowerRange_Neg50_To_Neg600_Service(selectBattery, body, targetPower);
-                console.log("handlePowerRange_Neg50_To_Neg600_Service exécuté");
             }
             if (targetPower < -600 && targetPower >= -1200) {
                 body = handlePowerRange_Neg600_To_Neg1200_Service(selectBattery, body, targetPower);
-                console.log("handlePowerRange_Neg600_To_Neg1200_Service exécuté");
             }
             if (targetPower < -1200) {
                 body = handlePowerRange_Below_Neg1200_Service(selectBattery, body, targetPower);
-                console.log("handlePowerRange_Below_Neg1200_Service exécuté");
             }
 
         /* Logique métier 5 : Vérification des dernières commandes envoyées aux batteries pour éviter les doublons */
