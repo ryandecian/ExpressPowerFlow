@@ -18,6 +18,7 @@ import { handlePowerRange_Neg50_To_0_Service } from "../services/home_controller
 import { handlePowerRange_Neg50_To_Neg600_Service } from "../services/home_controller/handlePowerRange_Neg50_To_Neg600.service.js";
 import { handlePowerRange_Neg600_To_Neg1200_Service } from "../services/home_controller/handlePowerRange_Neg600_To_Neg1200.service.js";
 import { handlePowerRange_Below_Neg1200_Service } from "../services/home_controller/handlePowerRange_Below_Neg1200.service.js";
+import { verifLastRequest_ZSF2400AC_Service } from "../services/home_controller/verifLastRequest_ZSF2400AC.service.js";
 
 /* Import des Types : */
 import type { BodyRequestHomeController_Type } from "../types/services/bodyRequestHomeController.type.js";
@@ -245,47 +246,7 @@ async function home_Controller(): Promise<void> {
             }
 
         /* Logique métier 7 : Vérification des dernières commandes envoyées aux batteries pour éviter les doublons */
-            const lastRequest_ZSF2400AC = getLastRequest_ZSF2400AC_Memory();
-            let body_memory: BodyRequestHomeController_Type = {
-                ZSF2400AC_N1: null,
-                ZSF2400AC_N2: null,
-            }
-
-            /* Si body contient les commandes des deux batteries */
-                if (body.ZSF2400AC_N1 != null && body.ZSF2400AC_N2 != null) {
-                    /* Comparaison avec la dernière commande envoyée */
-                        /* Si la dernière commande de la batterie N1 est identique à ce qui doit être envoyé */
-                            if (body.ZSF2400AC_N1 === lastRequest_ZSF2400AC.ZSF2400AC_N1) {
-                                body_memory.ZSF2400AC_N1 = body.ZSF2400AC_N1;
-                                body.ZSF2400AC_N1 = null; /* Suppression de la commande à envoyer */
-                            }
-                            /* Si la dernière commande de la batterie N2 est identique à ce qui doit être envoyé */
-                            if (body.ZSF2400AC_N2 === lastRequest_ZSF2400AC.ZSF2400AC_N2) {
-                                body_memory.ZSF2400AC_N2 = body.ZSF2400AC_N2;
-                                body.ZSF2400AC_N2 = null; /* Suppression de la commande à envoyer */
-                            }
-                }
-                /* Si body ne contient que la commande de la batterie N1 */
-                else if (body.ZSF2400AC_N1 != null) {
-                    /* Si la dernière commande de la batterie N1 est identique à ce qui doit être envoyé */
-                        if (body.ZSF2400AC_N1 === lastRequest_ZSF2400AC.ZSF2400AC_N1) {
-                            body.ZSF2400AC_N1 = null; /* Suppression de la commande à envoyer */
-                        }
-                }
-                /* Si body ne contient que la commande de la batterie N2 */
-                else if (body.ZSF2400AC_N2 != null) {
-                    /* Si la dernière commande de la batterie N2 est identique à ce qui doit être envoyé */
-                        if (body.ZSF2400AC_N2 === lastRequest_ZSF2400AC.ZSF2400AC_N2) {
-                            body.ZSF2400AC_N2 = null; /* Suppression de la commande à envoyer */
-                        }
-                }
-                
-            /* On vérifie si body ne contient aucune commande à envoyer */
-                if (body.ZSF2400AC_N1 == null && body.ZSF2400AC_N2 == null) {
-                    return; /* On arrête le process pour éviter d'envoyer des commandes identiques */
-                }
-
-
+            body = verifLastRequest_ZSF2400AC_Service(body);
 
         /* Logique métier 8 : Envoi de la commande aux batteries */
             /* Si les 2 batteries sont actives */
