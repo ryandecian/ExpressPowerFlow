@@ -1,5 +1,4 @@
 /* Import des Types (RAW, tels que renvoyés par tes devices) : */
-import type { Shelly3EM_data_memory_Type } from "../../types/dataMemory_type/shelly3EM.data.memory.type.js";
 import type { ShellyPro3EM_data_memory_Type } from "../../types/dataMemory_type/shellyPro3EM.data.memory.type.js";
 import type { ShellyPlugSGen3_data_memory_Type } from "../../types/dataMemory_type/shellyPlugSGen3.data.memory.type.js";
 import type { ZendureSolarflow2400AC_data_memory_Type } from "../../types/dataMemory_type/zendureSolarflow2400AC.data.memory.type.js";
