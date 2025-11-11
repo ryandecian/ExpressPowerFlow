@@ -53,7 +53,12 @@ function requestZSF2400AC_Utils(sn: string, targetPower: number): BodyRequestCha
                     }
             }
     
-    /* Logique métier 3 : Préparation du body de la requête */
+    /* Logique métier 3 : Transformation de la variable de commande */
+        if (valueCommande < 0) {
+            valueCommande = Math.abs(valueCommande); /* On transforme la valeur en positive */
+        }
+        
+    /* Logique métier 4 : Préparation du body de la requête */
         /* Option 1 : targetPower est négatif donc préparation du requête avec commande de décharge batterie */
         if (targetPower < 0) {
             body = {

@@ -1,7 +1,7 @@
 /* Import des Datas */
-import { getShellyPrise_BatterieZSF2400AC_N1 } from "../../database/data_memory/memory.data.js";
-import { setShellyPrise_BatterieZSF2400AC_N1 } from "../../database/data_memory/memory.data.js";
-import { statusShellyPrise_BatterieZSF2400AC_N1 } from "../../database/data_memory/memory.data.js";
+import { getShellyPrise_BatterieZSF2400AC_N1 } from "../../database/data_memory/memory.data.memory.js";
+import { setShellyPrise_BatterieZSF2400AC_N1 } from "../../database/data_memory/memory.data.memory.js";
+import { statusShellyPrise_BatterieZSF2400AC_N1 } from "../../database/data_memory/memory.data.memory.js";
 
 /* Import des Types : */
 import type { GetShellyPlugSGen3_data_Type } from "../../types/dataFetch_type/getShellyPlugSGen3.data.type.js";
@@ -43,7 +43,7 @@ async function shellyPriseZSF2400ACN1_Controller(): Promise<void> {
             setShellyPrise_BatterieZSF2400AC_N1(dataSelected, status);
 
         /* Logique métier 4 : Récupération des données depuis la mémoire pour vérification */
-            const data = getShellyPrise_BatterieZSF2400AC_N1();
+            // const data = getShellyPrise_BatterieZSF2400AC_N1();
 
             // console.log(`Compteur Shelly Plug S Gen 3 de la batterie Zendure Solarflow 2400AC N1 : ${data?.data.apower} W`);
     }
