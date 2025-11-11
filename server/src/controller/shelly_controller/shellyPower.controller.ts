@@ -1,7 +1,7 @@
 /* Import des Datas */
-import { getShelly3EM } from "../../database/data_memory/memory.data.js";
-import { setShelly3EM } from "../../database/data_memory/memory.data.js";
-import { statusShelly3EM } from "../../database/data_memory/memory.data.js";
+import { getShelly3EM } from "../../database/data_memory/memory.data.memory.js";
+import { setShelly3EM } from "../../database/data_memory/memory.data.memory.js";
+import { statusShelly3EM } from "../../database/data_memory/memory.data.memory.js";
 
 /* Import des Types : */
 import type { GetShelly3EM_emeter_data_Type } from "../../types/dataFetch_type/getShelly3EM.emeter.data.type.js";

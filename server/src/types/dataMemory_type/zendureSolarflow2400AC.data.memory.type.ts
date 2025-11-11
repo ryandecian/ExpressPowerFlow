@@ -7,7 +7,8 @@ type ZendureSolarflow2400AC_data_memory_Type = {
         outputPackPower: number, /* ⚠️ Puissance entrant dans la batterie (W) → charge */
         electricLevel: number, /* ⚠️ Niveau de charge batterie (en %) */
         hyperTmp: number, /* ⚠️ Température interne brute (3071 = 30,71°C) */
-        gridState: number, /* ⚠️ État du réseau détecté (1 = présent) */
+        acStatus: number, /* ⚠️ Statut du module AC : synchronisé au AC ? (1 = synchronisé, 0 = non synchronisé) */
+        gridState: number, /* ⚠️ État du réseau détecté (1 = présent) est ce que la batterie détecte du AC ? */
         BatVolt: number, /* ⚠️ Tension batterie (mV → 4971 ≈ 49,71V) */
         acMode: number, /* ⚠️ Mode AC: 0 = veille/idle, 1 = charge, 2 = décharge */
         inputLimit: number, /* ⚠️ Limite de puissance d’entrée configurée (W ou %) */
