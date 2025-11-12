@@ -1,33 +1,71 @@
+/* Import des Types */
+import type { SystemOverview_Data_Memory_Type } from "../../types/dataMemory_type/systemOverview.data.memory.type.js";
 
-
-
-type SystemOverview_Data_Memory_Type = {
-    homePower: number, /* ⚠️ Puissance totale de la maison consommation (W) */
-    edfPower: number, /* ⚠️ Puissance totale du réseau consommation EDF (W) */
-    solarPower: number, /* ⚠️ Puissance totale solaire (W) */
-    batteryPower: number, /* ⚠️ Puissance totale batterie charge (+) / décharge (-) (W) */
-    dataBattery: {
-        zendureSolarflow2400AC_N1: {
-            sn: string, /* Numéro de série du Solarflow */
-            status: boolean, /* Statut réseau batterie (répond bien au fetch ?) si false = la batterie ne répond plus */
-            gridState: boolean, /* État du réseau détecté par la batterie (branché sur 230V ?) true = good */
-            hyperTmp: number, /* Température interne brute de l'onduleur en °C */
-            electricLevel: number, /* Niveau de charge batterie (en %)  exemple 96 pour 96% */
-            BatVolt: number, /* Tension de la batterie (en V) exemple 49.71 pour 49.71V */
-            powerFlow: number, /* ⚠️ Puissance de charge (+) ou décharge (-) de la batterie (en W) exemple -500 pour décharge à 500W (Valeur mesuré par prise Shelly dédiée) */
-            maxSoc: number, /* SoC maximum paramétré (en %) exemple 100 pour 100% */
-            minSoc: number, /* Seuil minimum avant arrêt de décharge (en %) exemple 5 pour 5% */
-        },
-        zendureSolarflow2400AC_N2: {
-            sn: string, /* Numéro de série du Solarflow */
-            status: boolean, /* Statut réseau batterie (répond bien au fetch ?) si false = la batterie ne répond plus */
-            gridState: boolean, /* État du réseau détecté par la batterie (branché sur 230V ?) true = good */
-            hyperTmp: number, /* Température interne brute de l'onduleur en °C */
-            electricLevel: number, /* Niveau de charge batterie (en %)  exemple 96 pour 96% */
-            BatVolt: number, /* Tension de la batterie (en V) exemple 49.71 pour 49.71V */
-            powerFlow: number, /* ⚠️ Puissance de charge (+) ou décharge (-) de la batterie (en W) exemple -500 pour décharge à 500W (Valeur mesuré par prise Shelly dédiée) */
-            maxSoc: number, /* SoC maximum paramétré (en %) exemple 100 pour 100% */
-            minSoc: number, /* Seuil minimum avant arrêt de décharge (en %) exemple 5 pour 5% */
-        },
-    }
+/* Etat global (singleton via cache des modules) */
+type DataState = {
+    systemOverview?: SystemOverview_Data_Memory_Type;
 };
+
+/* Instance mémoire initialisée */
+const stateMemory: DataState = {
+    systemOverview: {
+        homePower: null,
+        edfPower: null,
+        solarPower: null,
+        batteryPower: null,
+        dataBattery: {
+            zendureSolarflow2400AC_N1: {
+                sn: null,
+                status: false,
+                gridState: false,
+                hyperTmp: null,
+                electricLevel: null,
+                BatVolt: null,
+                powerFlow: null,
+                maxSoc: null,
+                minSoc: null,
+            },
+            zendureSolarflow2400AC_N2: {
+                sn: null,
+                status: false,
+                gridState: false,
+                hyperTmp: null,
+                electricLevel: null,
+                BatVolt: null,
+                powerFlow: null,
+                maxSoc: null,
+                minSoc: null,
+            },
+        },
+    },
+};
+
+/* ------------- Setters (Écriture) ------------- */
+/* Met à jour une clé du 1er niveau */
+function setSystemOverview_Memory<K extends keyof SystemOverview_Data_Memory_Type>(
+    key: K,
+    value: SystemOverview_Data_Memory_Type[K]
+): void {
+    if (!stateMemory.systemOverview) return;
+    stateMemory.systemOverview[key] = value;
+}
+
+/* Met à jour une clé du 2ᵉ niveau (batterie N2) */
+function setSystemOverview_BatteryN1_Memory<
+    K extends keyof SystemOverview_Data_Memory_Type["dataBattery"]["zendureSolarflow2400AC_N1"]
+>(
+    key: K,
+    value: SystemOverview_Data_Memory_Type["dataBattery"]["zendureSolarflow2400AC_N1"][K]
+): void {
+    stateMemory.systemOverview!.dataBattery.zendureSolarflow2400AC_N1[key] = value;
+}
+
+/* Met à jour une clé du 2ᵉ niveau (batterie N2) */
+function setSystemOverview_BatteryN2_Memory<
+    K extends keyof SystemOverview_Data_Memory_Type["dataBattery"]["zendureSolarflow2400AC_N2"]
+>(
+    key: K,
+    value: SystemOverview_Data_Memory_Type["dataBattery"]["zendureSolarflow2400AC_N2"][K]
+): void {
+    stateMemory.systemOverview!.dataBattery.zendureSolarflow2400AC_N2[key] = value;
+}
