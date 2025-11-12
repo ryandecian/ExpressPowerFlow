@@ -69,3 +69,17 @@ function setSystemOverview_BatteryN2_Memory<
 ): void {
     stateMemory.systemOverview!.dataBattery.zendureSolarflow2400AC_N2[key] = value;
 }
+
+/* ------------- Getters (copies immuables) ------------- */
+function getSystemOverview_Memory(): SystemOverview_Data_Memory_Type {
+    return structuredClone(stateMemory.systemOverview!);
+}
+
+export {
+    /* setters */
+    setSystemOverview_Memory,
+    setSystemOverview_BatteryN1_Memory,
+    setSystemOverview_BatteryN2_Memory,
+    /* getters */
+    getSystemOverview_Memory,
+};
