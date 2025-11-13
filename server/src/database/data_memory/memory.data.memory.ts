@@ -1,7 +1,7 @@
 /* Import des Types (RAW, tels que renvoyés par tes devices) : */
-import type { ShellyPro3EM_data_memory_Type } from "../../types/dataMemory_type/shellyPro3EM.data.memory.type.js";
-import type { ShellyPlugSGen3_data_memory_Type } from "../../types/dataMemory_type/shellyPlugSGen3.data.memory.type.js";
-import type { ZendureSolarflow2400AC_data_memory_Type } from "../../types/dataMemory_type/zendureSolarflow2400AC.data.memory.type.js";
+import type { ShellyPro3EM_data_memory_Type } from "../../types/dataMemory_type/brut/shellyPro3EM.data.memory.type.js";
+import type { ShellyPlugSGen3_data_memory_Type } from "../../types/dataMemory_type/brut/shellyPlugSGen3.data.memory.type.js";
+import type { ZendureSolarflow2400AC_data_memory_Type } from "../../types/dataMemory_type/brut/zendureSolarflow2400AC.data.memory.type.js";
 
 /* -------------------------------
    Snapshots mémoires uniformisés

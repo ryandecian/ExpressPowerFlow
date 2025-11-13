@@ -5,7 +5,7 @@ import { statusShellyPro3EM } from "../../database/data_memory/memory.data.memor
 
 /* Import des Types : */
 import type { GetShellyPro3EM_PhaseA_data_Type } from "../../types/dataFetch_type/getShellyPro3EM.phaseA.data.type.js";
-import type { ShellyPro3EM_data_memory_Type } from "../../types/dataMemory_type/shellyPro3EM.data.memory.type.js";
+import type { ShellyPro3EM_data_memory_Type } from "../../types/dataMemory_type/brut/shellyPro3EM.data.memory.type.js";
 
 /* Import des Utils */
 import { fetch_Utils } from "../../utils/fetch.utils.js";
