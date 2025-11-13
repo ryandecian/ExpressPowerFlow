@@ -3,15 +3,11 @@ import type { ShellyPro3EM_data_memory_Type } from "../../types/dataMemory_type/
 import type { ShellyPlugSGen3_data_memory_Type } from "../../types/dataMemory_type/brut/shellyPlugSGen3.data.memory.type.js";
 import type { ZendureSolarflow2400AC_data_memory_Type } from "../../types/dataMemory_type/brut/zendureSolarflow2400AC.data.memory.type.js";
 
+import type { ShellyPro3EM_Snapshot_Type } from "../../types/dataMemory_type/snapshot/shellyPro3EM.snapshot.type.js";
+
 /* -------------------------------
    Snapshots mémoires uniformisés
    ------------------------------- */
-type ShellyPro3EM_Snapshot = {
-    ts: number;                                      // Date.now() (ms)
-    source: "Compteur Shelly Pro 3EM";
-    status: boolean;
-    data: ShellyPro3EM_data_memory_Type;                // payload RAW complet Shelly
-};
 
 type ShellyPlugSGen3_Snapshot = {
     ts: number;                                      // Date.now() (ms)
@@ -29,7 +25,7 @@ type ZendureSolarflow2400AC_Snapshot = {
 
 /* Etat global (singleton via cache des modules) */
 type DataState = {
-    shellyPro3EM?: ShellyPro3EM_Snapshot;
+    shellyPro3EM?: ShellyPro3EM_Snapshot_Type;
     shellyPrise_BatterieZSF2400AC_N1?: ShellyPlugSGen3_Snapshot;
     shellyPrise_BatterieZSF2400AC_N2?: ShellyPlugSGen3_Snapshot;
     zendureSolarflow2400AC_N1?: ZendureSolarflow2400AC_Snapshot;
@@ -129,7 +125,7 @@ function statusZendureSolarflow2400AC_N2(status: boolean): void {
 }
 
 /* ------------- Getters (copies immuables) ------------- */
-function getShellyPro3EM(): ShellyPro3EM_Snapshot | undefined {
+function getShellyPro3EM(): ShellyPro3EM_Snapshot_Type | undefined {
     return stateMemory.shellyPro3EM
         ? {
               ...stateMemory.shellyPro3EM,
@@ -226,7 +222,6 @@ export {
 
 export type {
     DataState,
-    ShellyPro3EM_Snapshot,
     ShellyPlugSGen3_Snapshot,
     ZendureSolarflow2400AC_Snapshot,
 };
