@@ -5,25 +5,15 @@ import type { ZendureSolarflow2400AC_data_memory_Type } from "../../types/dataMe
 
 import type { ShellyPro3EM_Snapshot_Type } from "../../types/dataMemory_type/snapshot/shellyPro3EM.snapshot.type.js";
 import type { ShellyPlugSGen3_Snapshot_Type } from "../../types/dataMemory_type/snapshot/shellyPlugSGen3.snapshot.type.js";
-
-/* -------------------------------
-   Snapshots mémoires uniformisés
-   ------------------------------- */
-
-type ZendureSolarflow2400AC_Snapshot = {
-    ts: number;                                      // Aligné sur ms ; converti depuis payload.timestamp (s)
-    source: string;
-    status: boolean;
-    data: ZendureSolarflow2400AC_data_memory_Type;   // payload RAW complet Zendure
-};
+import type { ZendureSolarflow2400AC_Snapshot_Type } from "../../types/dataMemory_type/snapshot/zendureSolarflow2400AC.snapshot.type.js";
 
 /* Etat global (singleton via cache des modules) */
 type DataState = {
     shellyPro3EM?: ShellyPro3EM_Snapshot_Type;
     shellyPrise_BatterieZSF2400AC_N1?: ShellyPlugSGen3_Snapshot_Type;
     shellyPrise_BatterieZSF2400AC_N2?: ShellyPlugSGen3_Snapshot_Type;
-    zendureSolarflow2400AC_N1?: ZendureSolarflow2400AC_Snapshot;
-    zendureSolarflow2400AC_N2?: ZendureSolarflow2400AC_Snapshot;
+    zendureSolarflow2400AC_N1?: ZendureSolarflow2400AC_Snapshot_Type;
+    zendureSolarflow2400AC_N2?: ZendureSolarflow2400AC_Snapshot_Type;
 };
 
 const stateMemory: DataState = {};
@@ -146,7 +136,7 @@ function getShellyPrise_BatterieZSF2400AC_N2(): ShellyPlugSGen3_Snapshot_Type | 
         : undefined;
 }
 
-function getZendureSolarflow2400AC_N1(): ZendureSolarflow2400AC_Snapshot | undefined {
+function getZendureSolarflow2400AC_N1(): ZendureSolarflow2400AC_Snapshot_Type | undefined {
     return stateMemory.zendureSolarflow2400AC_N1
         ? {
               ...stateMemory.zendureSolarflow2400AC_N1,
@@ -155,7 +145,7 @@ function getZendureSolarflow2400AC_N1(): ZendureSolarflow2400AC_Snapshot | undef
         : undefined;
 }
 
-function getZendureSolarflow2400AC_N2(): ZendureSolarflow2400AC_Snapshot | undefined {
+function getZendureSolarflow2400AC_N2(): ZendureSolarflow2400AC_Snapshot_Type | undefined {
     return stateMemory.zendureSolarflow2400AC_N2
         ? {
               ...stateMemory.zendureSolarflow2400AC_N2,
@@ -207,5 +197,4 @@ export {
 
 export type {
     DataState,
-    ZendureSolarflow2400AC_Snapshot,
 };
