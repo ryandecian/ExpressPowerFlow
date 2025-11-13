@@ -1,5 +1,5 @@
 /* Import des Types */
-import type { SystemOverview_Data_Memory_Type } from "../../types/dataMemory_type/systemOverview.data.memory.type.js";
+import type { SystemOverview_Data_Memory_Type } from "../../types/dataMemory_type/snapshot/systemOverview.data.memory.type.js";
 
 /* Etat global (singleton via cache des modules) */
 type DataState = {
