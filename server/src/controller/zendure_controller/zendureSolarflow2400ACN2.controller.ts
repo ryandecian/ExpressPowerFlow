@@ -9,7 +9,7 @@ import { statusAC_dataOff_ZSF2400AC_N2_Service } from "../../services/zendureSor
 
 /* Import des Types : */
 import type { GetZendureSolarflow2400AC_data_Type } from "../../types/dataFetch_type/getZendureSolarflow2400AC.data.type.js";
-import type { ZendureSolarflow2400AC_data_memory_Type } from "../../types/dataMemory_type/zendureSolarflow2400AC.data.memory.type.js";
+import type { ZendureSolarflow2400AC_data_memory_Type } from "../../types/dataMemory_type/brut/zendureSolarflow2400AC.data.memory.type.js";
 
 /* Import des Utils */
 import { fetch_Utils } from "../../utils/fetch.utils.js";
