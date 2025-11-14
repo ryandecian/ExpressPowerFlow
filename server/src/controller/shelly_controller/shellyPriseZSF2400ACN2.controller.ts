@@ -5,7 +5,7 @@ import { statusShellyPrise_BatterieZSF2400AC_N2 } from "../../database/data_memo
 
 /* Import des Types : */
 import type { GetShellyPlugSGen3_data_Type } from "../../types/dataFetch_type/getShellyPlugSGen3.data.type.js";
-import type { ShellyPlugSGen3_data_memory_Type } from "../../types/dataMemory_type/shellyPlugSGen3.data.memory.type.js";
+import type { ShellyPlugSGen3_data_memory_Type } from "../../types/dataMemory_type/brut/shellyPlugSGen3.data.memory.type.js";
 
 /* Import des Utils */
 import { fetch_Utils } from "../../utils/fetch.utils.js";
