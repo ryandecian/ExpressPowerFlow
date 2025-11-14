@@ -1,11 +1,11 @@
 /* Import des Datas */
-import { getShellyPro3EM } from "../../database/data_memory/memory.data.memory.js";
-import { setShellyPro3EM } from "../../database/data_memory/memory.data.memory.js";
-import { statusShellyPro3EM } from "../../database/data_memory/memory.data.memory.js";
+import { getMemory_Memory } from "../../database/data_memory/memory.data.memory.js";
+import { setMemory_Lvl1_Memory } from "../../database/data_memory/memory.data.memory.js";
+import { setMemory_Lvl2_Memory } from "../../database/data_memory/memory.data.memory.js";
 
 /* Import des Types : */
 import type { GetShellyPro3EM_PhaseA_data_Type } from "../../types/dataFetch_type/getShellyPro3EM.phaseA.data.type.js";
-import type { ShellyPro3EM_data_memory_Type } from "../../types/dataMemory_type/brut/shellyPro3EM.data.memory.type.js";
+import type { ShellyPro3EM_Snapshot_Type } from "../../types/dataMemory_type/snapshot/shellyPro3EM.snapshot.type.js";
 
 /* Import des Utils */
 import { fetch_Utils } from "../../utils/fetch.utils.js";
@@ -20,27 +20,35 @@ async function shellyPro3EM_Controller(): Promise<void> {
             /* Vérification si le fetch a échoué */
             if (typeof dataShellyResult.error === "string") {
                 console.error("shellyPower_Controller - Erreur de fetch :", dataShellyResult.error);
-                statusShellyPro3EM(false);
+
+                /* Si les données ont déjà été initialisées en mémoire */
+                    if (getMemory_Memory().shellyPro3EM !== null) {
+                        setMemory_Lvl2_Memory("shellyPro3EM", "status", false);
+                    }
                 return;
             }
 
             const dataShelly = dataShellyResult.data as GetShellyPro3EM_PhaseA_data_Type;
 
         /* Logique métier 2 : Préparation des données pour l'enregistrement */
-            const dataSelected: ShellyPro3EM_data_memory_Type = {
-                voltage: dataShelly.voltage,
-                current: dataShelly.current,
-                act_power: dataShelly.act_power,
-                aprt_power: dataShelly.aprt_power,
-                pf: dataShelly.pf,
-            };
-            const status = true;
+            const dataSelected: ShellyPro3EM_Snapshot_Type = {
+                ts: Date.now(),
+                source: "Compteur Shelly Pro 3EM",
+                status: true,
+                data: {
+                    voltage: dataShelly.voltage,
+                    current: dataShelly.current,
+                    act_power: dataShelly.act_power,
+                    aprt_power: dataShelly.aprt_power,
+                    pf: dataShelly.pf,
+                }
+            }
 
         /* Logique métier 3 : Enregistrement des données dans la mémoire */
-            setShellyPro3EM(dataSelected, status);
+            setMemory_Lvl1_Memory("shellyPro3EM", dataSelected);
 
         /* Logique métier 4 : Récupération des données depuis la mémoire pour vérification */
-            const data = getShellyPro3EM();
+            // const power: number = getMemory_Memory().shellyPro3EM!.data.act_power;
 
             // console.log(`Compteur Shelly Pro 3EM : ${data?.data.act_power} W`);
     }
