@@ -11,7 +11,7 @@ function selectDataDevice_Service(logNameController: string): SelectDataDevice_T
     /* Logique métier 1 : Récupération des données du compteur et des prises de batteries */
         const memoryData: Memory_Data_Memory_Type = getMemory_Memory();
 
-        let shellyPro3EM_Data: number = 0;
+        let shellyPro3EM_Power: number = 0;
         let shellyPrise_BatterieZSF2400AC_N1_Power: number = 0;
         let shellyPrise_BatterieZSF2400AC_N2_Power: number = 0;
         let selectBattery : SelectBattery_Type = {
@@ -39,7 +39,7 @@ function selectDataDevice_Service(logNameController: string): SelectDataDevice_T
                     return null;
                 }
                 else {
-                    shellyPro3EM_Data = memoryData.shellyPro3EM.data.act_power;
+                    shellyPro3EM_Power = memoryData.shellyPro3EM.data.act_power;
                 }
             }
 
@@ -125,7 +125,7 @@ function selectDataDevice_Service(logNameController: string): SelectDataDevice_T
 
         /* Logique métier 3 : Préparation des données a renvoyer */
             const selectDataDevice: SelectDataDevice_Type = {
-                shellyPro3EM_Data: shellyPro3EM_Data,
+                shellyPro3EM_Power: shellyPro3EM_Power,
                 shellyPrise_BatterieZSF2400AC_N1_Power: shellyPrise_BatterieZSF2400AC_N1_Power,
                 shellyPrise_BatterieZSF2400AC_N2_Power: shellyPrise_BatterieZSF2400AC_N2_Power,
                 selectBattery: selectBattery,
