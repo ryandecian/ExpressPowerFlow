@@ -1,11 +1,11 @@
 /* Import des Datas */
-import { getShellyPrise_BatterieZSF2400AC_N2 } from "../../database/data_memory/memory.data.memory.js";
-import { setShellyPrise_BatterieZSF2400AC_N2 } from "../../database/data_memory/memory.data.memory.js";
-import { statusShellyPrise_BatterieZSF2400AC_N2 } from "../../database/data_memory/memory.data.memory.js";
+import { getMemory_Memory } from "../../database/data_memory/memory.data.memory.js";
+import { setMemory_Lvl1_Memory } from "../../database/data_memory/memory.data.memory.js";
+import { setMemory_Lvl2_Memory } from "../../database/data_memory/memory.data.memory.js";
 
 /* Import des Types : */
 import type { GetShellyPlugSGen3_data_Type } from "../../types/dataFetch_type/getShellyPlugSGen3.data.type.js";
-import type { ShellyPlugSGen3_data_memory_Type } from "../../types/dataMemory_type/brut/shellyPlugSGen3.data.memory.type.js";
+import type { ShellyPlugSGen3_Snapshot_Type } from "../../types/dataMemory_type/snapshot/shellyPlugSGen3.snapshot.type.js";
 
 /* Import des Utils */
 import { fetch_Utils } from "../../utils/fetch.utils.js";
@@ -18,9 +18,13 @@ async function shellyPriseZSF2400ACN2_Controller(): Promise<void> {
             const dataShellyResult = await fetch_Utils<GetShellyPlugSGen3_data_Type>("GET", shellyPrise_N2_URL_GET);
 
             /* Vérification si le fetch a échoué */
-            if (dataShellyResult.data == null) {
-                console.error("Erreur de fetch de shellyPriseZSF2400ACN2_Controller :", dataShellyResult.error);
-                statusShellyPrise_BatterieZSF2400AC_N2(false);
+            if (typeof dataShellyResult.error === "string") {
+                console.error("shellyPower_Controller - Erreur de fetch :", dataShellyResult.error);
+
+                /* Si les données ont déjà été initialisées en mémoire */
+                    if (getMemory_Memory().shellyPrise_BatterieZSF2400AC_N2 !== null) {
+                        setMemory_Lvl2_Memory("shellyPrise_BatterieZSF2400AC_N2", "status", false);
+                    }
                 return;
             }
 
@@ -29,18 +33,21 @@ async function shellyPriseZSF2400ACN2_Controller(): Promise<void> {
             const dataSwitch = dataShelly["switch:0"];
         
         /* Logique métier 2 : Préparation des données pour l'enregistrement */
-            const dataSelected: ShellyPlugSGen3_data_memory_Type = {
-                output: dataSwitch.output,
-                apower: dataSwitch.apower,
-                voltage: dataSwitch.voltage,
-                freq: dataSwitch.freq,
-                current: dataSwitch.current,
+            const dataSelected: ShellyPlugSGen3_Snapshot_Type = {
+                ts: Date.now(),
+                source: "Compteur Shelly Pro 3EM",
+                status: true,
+                data: {
+                    output: dataSwitch.output,
+                    apower: dataSwitch.apower,
+                    voltage: dataSwitch.voltage,
+                    freq: dataSwitch.freq,
+                    current: dataSwitch.current,
+                }
             }
-
-            const status = true;
     
         /* Logique métier 3 : Enregistrement des données dans la mémoire */
-            setShellyPrise_BatterieZSF2400AC_N2(dataSelected, status);
+            setMemory_Lvl1_Memory("shellyPrise_BatterieZSF2400AC_N2", dataSelected);
 
         /* Logique métier 4 : Récupération des données depuis la mémoire pour vérification */
             // const data = getShellyPrise_BatterieZSF2400AC_N2();
@@ -51,6 +58,5 @@ async function shellyPriseZSF2400ACN2_Controller(): Promise<void> {
         console.error("Erreur dans shellyPriseZSF2400ACN2_Controller :", error);
     }
 }
-
 
 export { shellyPriseZSF2400ACN2_Controller };
