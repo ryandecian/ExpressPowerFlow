@@ -59,5 +59,4 @@ async function shellyPriseZSF2400ACN1_Controller(): Promise<void> {
     }
 }
 
-
 export { shellyPriseZSF2400ACN1_Controller };
