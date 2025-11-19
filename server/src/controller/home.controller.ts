@@ -33,29 +33,26 @@ async function home_Controller(): Promise<void> {
                 return;
             }
 
-            const shellyPro3EM_Data = selectDataDevice_Result.shellyPro3EM_Data;
-            const shellyPrise_BatterieZSF2400AC_N1_Data = selectDataDevice_Result.shellyPrise_BatterieZSF2400AC_N1_Data;
-            const shellyPrise_BatterieZSF2400AC_N2_Data = selectDataDevice_Result.shellyPrise_BatterieZSF2400AC_N2_Data;
             let selectBattery: SelectBattery_Type = selectDataDevice_Result.selectBattery;
 
         /* Logique métier 2 : Calcul de la consommation réelle de la maison */
             /* Encapsulation de la puissance détecté par le compteur Shelly dans une const */
-                const shellyPower: number = shellyPro3EM_Data.data.act_power;
+                const shellyPower: number = selectDataDevice_Result.shellyPro3EM_Power;
 
             /* Calcul de la consommation réelle de la maison */
                 let homePower: number = 0;
 
                 /* Si les deux batteries sont opérationnelles */
                     if (selectBattery.zendureSolarflow2400AC_N1.status === true && selectBattery.zendureSolarflow2400AC_N2.status === true) {
-                        homePower = shellyPower - shellyPrise_BatterieZSF2400AC_N1_Data!.data!.apower - shellyPrise_BatterieZSF2400AC_N2_Data!.data!.apower;
+                        homePower = shellyPower - selectDataDevice_Result.shellyPrise_BatterieZSF2400AC_N1_Power - selectDataDevice_Result.shellyPrise_BatterieZSF2400AC_N2_Power;
                     }
                 /* Si une seule la batterie N1 est opérationnelle */
                     else if (selectBattery.zendureSolarflow2400AC_N1.status === true) {
-                        homePower = shellyPower - shellyPrise_BatterieZSF2400AC_N1_Data!.data!.apower;
+                        homePower = shellyPower - selectDataDevice_Result.shellyPrise_BatterieZSF2400AC_N1_Power;
                     }
                 /* Si une seule la batterie N2 est opérationnelle */
                     else if (selectBattery.zendureSolarflow2400AC_N2.status === true) {
-                        homePower = shellyPower - shellyPrise_BatterieZSF2400AC_N2_Data!.data!.apower;
+                        homePower = shellyPower - selectDataDevice_Result.shellyPrise_BatterieZSF2400AC_N2_Power;
                     }
                 /* Si aucune batterie n'est opérationnelle */
                     else {
@@ -141,12 +138,15 @@ async function home_Controller(): Promise<void> {
                         fetch_Utils<PostZendureSolarflow2400AC_data_Type>("POST", ZSF2400AC_2_URL_POST, body.ZSF2400AC_N2),
                     ]);
 
-                    if (typeof postZendure_1_Result.error === "string") {
+                    if (typeof postZendure_1_Result.error === "string" && typeof postZendure_2_Result.error === "string") {
+                        console.error("Une erreur est survenue lors de l'envoi descommandes aux Batteries Zendure Solarflow 2400 AC N1 et N2 :", postZendure_1_Result.error, postZendure_2_Result.error);
+                        return;
+                    }
+                    else if (typeof postZendure_1_Result.error === "string") {
                         console.error("Une erreur est survenue lors de l'envoi de la commande à la Batterie Zendure Solarflow 2400 AC N1 :", postZendure_1_Result.error);
                         return;
                     }
-
-                    if (typeof postZendure_2_Result.error === "string") {
+                    else {
                         console.error("Une erreur est survenue lors de l'envoi de la commande à la Batterie Zendure Solarflow 2400 AC N2 :", postZendure_2_Result.error);
                         return;
                     }
@@ -178,8 +178,8 @@ async function home_Controller(): Promise<void> {
             console.log({
                 "Compteur Shelly pro 3EM": `${shellyPower} W`,
                 "targetPower (point de vue batterie)": `${targetPower} W`,
-                "Shelly prise Batterie ZSF2400AC N1": `${shellyPrise_BatterieZSF2400AC_N1_Data!.data!.apower} W`,
-                "Shelly prise Batterie ZSF2400AC N2": `${shellyPrise_BatterieZSF2400AC_N2_Data!.data!.apower} W`,
+                "Shelly prise Batterie ZSF2400AC N1": `${selectDataDevice_Result.shellyPrise_BatterieZSF2400AC_N1_Power} W`,
+                "Shelly prise Batterie ZSF2400AC N2": `${selectDataDevice_Result.shellyPrise_BatterieZSF2400AC_N2_Power} W`,
                 "Consommation maison": `${homePower} W`,
             })
     }
