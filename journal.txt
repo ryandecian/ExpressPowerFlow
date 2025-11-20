@@ -5,11 +5,16 @@ Avancement :
 - Construction DB a effectuer pour la connexion utilisateur
 
 -------------------------------------------------------------------------
-Entre la batterie N1 et N2, il y a 5w de dif sur commande par rapport au N1. 
-Exemple commande N1 = -50 équivaux à -55 en commande sur N2
+Le controller home est terminé, le composant mémoire principale est terminé.
+
+Ce qu'il reste a faire c'est : 
+ - Créer une variable ou une instance en mémoire qui permet d'arreter le controller actif via un true ou false
+ - Intégrer le remplissage du composant mémoire front par les différents controller. 
+ - Créer le controller home de manière simple, développement élaboré après.
+ - Créer une route api pour la consommation des data par le front
+ - Développer le font
 
 Attention, l'utils requestZSF2400AC, il faut vérifier si la charge est bien limité à 2400w
-Il faudra aussi faire mettre en place en mémoire une sauvegarde des commande envoyé a chaque batteries
 -------------------------------------------------------------------------
 Stratégie : 
 La puissance prise en compte pour le calcul de la puissance a demander a zendure doit 
