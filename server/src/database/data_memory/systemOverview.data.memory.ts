@@ -10,7 +10,7 @@ type DataState = {
 const stateMemory: DataState = {
     systemOverview: {
         homePower: null, /* home_Controller */
-        edfPower: null, /*  */
+        edfPower: null, /* shellyPro3EM_Controller */
         solarPower: null,
         batteryPower: null,
         dataBattery: {
