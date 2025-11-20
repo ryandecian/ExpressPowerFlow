@@ -11,7 +11,7 @@ const stateMemory: DataState = {
     systemOverview: {
         homePower: null, /* home_Controller */
         edfPower: null, /* shellyPro3EM_Controller */
-        solarPower: null,
+        solarPower: null, /* shellyPriseSolar_Controller */
         batteryPower: null,
         dataBattery: {
             zendureSolarflow2400AC_N1: {
