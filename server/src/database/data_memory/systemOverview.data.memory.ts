@@ -9,8 +9,8 @@ type DataState = {
 /* Instance mémoire initialisée */
 const stateMemory: DataState = {
     systemOverview: {
-        homePower: null,
-        edfPower: null,
+        homePower: null, /* home_Controller */
+        edfPower: null, /*  */
         solarPower: null,
         batteryPower: null,
         dataBattery: {
