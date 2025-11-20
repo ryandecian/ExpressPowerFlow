@@ -3,6 +3,9 @@ import { getMemory_Memory } from "../../database/data_memory/memory.data.memory.
 import { setMemory_Lvl1_Memory } from "../../database/data_memory/memory.data.memory.js";
 import { setMemory_Lvl2_Memory } from "../../database/data_memory/memory.data.memory.js";
 
+/* Import des Datas */
+import { setSystemOverview_Memory } from "../../database/data_memory/systemOverview.data.memory.js";
+
 /* Import des Types : */
 import type { GetShellyPro3EM_PhaseA_data_Type } from "../../types/dataFetch_type/getShellyPro3EM.phaseA.data.type.js";
 import type { ShellyPro3EM_Snapshot_Type } from "../../types/dataMemory_type/snapshot/shellyPro3EM.snapshot.type.js";
@@ -46,6 +49,7 @@ async function shellyPro3EM_Controller(): Promise<void> {
 
         /* Logique métier 3 : Enregistrement des données dans la mémoire */
             setMemory_Lvl1_Memory("shellyPro3EM", dataSelected);
+            setSystemOverview_Memory("edfPower", dataSelected.data.act_power);
 
         /* Logique métier 4 : Récupération des données depuis la mémoire pour vérification */
             // const power: number = getMemory_Memory().shellyPro3EM!.data.act_power;
