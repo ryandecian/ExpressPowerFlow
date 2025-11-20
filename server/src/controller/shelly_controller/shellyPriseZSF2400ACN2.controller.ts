@@ -35,7 +35,7 @@ async function shellyPriseZSF2400ACN2_Controller(): Promise<void> {
         /* Logique métier 2 : Préparation des données pour l'enregistrement */
             const dataSelected: ShellyPlugSGen3_Snapshot_Type = {
                 ts: Date.now(),
-                source: "Compteur Shelly Pro 3EM",
+                source: "Prise Shelly ZSF2400AC N2",
                 status: true,
                 data: {
                     output: dataSwitch.output,
