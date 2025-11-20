@@ -9,13 +9,11 @@ import { statusAC_dataOff_ZSF2400AC_N1_Service } from "../../services/zendureSol
 
 /* Import des Types : */
 import type { GetZendureSolarflow2400AC_data_Type } from "../../types/dataFetch_type/getZendureSolarflow2400AC.data.type.js";
-import type { ZendureSolarflow2400AC_data_memory_Type } from "../../types/dataMemory_type/brut/zendureSolarflow2400AC.data.memory.type.js";
 import type { ZendureSolarflow2400AC_Snapshot_Type } from "../../types/dataMemory_type/snapshot/zendureSolarflow2400AC.snapshot.type.js";
 
 /* Import des Utils */
 import { fetch_Utils } from "../../utils/fetch.utils.js";
 import { formulaTmp_ZSF2400AC } from "../../utils/temperature/formulaTmp_ZSF2400AC.utils.js";
-import { get } from "http";
 
 const ZENDURE_URL = "http://192.168.1.26/properties/report"
 
