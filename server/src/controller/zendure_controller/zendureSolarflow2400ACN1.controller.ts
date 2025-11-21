@@ -2,6 +2,7 @@
 import { getMemory_Memory } from "../../database/data_memory/memory.data.memory.js";
 import { setMemory_Lvl1_Memory } from "../../database/data_memory/memory.data.memory.js";
 import { setMemory_Lvl2_Memory } from "../../database/data_memory/memory.data.memory.js";
+import { setSystemOverview_Battery_Memory } from "../../database/data_memory/systemOverview.data.memory.js";
 
 /* Import des Services : */
 import { statusAC_dataOn_ZSF2400AC_N1_Service } from "../../services/zendureSolarflow2400ACN1_controller/statusAC_dataOn_ZSF2400AC_N1.service.js";
@@ -89,6 +90,14 @@ async function zendureSolarflow2400ACN1_Controller(): Promise<void> {
         
         /* Logique métier 4 : Enregistrement des données dans la mémoire */
             setMemory_Lvl1_Memory("zendureSolarflow2400AC_N1", dataSelected);
+            setSystemOverview_Battery_Memory("zendureSolarflow2400AC_N1", "sn" , dataZendure.sn);
+            setSystemOverview_Battery_Memory("zendureSolarflow2400AC_N1", "status" , dataSelected.status);
+            setSystemOverview_Battery_Memory("zendureSolarflow2400AC_N1", "gridState" , dataZendure.properties.gridState === 1 ? true : false);
+            setSystemOverview_Battery_Memory("zendureSolarflow2400AC_N1", "hyperTmp" , formulaTmp_ZSF2400AC(dataZendure.properties.hyperTmp));
+            setSystemOverview_Battery_Memory("zendureSolarflow2400AC_N1", "electricLevel" , dataZendure.properties.electricLevel);
+            setSystemOverview_Battery_Memory("zendureSolarflow2400AC_N1", "BatVolt" , dataZendure.properties.BatVolt / 100); /* Conversion mV → V  */
+            setSystemOverview_Battery_Memory("zendureSolarflow2400AC_N1", "maxSoc" , dataZendure.properties.socSet / 10); /* Conversion 1000 → 100% */
+            setSystemOverview_Battery_Memory("zendureSolarflow2400AC_N1", "minSoc" , dataZendure.properties.minSoc / 10); /* Conversion 100 → 10% */
 
         /* Logique métier 5 : Récupération des données depuis la mémoire pour vérification */
             // const data = getZendureSolarflow2400AC_N1();
