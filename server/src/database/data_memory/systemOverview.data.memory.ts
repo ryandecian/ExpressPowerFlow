@@ -14,7 +14,7 @@ const stateMemory: DataState = {
         solarPower: null, /* shellyPriseSolar_Controller */
         batteryPower: null,
         dataBattery: {
-            zendureSolarflow2400AC_N1: {
+            zendureSolarflow2400AC_N1: { /* zendureSolarflow2400ACN1_Controller */
                 sn: null,
                 status: false,
                 gridState: false,
@@ -70,6 +70,21 @@ function setSystemOverview_BatteryN2_Memory<
     stateMemory.systemOverview!.dataBattery.zendureSolarflow2400AC_N2[key] = value;
 }
 
+type BatteryKey = keyof SystemOverview_Data_Memory_Type["dataBattery"];
+
+function setSystemOverview_Battery_Memory<
+    B extends BatteryKey,
+    K extends keyof SystemOverview_Data_Memory_Type["dataBattery"][B]
+>(
+    batteryId: B, // "zendureSolarflow2400AC_N1" ou "zendureSolarflow2400AC_N2"
+    key: K,
+    value: SystemOverview_Data_Memory_Type["dataBattery"][B][K]
+): void {
+    if (!stateMemory.systemOverview) return;
+    
+    stateMemory.systemOverview.dataBattery[batteryId][key] = value;
+}
+
 /* ------------- Getters (copies immuables) ------------- */
 function getSystemOverview_Memory(): SystemOverview_Data_Memory_Type {
     return structuredClone(stateMemory.systemOverview!);
@@ -80,6 +95,7 @@ export {
     setSystemOverview_Memory,
     setSystemOverview_BatteryN1_Memory,
     setSystemOverview_BatteryN2_Memory,
+    setSystemOverview_Battery_Memory,
     /* getters */
     getSystemOverview_Memory,
 };
