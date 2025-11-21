@@ -11,10 +11,10 @@ const stateMemory: DataState = {
     systemOverview: {
         homePower: null, /* home_Controller */
         edfPower: null, /* shellyPro3EM_Controller */
-        solarPower: null,
+        solarPower: null, /* shellyPriseSolar_Controller */
         batteryPower: null,
         dataBattery: {
-            zendureSolarflow2400AC_N1: {
+            zendureSolarflow2400AC_N1: { /* zendureSolarflow2400ACN1_Controller */
                 sn: null,
                 status: false,
                 gridState: false,
@@ -49,26 +49,26 @@ function setSystemOverview_Memory<K extends keyof SystemOverview_Data_Memory_Typ
     if (!stateMemory.systemOverview) return;
     stateMemory.systemOverview[key] = value;
 }
+/* Exemple d'utilisation :  */
+/* setSystemOverview_Memory("homePower", 100) */
 
-/* Met à jour une clé du 2ᵉ niveau (batterie N2) */
-function setSystemOverview_BatteryN1_Memory<
-    K extends keyof SystemOverview_Data_Memory_Type["dataBattery"]["zendureSolarflow2400AC_N1"]
+type BatteryKey = keyof SystemOverview_Data_Memory_Type["dataBattery"];
+
+function setSystemOverview_Battery_Memory<
+    B extends BatteryKey,
+    K extends keyof SystemOverview_Data_Memory_Type["dataBattery"][B]
 >(
+    batteryId: B, // "zendureSolarflow2400AC_N1" ou "zendureSolarflow2400AC_N2"
     key: K,
-    value: SystemOverview_Data_Memory_Type["dataBattery"]["zendureSolarflow2400AC_N1"][K]
+    value: SystemOverview_Data_Memory_Type["dataBattery"][B][K]
 ): void {
-    stateMemory.systemOverview!.dataBattery.zendureSolarflow2400AC_N1[key] = value;
+    if (!stateMemory.systemOverview) return;
+    
+    stateMemory.systemOverview.dataBattery[batteryId][key] = value;
 }
 
-/* Met à jour une clé du 2ᵉ niveau (batterie N2) */
-function setSystemOverview_BatteryN2_Memory<
-    K extends keyof SystemOverview_Data_Memory_Type["dataBattery"]["zendureSolarflow2400AC_N2"]
->(
-    key: K,
-    value: SystemOverview_Data_Memory_Type["dataBattery"]["zendureSolarflow2400AC_N2"][K]
-): void {
-    stateMemory.systemOverview!.dataBattery.zendureSolarflow2400AC_N2[key] = value;
-}
+/* Exemple d'utilisation :  */
+/* setSystemOverview_Memory("zendureSolarflow2400AC_N1", "status", true) */
 
 /* ------------- Getters (copies immuables) ------------- */
 function getSystemOverview_Memory(): SystemOverview_Data_Memory_Type {
@@ -78,8 +78,7 @@ function getSystemOverview_Memory(): SystemOverview_Data_Memory_Type {
 export {
     /* setters */
     setSystemOverview_Memory,
-    setSystemOverview_BatteryN1_Memory,
-    setSystemOverview_BatteryN2_Memory,
+    setSystemOverview_Battery_Memory,
     /* getters */
     getSystemOverview_Memory,
 };
