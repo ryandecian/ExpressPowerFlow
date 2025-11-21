@@ -2,6 +2,7 @@
 import { getMemory_Memory } from "../../database/data_memory/memory.data.memory.js";
 import { setMemory_Lvl1_Memory } from "../../database/data_memory/memory.data.memory.js";
 import { setMemory_Lvl2_Memory } from "../../database/data_memory/memory.data.memory.js";
+import { setSystemOverview_Battery_Memory } from "../../database/data_memory/systemOverview.data.memory.js";
 
 /* Import des Types : */
 import type { GetShellyPlugSGen3_data_Type } from "../../types/dataFetch_type/getShellyPlugSGen3.data.type.js";
@@ -48,6 +49,7 @@ async function shellyPriseZSF2400ACN2_Controller(): Promise<void> {
     
         /* Logique métier 3 : Enregistrement des données dans la mémoire */
             setMemory_Lvl1_Memory("shellyPrise_BatterieZSF2400AC_N2", dataSelected);
+            setSystemOverview_Battery_Memory("zendureSolarflow2400AC_N2", "powerFlow" , dataSelected.data.apower);
 
         /* Logique métier 4 : Récupération des données depuis la mémoire pour vérification */
             // const data = getShellyPrise_BatterieZSF2400AC_N2();
