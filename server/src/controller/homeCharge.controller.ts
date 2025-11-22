@@ -1,19 +1,83 @@
 /* Import des Datas */
+import { setSystemOverview_Memory } from "../database/data_memory/systemOverview.data.memory.js";
 
 /* Import des Types : */
+import type { BodyRequestHomeController_Type } from "../types/services/bodyRequestHomeController.type.js";
+import type { PostZendureSolarflow2400AC_data_Type } from "../types/dataFetch_type/postZendureSorlarflow2400AC.data.type.js";
+import type { SelectBattery_Type } from "../types/services/selectBattery.type.js";
 
+/* Import des Utils */
+import { fetch_Utils } from "../utils/fetch.utils.js";
+import { selectDataDevice_Service } from "../services/verifs/selectDataDevice.service.js";
+import type { SelectDataDevice_Type } from "../types/services/selectDataDevice.type.js";
+
+const ZSF2400AC_1_URL_POST = "http://192.168.1.26/properties/write";
+const ZSF2400AC_2_URL_POST = "http://192.168.1.83/properties/write";
 
 async function homeCharge_Controller(): Promise<void> {
     try {
         /* Logique métier 1 : Récupération des datas nécessaires depuis la mémoire */
+            const selectDataDevice_Result: SelectDataDevice_Type | null = selectDataDevice_Service("homeCharge_Controller");
+            /* Si selectDataDevice_Result est null c'est que le controller est dans l'impossibilité de continuer car manque de datas */
+            if (selectDataDevice_Result === null) {
+                return;
+            }
 
+            let selectBattery: SelectBattery_Type = selectDataDevice_Result.selectBattery;
 
+        /* Logique métier 2 : Calcul de la consommation réelle de la maison */
+            /* Encapsulation de la puissance détecté par le compteur Shelly dans une const */
+                const shellyPower: number = selectDataDevice_Result.shellyPro3EM_Power;
+
+                /* Calcul de la consommation réelle de la maison */
+                let homePower: number = 0;
+
+                /* Si les deux batteries sont opérationnelles */
+                    if (selectBattery.zendureSolarflow2400AC_N1.status === true && selectBattery.zendureSolarflow2400AC_N2.status === true) {
+                        homePower = shellyPower - selectDataDevice_Result.shellyPrise_BatterieZSF2400AC_N1_Power - selectDataDevice_Result.shellyPrise_BatterieZSF2400AC_N2_Power;
+                    }
+                /* Si une seule la batterie N1 est opérationnelle */
+                    else if (selectBattery.zendureSolarflow2400AC_N1.status === true) {
+                        homePower = shellyPower - selectDataDevice_Result.shellyPrise_BatterieZSF2400AC_N1_Power;
+                    }
+                /* Si une seule la batterie N2 est opérationnelle */
+                    else if (selectBattery.zendureSolarflow2400AC_N2.status === true) {
+                        homePower = shellyPower - selectDataDevice_Result.shellyPrise_BatterieZSF2400AC_N2_Power;
+                    }
+                /* Si aucune batterie n'est opérationnelle */
+                    else {
+                        console.error("home_Controller - Erreur dans le calcul de homePower : Aucunes batteries Zendure Solarflow 2400 AC ne sont opérationnelles.");
+                    }
+
+            /* Sauvegarde de la puissance de la maison en mémoire */
+                setSystemOverview_Memory("homePower", homePower);
+
+            /* Modification du signe de la puissance pour un bon traitement dans l'utils requestZSF2400AC */
+
+        /* Logique métier 3 : Vérification de la capacité de chaque batterie */
+            if (selectBattery.zendureSolarflow2400AC_N1.status === true) {
+                const electricLevel_N1 = selectBattery.zendureSolarflow2400AC_N1.electricLevel;
+                const electricLevel_N2 = selectBattery.zendureSolarflow2400AC_N2.electricLevel;
+
+                if (electricLevel_N1 === 100) {
+                    selectBattery.zendureSolarflow2400AC_N1.status = false;
+                }
+                if (electricLevel_N2 === 100) {
+                    selectBattery.zendureSolarflow2400AC_N2.status = false;
+                }
+            }
+
+        /* Logique métier 4 : Préparation  des commandes à envoyer et sélections des batteries et puissance a demander a chacune d'elles */
+            let body: BodyRequestHomeController_Type = {
+                ZSF2400AC_N1: null,
+                ZSF2400AC_N2: null,
+            };
+
+            if (shellyPower > 9000) {}
+            if (shellyPower >= 8700 && shellyPower <= 9000) {}
+            if (shellyPower < 8700) {}
 
         
-            /* Cibler le input limite pour vérifier que la commande est correcte
-            faire attention a ce que le status est ok pour éviter d'envoyer une commande inutile. 
-            implanter une surveillance avec shelly compteur et prise pour brider les batteries et ne pas dépasser les 8700w
-            Prendre en compte le % de batterie, c'est a dire brider uniquement la batterie ayant le % le plus élevé */
     }
     catch (error) {
         console.error("Erreur dans le controller homeCharge_Controller :", error);

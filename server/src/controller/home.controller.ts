@@ -10,7 +10,6 @@ import { handlePowerRange_Neg600_To_Neg1200_Service } from "../services/home_con
 import { handlePowerRange_Below_Neg1200_Service } from "../services/home_controller/handlePowerRange_Below_Neg1200.service.js";
 import { verifLastRequest_ZSF2400AC_Service } from "../services/verifs/verifLastRequest_ZSF2400AC.service.js";
 import { saveLastRequest_ZSF2400AC_Service } from "../services/verifs/saveLastRequest_ZSF2400AC.service.js";
-import { SelectDataDevice_Type } from "../types/services/selectDataDevice.type.js";
 
 /* Import des Datas */
 import { setSystemOverview_Memory } from "../database/data_memory/systemOverview.data.memory.js";
@@ -19,6 +18,7 @@ import { setSystemOverview_Memory } from "../database/data_memory/systemOverview
 import type { BodyRequestHomeController_Type } from "../types/services/bodyRequestHomeController.type.js";
 import type { PostZendureSolarflow2400AC_data_Type } from "../types/dataFetch_type/postZendureSorlarflow2400AC.data.type.js";
 import type { SelectBattery_Type } from "../types/services/selectBattery.type.js";
+import type { SelectDataDevice_Type } from "../types/services/selectDataDevice.type.js";
 
 /* Import des Utils */
 import { fetch_Utils } from "../utils/fetch.utils.js";
