@@ -73,11 +73,8 @@ async function homeCharge_Controller(): Promise<void> {
                 ZSF2400AC_N2: null,
             };
 
-            if (shellyPower > 9000) {}
-            if (shellyPower >= 8700 && shellyPower <= 9000) {}
-            if (shellyPower < 8700) {}
-
-        
+            if (shellyPower > 8700) {}
+            if (shellyPower < 8700) {}      
     }
     catch (error) {
         console.error("Erreur dans le controller homeCharge_Controller :", error);
