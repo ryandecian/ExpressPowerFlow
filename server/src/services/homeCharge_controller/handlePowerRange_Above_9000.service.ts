@@ -117,3 +117,5 @@ function handlePowerRange_Above_9000(
 
     return body;
 }
+
+export { handlePowerRange_Above_9000 };
