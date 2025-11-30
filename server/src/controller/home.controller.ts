@@ -1,3 +1,6 @@
+/* Import des Datas */
+import { setSystemOverview_Memory } from "../database/data_memory/systemOverview.data.memory.js";
+
 /* Import des Services : */
 import { handlePowerRange_Equal_0_Service } from "../services/home_controller/handlePowerRange_Equal_0.service.js";
 import { handlePowerRange_0_To_50_Service } from "../services/home_controller/handlePowerRange_0_To_50.service.js";
@@ -10,9 +13,6 @@ import { handlePowerRange_Neg600_To_Neg1200_Service } from "../services/home_con
 import { handlePowerRange_Below_Neg1200_Service } from "../services/home_controller/handlePowerRange_Below_Neg1200.service.js";
 import { verifLastRequest_ZSF2400AC_Service } from "../services/verifs/verifLastRequest_ZSF2400AC.service.js";
 import { saveLastRequest_ZSF2400AC_Service } from "../services/verifs/saveLastRequest_ZSF2400AC.service.js";
-
-/* Import des Datas */
-import { setSystemOverview_Memory } from "../database/data_memory/systemOverview.data.memory.js";
 
 /* Import des Types : */
 import type { BodyRequestHomeController_Type } from "../types/services/bodyRequestHomeController.type.js";

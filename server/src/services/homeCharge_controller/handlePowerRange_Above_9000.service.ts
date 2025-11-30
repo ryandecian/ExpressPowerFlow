@@ -5,6 +5,7 @@ import type { SelectBattery_Type } from "../../types/services/selectBattery.type
 /* Import des Utils */
 import { requestZSF2400AC_Utils } from "../../utils/requestZSF2400AC/requestZSF2400AC.utils.js";
 
+/* Utilisé lors de la charge des batteries si la puissance mesurée par le compteur shelly dépasse les 8700w */
 function handlePowerRange_Above_9000(
     body: BodyRequestHomeController_Type, 
     shellyPower: number, 
