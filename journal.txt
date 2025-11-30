@@ -7,6 +7,7 @@ Ce qu'il reste a faire c'est :
  - Créer le controller home de manière simple, développement élaboré après.
  - Créer une route api pour la consommation des data par le front
  - Développer le font
+ - Faire la DB
 
 Attention, l'utils requestZSF2400AC, il faut vérifier si la charge est bien limité à 2400w
 -------------------------------------------------------------------------
