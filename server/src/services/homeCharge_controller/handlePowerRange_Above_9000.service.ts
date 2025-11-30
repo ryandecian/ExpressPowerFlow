@@ -20,7 +20,7 @@ function handlePowerRange_Above_9000(
         const thresholdPower: number = shellyPower - maxPowerHome;
 
     /* Couche 1 : Si le seuil de puissance est dépassé de plus de 100w */
-        if (thresholdPower > 100) {
+        if (thresholdPower >= 100) {
             /* Couche 2 : Les deux batteries sont disponibles */
                 if (selectBattery.zendureSolarflow2400AC_N1.status === true && selectBattery.zendureSolarflow2400AC_N2.status === true) {
                     /* Couche 3 : Cas 1 : Les 2 batteries ont des niveaux de charge identiques */
