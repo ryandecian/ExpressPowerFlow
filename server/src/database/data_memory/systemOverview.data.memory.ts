@@ -14,27 +14,27 @@ const stateMemory: DataState = {
         solarPower: null, /* shellyPriseSolar_Controller */
         batteryPower: null,
         dataBattery: {
-            zendureSolarflow2400AC_N1: { /* zendureSolarflow2400ACN1_Controller */
-                sn: null,
-                status: false,
-                gridState: false,
-                hyperTmp: null,
-                electricLevel: null,
-                BatVolt: null,
-                powerFlow: null,
-                maxSoc: null,
-                minSoc: null,
+            zendureSolarflow2400AC_N1: {
+                sn: null, /* zendureSolarflow2400ACN1_Controller */
+                status: false, /* zendureSolarflow2400ACN1_Controller */
+                gridState: false, /* zendureSolarflow2400ACN1_Controller */
+                hyperTmp: null, /* zendureSolarflow2400ACN1_Controller */
+                electricLevel: null, /* zendureSolarflow2400ACN1_Controller */
+                BatVolt: null, /* zendureSolarflow2400ACN1_Controller */
+                powerFlow: null, /* shellyPriseZSF2400ACN1_Controller */
+                maxSoc: null, /* zendureSolarflow2400ACN1_Controller */
+                minSoc: null, /* zendureSolarflow2400ACN1_Controller */
             },
             zendureSolarflow2400AC_N2: {
-                sn: null,
-                status: false,
-                gridState: false,
-                hyperTmp: null,
-                electricLevel: null,
-                BatVolt: null,
-                powerFlow: null,
-                maxSoc: null,
-                minSoc: null,
+                sn: null, /* zendureSolarflow2400ACN2_Controller */
+                status: false, /* zendureSolarflow2400ACN2_Controller */
+                gridState: false, /* zendureSolarflow2400ACN2_Controller */
+                hyperTmp: null, /* zendureSolarflow2400ACN2_Controller */
+                electricLevel: null, /* zendureSolarflow2400ACN2_Controller */
+                BatVolt: null, /* zendureSolarflow2400ACN2_Controller */
+                powerFlow: null, /* shellyPriseZSF2400ACN2_Controller */
+                maxSoc: null, /* zendureSolarflow2400ACN2_Controller */
+                minSoc: null, /* zendureSolarflow2400ACN2_Controller */
             },
         },
     },

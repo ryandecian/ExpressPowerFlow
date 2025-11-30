@@ -10,7 +10,6 @@ import { handlePowerRange_Neg600_To_Neg1200_Service } from "../services/home_con
 import { handlePowerRange_Below_Neg1200_Service } from "../services/home_controller/handlePowerRange_Below_Neg1200.service.js";
 import { verifLastRequest_ZSF2400AC_Service } from "../services/verifs/verifLastRequest_ZSF2400AC.service.js";
 import { saveLastRequest_ZSF2400AC_Service } from "../services/verifs/saveLastRequest_ZSF2400AC.service.js";
-import { SelectDataDevice_Type } from "../types/services/selectDataDevice.type.js";
 
 /* Import des Datas */
 import { setSystemOverview_Memory } from "../database/data_memory/systemOverview.data.memory.js";
@@ -19,6 +18,7 @@ import { setSystemOverview_Memory } from "../database/data_memory/systemOverview
 import type { BodyRequestHomeController_Type } from "../types/services/bodyRequestHomeController.type.js";
 import type { PostZendureSolarflow2400AC_data_Type } from "../types/dataFetch_type/postZendureSorlarflow2400AC.data.type.js";
 import type { SelectBattery_Type } from "../types/services/selectBattery.type.js";
+import type { SelectDataDevice_Type } from "../types/services/selectDataDevice.type.js";
 
 /* Import des Utils */
 import { fetch_Utils } from "../utils/fetch.utils.js";
@@ -59,7 +59,7 @@ async function home_Controller(): Promise<void> {
                     }
                 /* Si aucune batterie n'est opérationnelle */
                     else {
-                        console.error("home_Controller - Erreur dans le calcul de homePower : Aucunes batteries Zendure Solarflow 2400 AC ne sont opérationnelles.");
+                        console.error("[home_Controller] - Erreur dans le calcul de homePower : Aucunes batteries Zendure Solarflow 2400 AC ne sont opérationnelles.");
                     }
 
             /* Sauvegarde de la puissance de la maison en mémoire */
@@ -107,30 +107,34 @@ async function home_Controller(): Promise<void> {
                 body = handlePowerRange_Equal_0_Service(selectBattery, body, targetPower);
             }
             /* Charge */
-            if (targetPower > 0 && targetPower <= 50) {
+            else if (targetPower > 0 && targetPower <= 50) {
                 body = handlePowerRange_0_To_50_Service(selectBattery, body, targetPower);
             }
-            if (targetPower > 50 && targetPower <= 600) {
+            else if (targetPower > 50 && targetPower <= 600) {
                 body = handlePowerRange_50_To_600_Service(selectBattery, body, targetPower);
             }
-            if (targetPower > 600 && targetPower <= 1200) {
+            else if (targetPower > 600 && targetPower <= 1200) {
                 body = handlePowerRange_600_To_1200_Service(selectBattery, body, targetPower);
             }
-            if (targetPower > 1200) {
+            else if (targetPower > 1200) {
                 body = handlePowerRange_Above_1200_Service(selectBattery, body, targetPower);
             }
             /* Décharge */
-            if (targetPower < 0 && targetPower >= -50) {
+            else if (targetPower < 0 && targetPower >= -50) {
                 body = handlePowerRange_Neg50_To_0_Service(selectBattery, body, targetPower);
             }
-            if (targetPower < -50 && targetPower >= -600) {
+            else if (targetPower < -50 && targetPower >= -600) {
                 body = handlePowerRange_Neg50_To_Neg600_Service(selectBattery, body, targetPower);
             }
-            if (targetPower < -600 && targetPower >= -1200) {
+            else if (targetPower < -600 && targetPower >= -1200) {
                 body = handlePowerRange_Neg600_To_Neg1200_Service(selectBattery, body, targetPower);
             }
-            if (targetPower < -1200) {
+            else if (targetPower < -1200) {
                 body = handlePowerRange_Below_Neg1200_Service(selectBattery, body, targetPower);
+            }
+            else {
+                console.error("home_Controller - Erreur dans la sélection de la plage de puissance à gérer.");
+                return;
             }
 
         /* Logique métier 5 : Vérification des dernières commandes envoyées aux batteries pour éviter les doublons */
@@ -145,36 +149,39 @@ async function home_Controller(): Promise<void> {
                     ]);
 
                     if (typeof postZendure_1_Result.error === "string" && typeof postZendure_2_Result.error === "string") {
-                        console.error("[Home_Controller] Une erreur est survenue lors de l'envoi des commandes aux Batteries Zendure Solarflow 2400 AC N1 et N2 :", postZendure_1_Result.error, postZendure_2_Result.error);
+                        console.error("[Home_Controller] - Une erreur est survenue lors de l'envoi des commandes aux Batteries Zendure Solarflow 2400 AC N1 et N2 :", postZendure_1_Result.error, postZendure_2_Result.error);
                         return;
                     }
                     else if (typeof postZendure_1_Result.error === "string") {
-                        console.error("[Home_Controller] Une erreur est survenue lors de l'envoi de la commande à la Batterie Zendure Solarflow 2400 AC N1 :", postZendure_1_Result.error);
+                        console.error("[Home_Controller] - Une erreur est survenue lors de l'envoi de la commande à la Batterie Zendure Solarflow 2400 AC N1 :", postZendure_1_Result.error);
                         return;
                     }
                     else if (typeof postZendure_2_Result.error === "string") {
-                        console.error("[Home_Controller] Une erreur est survenue lors de l'envoi de la commande à la Batterie Zendure Solarflow 2400 AC N2 :", postZendure_2_Result.error);
+                        console.error("[Home_Controller] - Une erreur est survenue lors de l'envoi de la commande à la Batterie Zendure Solarflow 2400 AC N2 :", postZendure_2_Result.error);
                         return;
                     }
                 }
+            /* Si seule batterie N1 est active */
                 else if (body.ZSF2400AC_N1 != null) {
                     const postZendure_1_Result = await fetch_Utils<PostZendureSolarflow2400AC_data_Type>("POST", ZSF2400AC_1_URL_POST, body.ZSF2400AC_N1);
 
                     if (typeof postZendure_1_Result.error === "string") {
-                        console.error("Une erreur est survenue lors de l'envoi de la commande à la Batterie Zendure Solarflow 2400 AC N1 :", postZendure_1_Result.error);
+                        console.error("[Home_Controller] - Une erreur est survenue lors de l'envoi de la commande à la Batterie Zendure Solarflow 2400 AC N1 :", postZendure_1_Result.error);
                         return;
                     }
                 }
+            /* Si seule batterie N2 est active */
                 else if (body.ZSF2400AC_N2 != null) {
                     const postZendure_2_Result = await fetch_Utils<PostZendureSolarflow2400AC_data_Type>("POST", ZSF2400AC_2_URL_POST, body.ZSF2400AC_N2);
 
                     if (typeof postZendure_2_Result.error === "string") {
-                        console.error("Une erreur est survenue lors de l'envoi de la commande à la Batterie Zendure Solarflow 2400 AC N2 :", postZendure_2_Result.error);
+                        console.error("[Home_Controller] - Une erreur est survenue lors de l'envoi de la commande à la Batterie Zendure Solarflow 2400 AC N2 :", postZendure_2_Result.error);
                         return;
                     }
                 }
+            /* Si aucune batterie n'est active */
                 else {
-                    console.error("Aucune batterie n'a reçu de commande à exécuter.");
+                    console.error("[Home_Controller] - Aucune batterie n'a reçu de commande à exécuter.");
                     return;
                 }
         
