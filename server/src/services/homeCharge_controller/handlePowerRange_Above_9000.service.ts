@@ -15,8 +15,7 @@ function handlePowerRange_Above_9000(
 ): BodyRequestHomeController_Type {
 
     /* Calcul du seul de déclanchement */
-        const maxPowerHome: number = 8700
-
+        const maxPowerHome: number = 8700;
         const thresholdPower: number = shellyPower - maxPowerHome;
 
     /* Couche 1 : Si le seuil de puissance est dépassé de plus de 100w */
