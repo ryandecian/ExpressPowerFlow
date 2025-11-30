@@ -74,7 +74,7 @@ async function homeCharge_Controller(): Promise<void> {
             };
 
             if (shellyPower > 8700) {}
-            if (shellyPower < 8700) {}      
+            if (shellyPower <= 8700) {}      
     }
     catch (error) {
         console.error("Erreur dans le controller homeCharge_Controller :", error);
