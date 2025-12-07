@@ -1,0 +1,93 @@
+/* Import des Datas */
+import { getMemory_Memory } from "../../database/data_memory/memory.data.memory.js";
+import { setMemory_Lvl1_Memory } from "../../database/data_memory/memory.data.memory.js";
+import { setMemory_Lvl2_Memory } from "../../database/data_memory/memory.data.memory.js";
+import { setSystemOverview_Battery_Memory } from "../../database/data_memory/systemOverview.data.memory.js";
+/* Import des Services : */
+import { statusAC_dataOn_ZSF2400AC_N2_Service } from "../../services/zendureSorlarflow2400ACN2_controller/statusAC_dataOn_ZSF2400AC_N2.service.js";
+import { statusAC_dataOff_ZSF2400AC_N2_Service } from "../../services/zendureSorlarflow2400ACN2_controller/statusAC_dataOff_ZSF2400AC_N2.service.js";
+/* Import des Utils */
+import { fetch_Utils } from "../../utils/fetch.utils.js";
+import { formulaTmp_ZSF2400AC } from "../../utils/temperature/formulaTmp_ZSF2400AC.utils.js";
+const ZENDURE_URL = "http://192.168.1.83/properties/report";
+async function zendureSolarflow2400ACN2_Controller() {
+    try {
+        /* Logique métier 1 : Récupération des données de la Batterie Zendure Solarflow 2400 AC */
+        const dataZendureResult = await fetch_Utils("GET", ZENDURE_URL);
+        /* Vérification si le fetch a échoué */
+        if (typeof dataZendureResult.error === "string") {
+            console.error("zendureSolarflow2400ACN2_Controller - Erreur de fetch :", dataZendureResult.error);
+            /* Si les données ont déjà été initialisées en mémoire */
+            if (getMemory_Memory().zendureSolarflow2400AC_N2 !== null) {
+                setMemory_Lvl2_Memory("zendureSolarflow2400AC_N2", "status", false);
+            }
+            return;
+        }
+        const dataZendure = dataZendureResult.data;
+        /* Logique métier 2 : Préparation des données pour l'enregistrement */
+        const dataSelected = {
+            ts: Date.now(),
+            source: "Batterie Zendure Solarflow 2400AC N1",
+            status: true,
+            data: {
+                timestamp: dataZendure.timestamp,
+                sn: dataZendure.sn,
+                product: dataZendure.product,
+                properties: {
+                    packInputPower: dataZendure.properties.packInputPower,
+                    outputPackPower: dataZendure.properties.outputPackPower,
+                    electricLevel: dataZendure.properties.electricLevel,
+                    hyperTmp: formulaTmp_ZSF2400AC(dataZendure.properties.hyperTmp),
+                    acStatus: dataZendure.properties.acStatus,
+                    gridState: dataZendure.properties.gridState,
+                    BatVolt: dataZendure.properties.BatVolt,
+                    acMode: dataZendure.properties.acMode,
+                    inputLimit: dataZendure.properties.inputLimit,
+                    outputLimit: dataZendure.properties.outputLimit,
+                    socSet: dataZendure.properties.socSet,
+                    minSoc: dataZendure.properties.minSoc,
+                },
+                packData: [
+                    {
+                        sn: dataZendure.packData[0].sn,
+                        socLevel: dataZendure.packData[0].socLevel,
+                        state: dataZendure.packData[0].state,
+                        totalVol: dataZendure.packData[0].totalVol,
+                    },
+                    {
+                        sn: dataZendure.packData[1].sn,
+                        socLevel: dataZendure.packData[1].socLevel,
+                        state: dataZendure.packData[1].state,
+                        totalVol: dataZendure.packData[1].totalVol,
+                    },
+                ],
+            }
+        };
+        /* Logique métier 3 : Analyse des données et vérification si la batterie est oppérationnel */
+        /* Si les données en mémoire existent et ne sont pas undefined */
+        if (getMemory_Memory().zendureSolarflow2400AC_N2 !== null) {
+            dataSelected.status = statusAC_dataOn_ZSF2400AC_N2_Service(dataZendure);
+        }
+        /* Si les données en mémoire n'existent pas ou sont undefined */
+        else {
+            dataSelected.status = statusAC_dataOff_ZSF2400AC_N2_Service(dataZendure);
+        }
+        /* Logique métier 4 : Enregistrement des données dans la mémoire */
+        setMemory_Lvl1_Memory("zendureSolarflow2400AC_N2", dataSelected);
+        setSystemOverview_Battery_Memory("zendureSolarflow2400AC_N2", "sn", dataZendure.sn);
+        setSystemOverview_Battery_Memory("zendureSolarflow2400AC_N2", "status", dataSelected.status);
+        setSystemOverview_Battery_Memory("zendureSolarflow2400AC_N2", "gridState", dataZendure.properties.gridState === 1 ? true : false);
+        setSystemOverview_Battery_Memory("zendureSolarflow2400AC_N2", "hyperTmp", formulaTmp_ZSF2400AC(dataZendure.properties.hyperTmp));
+        setSystemOverview_Battery_Memory("zendureSolarflow2400AC_N2", "electricLevel", dataZendure.properties.electricLevel);
+        setSystemOverview_Battery_Memory("zendureSolarflow2400AC_N2", "BatVolt", dataZendure.properties.BatVolt / 100); /* Conversion mV → V  */
+        setSystemOverview_Battery_Memory("zendureSolarflow2400AC_N2", "maxSoc", dataZendure.properties.socSet / 10); /* Conversion 1000 → 100% */
+        setSystemOverview_Battery_Memory("zendureSolarflow2400AC_N2", "minSoc", dataZendure.properties.minSoc / 10); /* Conversion 100 → 10% */
+        /* Logique métier 5 : Récupération des données depuis la mémoire pour vérification */
+        // const data = getZendureSolarflow2400AC_N2();
+        // console.log(`Batterie Zendure entrée: ${data?.data.properties?.outputPackPower} W, sortie: ${data?.data.properties?.packInputPower} W`);
+    }
+    catch (error) {
+        console.error("Erreur dans zendureSolarflow2400AC_Controller :", error);
+    }
+}
+export { zendureSolarflow2400ACN2_Controller };
