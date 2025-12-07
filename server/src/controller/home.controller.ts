@@ -1,3 +1,6 @@
+/* Import des Datas */
+import { setSystemOverview_Memory } from "../database/data_memory/systemOverview.data.memory.js";
+
 /* Import des Services : */
 import { handlePowerRange_Equal_0_Service } from "../services/home_controller/handlePowerRange_Equal_0.service.js";
 import { handlePowerRange_0_To_50_Service } from "../services/home_controller/handlePowerRange_0_To_50.service.js";
@@ -10,9 +13,6 @@ import { handlePowerRange_Neg600_To_Neg1200_Service } from "../services/home_con
 import { handlePowerRange_Below_Neg1200_Service } from "../services/home_controller/handlePowerRange_Below_Neg1200.service.js";
 import { verifLastRequest_ZSF2400AC_Service } from "../services/verifs/verifLastRequest_ZSF2400AC.service.js";
 import { saveLastRequest_ZSF2400AC_Service } from "../services/verifs/saveLastRequest_ZSF2400AC.service.js";
-
-/* Import des Datas */
-import { setSystemOverview_Memory } from "../database/data_memory/systemOverview.data.memory.js";
 
 /* Import des Types : */
 import type { BodyRequestHomeController_Type } from "../types/services/bodyRequestHomeController.type.js";
@@ -105,32 +105,41 @@ async function home_Controller(): Promise<void> {
             /* Neutre */
             if (targetPower === 0) {
                 body = handlePowerRange_Equal_0_Service(selectBattery, body, targetPower);
+                console.log("Service 1")
             }
             /* Charge */
             else if (targetPower > 0 && targetPower <= 50) {
                 body = handlePowerRange_0_To_50_Service(selectBattery, body, targetPower);
+                console.log("Service 2")
             }
             else if (targetPower > 50 && targetPower <= 600) {
                 body = handlePowerRange_50_To_600_Service(selectBattery, body, targetPower);
+                console.log("Service 3")
             }
             else if (targetPower > 600 && targetPower <= 1200) {
                 body = handlePowerRange_600_To_1200_Service(selectBattery, body, targetPower);
+                console.log("Service 4")
             }
             else if (targetPower > 1200) {
                 body = handlePowerRange_Above_1200_Service(selectBattery, body, targetPower);
+                console.log("Service 5")
             }
             /* Décharge */
             else if (targetPower < 0 && targetPower >= -50) {
                 body = handlePowerRange_Neg50_To_0_Service(selectBattery, body, targetPower);
+                console.log("Service 6")
             }
             else if (targetPower < -50 && targetPower >= -600) {
                 body = handlePowerRange_Neg50_To_Neg600_Service(selectBattery, body, targetPower);
+                console.log("Service 7")
             }
             else if (targetPower < -600 && targetPower >= -1200) {
                 body = handlePowerRange_Neg600_To_Neg1200_Service(selectBattery, body, targetPower);
+                console.log("Service 8")
             }
             else if (targetPower < -1200) {
                 body = handlePowerRange_Below_Neg1200_Service(selectBattery, body, targetPower);
+                console.log("Service 9")
             }
             else {
                 console.error("home_Controller - Erreur dans la sélection de la plage de puissance à gérer.");
