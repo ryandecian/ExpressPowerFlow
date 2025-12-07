@@ -16,7 +16,7 @@ function handlePowerRange_Below_8700_Service(
         const maxPowerHome: number = 8700;
         const thresholdPower: number = maxPowerHome - shellyPower;
 
-        /* Couche 1 : Si le seuil de puissance est dépassé de plus de 100w */
+    /* Couche 1 : Si le seuil de puissance est dépassé de plus de 100w */
         if (thresholdPower >= 100) {
             /* Couche 2 : Les deux batteries sont disponibles */
                 if (selectBattery.zendureSolarflow2400AC_N1.status === true && selectBattery.zendureSolarflow2400AC_N2.status === true) {
@@ -183,7 +183,7 @@ function handlePowerRange_Below_8700_Service(
                         }
                     /* Couche 3 : Si aucune des situation n'est rencontrée */
                         else {
-                            console.error("[homeCharge_Controller] - handlePowerRange_Above_9000 - Erreur : Impossible de déterminer la répartition de la puissance entre les deux batteries Zendure Solarflow 2400 AC.");
+                            console.error("[homeCharge_Controller] - handlePowerRange_Below_8700 - Erreur : Impossible de déterminer la répartition de la puissance entre les deux batteries Zendure Solarflow 2400 AC.");
                             return body;
                         }
                 }
@@ -199,7 +199,7 @@ function handlePowerRange_Below_8700_Service(
                 }
             /* Couche 2 : Aucune batterie n'est disponible */
                 else {
-                    console.error("[homeCharge_Controller] - handlePowerRange_Above_9000 - Erreur : Aucunes batteries Zendure Solarflow 2400 AC ne sont opérationnelles.");
+                    console.error("[homeCharge_Controller] - handlePowerRange_Below_8700 - Erreur : Aucunes batteries Zendure Solarflow 2400 AC ne sont opérationnelles.");
                     return body;
                 }
         }
