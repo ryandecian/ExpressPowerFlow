@@ -44,6 +44,8 @@ function handlePowerRange_Above_6500_security_Service(
                                             body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 0); /* Commande pour mise en veille */
                                         }
                                 }
+                            /* Si la différence de 4% : N1 = 90% et N2 = 10% */
+                            /* J'en suis là ----------------------------------------------------------------------------------------------- */
                         }
                 }
             /* Couche 2 : Seul la batterie N1 est disponible */
