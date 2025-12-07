@@ -2,8 +2,9 @@
 import { setSystemOverview_Memory } from "../database/data_memory/systemOverview.data.memory.js";
 
 /* Import des Services : */
-import { handlePowerRange_Above_9000 } from "../services/homeCharge_controller/handlePowerRange_Above_9000.service.js";
-import { handlePowerRange_Below_8700 } from "../services/homeCharge_controller/handlePowerRange_Below_8700.service.js";
+import { handlePowerRange_Above_6500_security_Service } from "../services/homeCharge_controller/handlePowerRange_Above_6500.security.service.js";
+import { handlePowerRange_Above_9000_Service } from "../services/homeCharge_controller/handlePowerRange_Above_9000.service.js";
+import { handlePowerRange_Below_8700_Service } from "../services/homeCharge_controller/handlePowerRange_Below_8700.service.js";
 
 /* Import des Types : */
 import type { BodyRequestHomeController_Type } from "../types/services/bodyRequestHomeController.type.js";
@@ -55,8 +56,6 @@ async function homeCharge_Controller(): Promise<void> {
             /* Sauvegarde de la puissance de la maison en mémoire */
                 setSystemOverview_Memory("homePower", homePower);
 
-            /* Modification du signe de la puissance pour un bon traitement dans l'utils requestZSF2400AC */
-
         /* Logique métier 3 : Vérification de la capacité de chaque batterie */
             if (selectBattery.zendureSolarflow2400AC_N1.status === true) {
                 const electricLevel_N1 = selectBattery.zendureSolarflow2400AC_N1.electricLevel;
@@ -76,15 +75,16 @@ async function homeCharge_Controller(): Promise<void> {
                 ZSF2400AC_N2: null,
             };
 
-            if (homePower > 8000) {
+            if (homePower > 6500) {
                 /* Sécurité qui n'arrivera normalement jamais car les prise sécurise la consommation maison en se coupant */
-                /* On doit décharger les batteries et maintenir à un niveau de sécurité, cible 6000w. HomePower n'incluant pas la puissance des batteries, il s'agit donc bien de la consomation maison */
+                /* On doit décharger les batteries et maintenir à un niveau de sécurité, cible 6500w. HomePower n'incluant pas la puissance des batteries, il s'agit donc bien de la consomation maison */
+                body = handlePowerRange_Above_6500_security_Service(body, selectBattery, homePower);
             }
             else if (shellyPower > 8700) {
-                body = handlePowerRange_Above_9000(body, shellyPower, selectBattery, selectDataDevice_Result.shellyPrise_BatterieZSF2400AC_N1_Power, selectDataDevice_Result.shellyPrise_BatterieZSF2400AC_N2_Power);
+                body = handlePowerRange_Above_9000_Service(body, shellyPower, selectBattery, selectDataDevice_Result.shellyPrise_BatterieZSF2400AC_N1_Power, selectDataDevice_Result.shellyPrise_BatterieZSF2400AC_N2_Power);
             }
             else if (shellyPower <= 8700) {
-                body = handlePowerRange_Below_8700(body, shellyPower, selectBattery);
+                body = handlePowerRange_Below_8700_Service(body, shellyPower, selectBattery);
             }
     }
     catch (error) {
