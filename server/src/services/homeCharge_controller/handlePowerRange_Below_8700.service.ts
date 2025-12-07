@@ -10,8 +10,6 @@ function handlePowerRange_Below_8700(
     body: BodyRequestHomeController_Type, 
     shellyPower: number, 
     selectBattery: SelectBattery_Type, 
-    shellyPrise_BatterieZSF2400AC_N1_Power: number, 
-    shellyPrise_BatterieZSF2400AC_N2_Power: number
 ): BodyRequestHomeController_Type {
 
     /* Calcul du seul de déclanchement */

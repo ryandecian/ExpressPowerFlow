@@ -3,15 +3,16 @@ import { setSystemOverview_Memory } from "../database/data_memory/systemOverview
 
 /* Import des Services : */
 import { handlePowerRange_Above_9000 } from "../services/homeCharge_controller/handlePowerRange_Above_9000.service.js";
+import { handlePowerRange_Below_8700 } from "../services/homeCharge_controller/handlePowerRange_Below_8700.service.js";
 
 /* Import des Types : */
 import type { BodyRequestHomeController_Type } from "../types/services/bodyRequestHomeController.type.js";
 import type { PostZendureSolarflow2400AC_data_Type } from "../types/dataFetch_type/postZendureSorlarflow2400AC.data.type.js";
 import type { SelectBattery_Type } from "../types/services/selectBattery.type.js";
+import type { SelectDataDevice_Type } from "../types/services/selectDataDevice.type.js";
 
 /* Import des Utils */
 import { selectDataDevice_Service } from "../services/verifs/selectDataDevice.service.js";
-import type { SelectDataDevice_Type } from "../types/services/selectDataDevice.type.js";
 
 const ZSF2400AC_1_URL_POST = "http://192.168.1.26/properties/write";
 const ZSF2400AC_2_URL_POST = "http://192.168.1.83/properties/write";
@@ -79,10 +80,12 @@ async function homeCharge_Controller(): Promise<void> {
                 /* Sécurité qui n'arrivera normalement jamais car les prise sécurise la consommation maison en se coupant */
                 /* On doit décharger les batteries et maintenir à un niveau de sécurité, cible 6000w. HomePower n'incluant pas la puissance des batteries, il s'agit donc bien de la consomation maison */
             }
-            if (shellyPower > 8700) {
+            else if (shellyPower > 8700) {
                 body = handlePowerRange_Above_9000(body, shellyPower, selectBattery, selectDataDevice_Result.shellyPrise_BatterieZSF2400AC_N1_Power, selectDataDevice_Result.shellyPrise_BatterieZSF2400AC_N2_Power);
             }
-            if (shellyPower <= 8700) {}
+            else if (shellyPower <= 8700) {
+                body = handlePowerRange_Below_8700(body, shellyPower, selectBattery);
+            }
     }
     catch (error) {
         console.error("Erreur dans le controller homeCharge_Controller :", error);
