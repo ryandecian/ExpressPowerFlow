@@ -5,6 +5,7 @@ import type { SelectBattery_Type } from "../../types/services/selectBattery.type
 /* Import des Utils */
 import { requestZSF2400AC_Utils } from "../../utils/requestZSF2400AC/requestZSF2400AC.utils.js";
 
+/* Utilisé lors de la charge des batteries si la puissance mesurée par le compteur shelly dépasse les 8700w */
 function handlePowerRange_Above_9000(
     body: BodyRequestHomeController_Type, 
     shellyPower: number, 
@@ -14,12 +15,11 @@ function handlePowerRange_Above_9000(
 ): BodyRequestHomeController_Type {
 
     /* Calcul du seul de déclanchement */
-        const maxPowerHome: number = 8700
-
+        const maxPowerHome: number = 8700;
         const thresholdPower: number = shellyPower - maxPowerHome;
 
     /* Couche 1 : Si le seuil de puissance est dépassé de plus de 100w */
-        if (thresholdPower > 100) {
+        if (thresholdPower >= 100) {
             /* Couche 2 : Les deux batteries sont disponibles */
                 if (selectBattery.zendureSolarflow2400AC_N1.status === true && selectBattery.zendureSolarflow2400AC_N2.status === true) {
                     /* Couche 3 : Cas 1 : Les 2 batteries ont des niveaux de charge identiques */
@@ -117,3 +117,5 @@ function handlePowerRange_Above_9000(
 
     return body;
 }
+
+export { handlePowerRange_Above_9000 };
