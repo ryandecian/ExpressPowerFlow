@@ -11,8 +11,9 @@ import { handlePowerRange_Neg50_To_0_Service } from "../services/home_controller
 import { handlePowerRange_Neg50_To_Neg600_Service } from "../services/home_controller/handlePowerRange_Neg50_To_Neg600.service.js";
 import { handlePowerRange_Neg600_To_Neg1200_Service } from "../services/home_controller/handlePowerRange_Neg600_To_Neg1200.service.js";
 import { handlePowerRange_Below_Neg1200_Service } from "../services/home_controller/handlePowerRange_Below_Neg1200.service.js";
-import { verifLastRequest_ZSF2400AC_Service } from "../services/verifs/verifLastRequest_ZSF2400AC.service.js";
 import { saveLastRequest_ZSF2400AC_Service } from "../services/verifs/saveLastRequest_ZSF2400AC.service.js";
+import { selectDataDevice_Service } from "../services/verifs/selectDataDevice.service.js";
+import { verifLastRequest_ZSF2400AC_Service } from "../services/verifs/verifLastRequest_ZSF2400AC.service.js";
 
 /* Import des Types : */
 import type { BodyRequestHomeController_Type } from "../types/services/bodyRequestHomeController.type.js";
@@ -22,7 +23,6 @@ import type { SelectDataDevice_Type } from "../types/services/selectDataDevice.t
 
 /* Import des Utils */
 import { fetch_Utils } from "../utils/fetch.utils.js";
-import { selectDataDevice_Service } from "../services/verifs/selectDataDevice.service.js";
 
 const ZSF2400AC_1_URL_POST = "http://192.168.1.26/properties/write";
 const ZSF2400AC_2_URL_POST = "http://192.168.1.83/properties/write";
@@ -167,6 +167,10 @@ async function home_Controller(): Promise<void> {
                     }
                     else if (typeof postZendure_2_Result.error === "string") {
                         console.error("[Home_Controller] - Une erreur est survenue lors de l'envoi de la commande à la Batterie Zendure Solarflow 2400 AC N2 :", postZendure_2_Result.error);
+                        return;
+                    }
+                    else {
+                        console.error("[Home_Controller] - Une erreur est survenue, impossible de déterminer la source de l'erreur lors de l'envoi des commandes aux Batteries Zendure Solarflow 2400 AC N1 et N2.");
                         return;
                     }
                 }
