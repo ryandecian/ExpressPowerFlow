@@ -13,3 +13,5 @@ const user_Router = Router();
 // user_Router.post("/register", RouteLimiterRequestIP, VerifyKeys(["firstname", "lastname", "email", "password"]),
 //     register_controller
 // );
+
+export { user_Router };

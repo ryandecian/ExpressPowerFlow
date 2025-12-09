@@ -1,6 +1,7 @@
 import { Router } from "express";
 
 /* Import des routers secondaires */
+import { user_Router } from "./user.router.js";
 
 /* Import des Controllers */
 
@@ -12,6 +13,7 @@ const router = Router();
 
 
 /* Redirection vers un router secondaire */
+router.use("/user", user_Router); /* 1 routes fonctionnelles */
 
 /* Redirection directe vers un controller */
 
