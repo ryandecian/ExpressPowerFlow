@@ -4,8 +4,11 @@ import { setSystemOverview_Memory } from "../database/data_memory/systemOverview
 import { handlePowerRange_Above_6500_security_Service } from "../services/homeCharge_controller/handlePowerRange_Above_6500.security.service.js";
 import { handlePowerRange_Above_9000_Service } from "../services/homeCharge_controller/handlePowerRange_Above_9000.service.js";
 import { handlePowerRange_Below_8700_Service } from "../services/homeCharge_controller/handlePowerRange_Below_8700.service.js";
-/* Import des Utils */
+import { saveLastRequest_ZSF2400AC_Service } from "../services/verifs/saveLastRequest_ZSF2400AC.service.js";
 import { selectDataDevice_Service } from "../services/verifs/selectDataDevice.service.js";
+import { verifLastRequest_ZSF2400AC_Service } from "../services/verifs/verifLastRequest_ZSF2400AC.service.js";
+/* Import des Utils */
+import { fetch_Utils } from "../utils/fetch.utils.js";
 const ZSF2400AC_1_URL_POST = "http://192.168.1.26/properties/write";
 const ZSF2400AC_2_URL_POST = "http://192.168.1.83/properties/write";
 async function homeCharge_Controller() {
@@ -67,6 +70,55 @@ async function homeCharge_Controller() {
         else if (shellyPower <= 8700) {
             body = handlePowerRange_Below_8700_Service(body, shellyPower, selectBattery);
         }
+        /* Logique métier 5 : Vérification des dernières commandes envoyées aux batteries pour éviter les doublons */
+        body = verifLastRequest_ZSF2400AC_Service(body);
+        /* Logique métier 6 : Envoi de la commande aux batteries */
+        /* Si les 2 batteries sont actives */
+        if (body.ZSF2400AC_N1 != null && body.ZSF2400AC_N2 != null) {
+            const [postZendure_1_Result, postZendure_2_Result] = await Promise.all([
+                fetch_Utils("POST", ZSF2400AC_1_URL_POST, body.ZSF2400AC_N1),
+                fetch_Utils("POST", ZSF2400AC_2_URL_POST, body.ZSF2400AC_N2),
+            ]);
+            if (typeof postZendure_1_Result.error === "string" && typeof postZendure_2_Result.error === "string") {
+                console.error("[Home_Controller] - Une erreur est survenue lors de l'envoi des commandes aux Batteries Zendure Solarflow 2400 AC N1 et N2 :", postZendure_1_Result.error, postZendure_2_Result.error);
+                return;
+            }
+            else if (typeof postZendure_1_Result.error === "string") {
+                console.error("[Home_Controller] - Une erreur est survenue lors de l'envoi de la commande à la Batterie Zendure Solarflow 2400 AC N1 :", postZendure_1_Result.error);
+                return;
+            }
+            else if (typeof postZendure_2_Result.error === "string") {
+                console.error("[Home_Controller] - Une erreur est survenue lors de l'envoi de la commande à la Batterie Zendure Solarflow 2400 AC N2 :", postZendure_2_Result.error);
+                return;
+            }
+            else {
+                console.error("[Home_Controller] - Une erreur est survenue, impossible de déterminer la source de l'erreur lors de l'envoi des commandes aux Batteries Zendure Solarflow 2400 AC N1 et N2.");
+                return;
+            }
+        }
+        /* Si seule batterie N1 est active */
+        else if (body.ZSF2400AC_N1 != null) {
+            const postZendure_1_Result = await fetch_Utils("POST", ZSF2400AC_1_URL_POST, body.ZSF2400AC_N1);
+            if (typeof postZendure_1_Result.error === "string") {
+                console.error("[Home_Controller] - Une erreur est survenue lors de l'envoi de la commande à la Batterie Zendure Solarflow 2400 AC N1 :", postZendure_1_Result.error);
+                return;
+            }
+        }
+        /* Si seule batterie N2 est active */
+        else if (body.ZSF2400AC_N2 != null) {
+            const postZendure_2_Result = await fetch_Utils("POST", ZSF2400AC_2_URL_POST, body.ZSF2400AC_N2);
+            if (typeof postZendure_2_Result.error === "string") {
+                console.error("[Home_Controller] - Une erreur est survenue lors de l'envoi de la commande à la Batterie Zendure Solarflow 2400 AC N2 :", postZendure_2_Result.error);
+                return;
+            }
+        }
+        /* Si aucune batterie n'est active */
+        else {
+            console.error("[Home_Controller] - Aucune batterie n'a reçu de commande à exécuter.");
+            return;
+        }
+        /* Logique métier 7 : Sauvegarde des dernières commandes envoyées en mémoire */
+        saveLastRequest_ZSF2400AC_Service(selectBattery, body);
     }
     catch (error) {
         console.error("Erreur dans le controller homeCharge_Controller :", error);
