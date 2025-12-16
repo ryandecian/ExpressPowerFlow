@@ -1,0 +1,18 @@
+.Page,
+.Header, 
+.Main, 
+.Footer {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    padding: 0rem;
+    border: 0rem;
+    margin: 0rem;
+}
+
+/* Il faudra faire 100vh - la taille du Header */
+.Main {
+    min-height: calc(100vh - 23.15625rem);
+}
