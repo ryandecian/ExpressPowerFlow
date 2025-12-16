@@ -3,6 +3,7 @@ import type { Router_Type } from "../types/router/router.type";
 
 /* Liste des pages en import */
 /* Page Frontend verrouillée */
+import System_Page from "../pages/private/system_Page/System.page";
 
 /* Page Frontend public */
 
@@ -16,6 +17,11 @@ const router: Router_Type[] = [
     {
         path: "/",
         element: <h1>Accueil ExpressPowerFlow sous React</h1>,
+    },
+    /* Exemple d’accès à la première route : {router[1].path} */
+    {
+        path: "/system",
+        element: <System_Page />,
     },
 ];
 

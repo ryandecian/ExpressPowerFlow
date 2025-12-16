@@ -11,7 +11,6 @@ const envVariablesListe = [
     /* DOMAINE des serveurs */
     "VITE_DOMAIN_CLIENT",
     "VITE_DOMAIN_API_SERVER",
-    "DOMAIN_BROKER",
     /* Port du serveur Express */
     "VITE_PORT_API_SERVER",
     /* DB */
@@ -26,9 +25,6 @@ const envVariablesListe = [
     /* JWT */
     "SECRET_KEY_TOKEN_CLIENT",
     "SECRET_KEY_TOKEN_API_SERVER",
-    /* MQTT / BROKER */
-    "MQTT_USER_EXPRESSPOWERFLOW",
-    "MQTT_PASSWORD_EXPRESSPOWERFLOW"
 ]
 
 /* Création des types à partir du tableau. */
