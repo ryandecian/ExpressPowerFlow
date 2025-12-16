@@ -18,6 +18,7 @@ import { shellyPriseZSF2400ACN2_Controller } from "./controller/shelly_controlle
 import { zendureSolarflow2400ACN1_Controller } from "./controller/zendure_controller/zendureSolarflow2400ACN1.controller.js";
 import { zendureSolarflow2400ACN2_Controller } from "./controller/zendure_controller/zendureSolarflow2400ACN2.controller.js";
 import { home_Controller } from "./controller/home.controller.js";
+import { homeCharge_Controller } from "./controller/homeCharge.controller.js";
 
 const app = express();
 const port = ENV_SAFE("VITE_PORT_API_SERVER");
@@ -69,6 +70,18 @@ app.get("/", (req: Request, res: Response) => {
                 }
 
                 home_Controller();
+            },
+            { timezone: "Europe/Paris" }
+        );
+
+        cron.schedule(
+            "*/1 * 15-16 * * *",
+            () => {
+                if (!homeControllerReady) {
+                    return;
+                }
+
+                homeCharge_Controller();
             },
             { timezone: "Europe/Paris" }
         );
