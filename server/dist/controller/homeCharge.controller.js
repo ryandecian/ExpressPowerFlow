@@ -79,27 +79,23 @@ async function homeCharge_Controller() {
                 fetch_Utils("POST", ZSF2400AC_1_URL_POST, body.ZSF2400AC_N1),
                 fetch_Utils("POST", ZSF2400AC_2_URL_POST, body.ZSF2400AC_N2),
             ]);
-            if (typeof postZendure_1_Result.error === "string" && typeof postZendure_2_Result.error === "string") {
+            if (postZendure_1_Result.error && postZendure_2_Result.error) {
                 console.error("[Home_Controller] - Une erreur est survenue lors de l'envoi des commandes aux Batteries Zendure Solarflow 2400 AC N1 et N2 :", postZendure_1_Result.error, postZendure_2_Result.error);
                 return;
             }
-            else if (typeof postZendure_1_Result.error === "string") {
+            else if (postZendure_1_Result.error) {
                 console.error("[Home_Controller] - Une erreur est survenue lors de l'envoi de la commande à la Batterie Zendure Solarflow 2400 AC N1 :", postZendure_1_Result.error);
                 return;
             }
-            else if (typeof postZendure_2_Result.error === "string") {
+            else if (postZendure_2_Result.error) {
                 console.error("[Home_Controller] - Une erreur est survenue lors de l'envoi de la commande à la Batterie Zendure Solarflow 2400 AC N2 :", postZendure_2_Result.error);
-                return;
-            }
-            else {
-                console.error("[Home_Controller] - Une erreur est survenue, impossible de déterminer la source de l'erreur lors de l'envoi des commandes aux Batteries Zendure Solarflow 2400 AC N1 et N2.");
                 return;
             }
         }
         /* Si seule batterie N1 est active */
         else if (body.ZSF2400AC_N1 != null) {
             const postZendure_1_Result = await fetch_Utils("POST", ZSF2400AC_1_URL_POST, body.ZSF2400AC_N1);
-            if (typeof postZendure_1_Result.error === "string") {
+            if (postZendure_1_Result.error) {
                 console.error("[Home_Controller] - Une erreur est survenue lors de l'envoi de la commande à la Batterie Zendure Solarflow 2400 AC N1 :", postZendure_1_Result.error);
                 return;
             }
@@ -107,7 +103,7 @@ async function homeCharge_Controller() {
         /* Si seule batterie N2 est active */
         else if (body.ZSF2400AC_N2 != null) {
             const postZendure_2_Result = await fetch_Utils("POST", ZSF2400AC_2_URL_POST, body.ZSF2400AC_N2);
-            if (typeof postZendure_2_Result.error === "string") {
+            if (postZendure_2_Result.error) {
                 console.error("[Home_Controller] - Une erreur est survenue lors de l'envoi de la commande à la Batterie Zendure Solarflow 2400 AC N2 :", postZendure_2_Result.error);
                 return;
             }

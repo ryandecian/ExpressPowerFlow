@@ -25,9 +25,6 @@ const envVariablesListe = [
     /* JWT */
     "SECRET_KEY_TOKEN_CLIENT",
     "SECRET_KEY_TOKEN_API_SERVER",
-    /* MQTT / BROKER */
-    "MQTT_USER_EXPRESSPOWERFLOW",
-    "MQTT_PASSWORD_EXPRESSPOWERFLOW"
 ]
 
 /* Création des types à partir du tableau. */
