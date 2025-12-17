@@ -17,6 +17,14 @@ function handlePowerRange_Below_8700_Service(
     /* Calcul du seul de déclanchement */
         const maxPowerHome: number = 8700;
         const delta: number = maxPowerHome - shellyPower;
+
+        if (ZSF2400AC_N1_Power < 0) {
+            ZSF2400AC_N1_Power = ZSF2400AC_N1_Power * -2;
+        }
+        if (ZSF2400AC_N2_Power < 0) {
+            ZSF2400AC_N2_Power = ZSF2400AC_N2_Power * -2;
+        }
+        
         const thresholdPower: number = maxPowerHome - shellyPower + ZSF2400AC_N1_Power + ZSF2400AC_N2_Power;
 
     /* Couche 1 : Si le seuil de puissance est dépassé de plus de 100w */

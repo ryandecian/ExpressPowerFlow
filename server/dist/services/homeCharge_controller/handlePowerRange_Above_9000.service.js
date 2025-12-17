@@ -4,15 +4,15 @@ import { requestZSF2400AC_Utils } from "../../utils/requestZSF2400AC/requestZSF2
 function handlePowerRange_Above_9000_Service(body, shellyPower, selectBattery, shellyPrise_BatterieZSF2400AC_N1_Power, shellyPrise_BatterieZSF2400AC_N2_Power) {
     /* Calcul du seul de déclanchement */
     const maxPowerHome = 8700;
-    const thresholdPower = shellyPower - maxPowerHome;
+    const thresholdPower = maxPowerHome - shellyPower + shellyPrise_BatterieZSF2400AC_N1_Power + shellyPrise_BatterieZSF2400AC_N2_Power;
     /* Couche 1 : Si le seuil de puissance est dépassé de plus de 100w */
     if (thresholdPower >= 100) {
         /* Couche 2 : Les deux batteries sont disponibles */
         if (selectBattery.zendureSolarflow2400AC_N1.status === true && selectBattery.zendureSolarflow2400AC_N2.status === true) {
             /* Couche 3 : Cas 1 : Les 2 batteries ont des niveaux de charge identiques */
             if (selectBattery.zendureSolarflow2400AC_N1.electricLevel === selectBattery.zendureSolarflow2400AC_N2.electricLevel) {
-                body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, shellyPrise_BatterieZSF2400AC_N1_Power - thresholdPower * 0.5);
-                body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, shellyPrise_BatterieZSF2400AC_N2_Power - (thresholdPower * 0.5) + 5);
+                body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, thresholdPower * 0.5);
+                body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, thresholdPower * 0.5 + 5);
             }
             /* Couche 3 : Cas 2 : La batterie N1 a un niveau de charge plus haut que la batterie N2 */
             else if (selectBattery.zendureSolarflow2400AC_N1.electricLevel > selectBattery.zendureSolarflow2400AC_N2.electricLevel) {
@@ -20,7 +20,7 @@ function handlePowerRange_Above_9000_Service(body, shellyPower, selectBattery, s
                 /* Si la différence de % est de 5 ou plus la batterie N1 réduit sa puissance en priorité */
                 if (deltaElectricLevel >= 5) {
                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, shellyPrise_BatterieZSF2400AC_N1_Power - thresholdPower);
-                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, shellyPrise_BatterieZSF2400AC_N2_Power + 5); /* Commande pour mise en veille */
+                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, shellyPrise_BatterieZSF2400AC_N2_Power + 5);
                 }
                 /* Si la différence de 4% : N1 = 90% et N2 = 10% */
                 else if (deltaElectricLevel === 4) {
