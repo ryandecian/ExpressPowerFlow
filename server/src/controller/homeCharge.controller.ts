@@ -87,7 +87,7 @@ async function homeCharge_Controller(): Promise<void> {
                 body = handlePowerRange_Above_9000_Service(body, shellyPower, selectBattery, selectDataDevice_Result.shellyPrise_BatterieZSF2400AC_N1_Power, selectDataDevice_Result.shellyPrise_BatterieZSF2400AC_N2_Power);
             }
             else if (shellyPower <= 8700) {
-                body = handlePowerRange_Below_8700_Service(body, shellyPower, selectBattery);
+                body = handlePowerRange_Below_8700_Service(body, shellyPower, selectBattery, selectDataDevice_Result.shellyPrise_BatterieZSF2400AC_N1_Power, selectDataDevice_Result.shellyPrise_BatterieZSF2400AC_N2_Power);
             }
         
         /* Logique métier 5 : Vérification des dernières commandes envoyées aux batteries pour éviter les doublons */

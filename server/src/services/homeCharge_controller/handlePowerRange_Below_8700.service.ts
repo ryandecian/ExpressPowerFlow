@@ -10,11 +10,13 @@ function handlePowerRange_Below_8700_Service(
     body: BodyRequestHomeController_Type, 
     shellyPower: number, 
     selectBattery: SelectBattery_Type, 
+    ZSF2400AC_N1_Power: number,
+    ZSF2400AC_N2_Power: number,
 ): BodyRequestHomeController_Type {
 
     /* Calcul du seul de déclanchement */
         const maxPowerHome: number = 8700;
-        const thresholdPower: number = maxPowerHome - shellyPower;
+        const thresholdPower: number = maxPowerHome - shellyPower + ZSF2400AC_N1_Power + ZSF2400AC_N2_Power;
 
     /* Couche 1 : Si le seuil de puissance est dépassé de plus de 100w */
         if (thresholdPower >= 100) {
