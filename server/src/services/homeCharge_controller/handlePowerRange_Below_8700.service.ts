@@ -5,7 +5,7 @@ import type { SelectBattery_Type } from "../../types/services/selectBattery.type
 /* Import des Utils */
 import { requestZSF2400AC_Utils } from "../../utils/requestZSF2400AC/requestZSF2400AC.utils.js";
 
-/* Utilisé lors de la charge des batteries si la puissance mesurée par le compteur shelly est inférieure ou égale à 8700w */
+/* Utilisé lors de la charge des batteries. L'objectif est de stabiliser la consommation de la maison à 8700w */
 function handlePowerRange_Below_8700_Service(
     body: BodyRequestHomeController_Type, 
     shellyPower: number, 
@@ -16,10 +16,11 @@ function handlePowerRange_Below_8700_Service(
 
     /* Calcul du seul de déclanchement */
         const maxPowerHome: number = 8700;
+        const delta: number = maxPowerHome - shellyPower;
         const thresholdPower: number = maxPowerHome - shellyPower + ZSF2400AC_N1_Power + ZSF2400AC_N2_Power;
 
     /* Couche 1 : Si le seuil de puissance est dépassé de plus de 100w */
-        if (thresholdPower >= 100) {
+        if (delta >= 100 || delta <= -100) {
             /* Couche 2 : Les deux batteries sont disponibles */
                 if (selectBattery.zendureSolarflow2400AC_N1.status === true && selectBattery.zendureSolarflow2400AC_N2.status === true) {
                     /* Couche 3 : Cas 1 : Les 2 batteries ont des niveaux de charge identiques */
