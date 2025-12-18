@@ -3,8 +3,8 @@ import { setSystemOverview_Memory } from "../database/data_memory/systemOverview
 
 /* Import des Services : */
 import { handlePowerRange_Above_6500_security_Service } from "../services/homeCharge_controller/handlePowerRange_Above_6500.security.service.js";
-import { handlePowerRange_Above_9000_Service } from "../services/homeCharge_controller/handlePowerRange_Above_9000.service.js";
-// import { handlePowerRange_Below_8700_Service } from "../services/homeCharge_controller/handlePowerRange_Below_8700.service.js";
+// import { handlePowerRange_Above_9000_Service } from "../services/homeCharge_controller/handlePowerRange_Above_9000.service.js";
+import { handlePowerRange_Below_8700_Service } from "../services/homeCharge_controller/handlePowerRange_Below_8700.service.js";
 import { saveLastRequest_ZSF2400AC_Service } from "../services/verifs/saveLastRequest_ZSF2400AC.service.js";
 import { selectDataDevice_Service } from "../services/verifs/selectDataDevice.service.js";
 import { verifLastRequest_ZSF2400AC_Service } from "../services/verifs/verifLastRequest_ZSF2400AC.service.js";
@@ -77,18 +77,15 @@ async function homeCharge_Controller(): Promise<void> {
                 ZSF2400AC_N1: null,
                 ZSF2400AC_N2: null,
             };
-            console.log("[homeCharge_Controller] - homePower :", homePower, "W");
 
             if (homePower > 6500) {
                 /* Sécurité qui n'arrivera normalement jamais car les prise sécurise la consommation maison en se coupant */
                 /* On doit décharger les batteries et maintenir à un niveau de sécurité, cible 6500w. HomePower n'incluant pas la puissance des batteries, il s'agit donc bien de la consomation maison */
                 body = handlePowerRange_Above_6500_security_Service(body, selectBattery, homePower);
-                console.log("[homeCharge_Controller] - Sécurité > 6500W activée. Demande de décharge des batteries.");
             }
             /* Ajustement de la puissance en temps réel */
             else {
-                body = handlePowerRange_Above_9000_Service(body, shellyPower, selectBattery, selectDataDevice_Result.shellyPrise_BatterieZSF2400AC_N1_Power, selectDataDevice_Result.shellyPrise_BatterieZSF2400AC_N2_Power);
-                console.log("[homeCharge_Controller] - Ajustement de la puissance en temps réel effectué.");
+                body = handlePowerRange_Below_8700_Service(body, shellyPower, selectBattery, selectDataDevice_Result.shellyPrise_BatterieZSF2400AC_N1_Power, selectDataDevice_Result.shellyPrise_BatterieZSF2400AC_N2_Power);
             }
             // else if (shellyPower <= 8700) {
             //     body = handlePowerRange_Below_8700_Service(body, shellyPower, selectBattery, selectDataDevice_Result.shellyPrise_BatterieZSF2400AC_N1_Power, selectDataDevice_Result.shellyPrise_BatterieZSF2400AC_N2_Power);
