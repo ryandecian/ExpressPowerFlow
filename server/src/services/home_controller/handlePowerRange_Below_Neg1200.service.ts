@@ -24,7 +24,7 @@ function handlePowerRange_Below_Neg1200_Service(selectBattery: SelectBattery_Typ
                                 if (deltaElectricLevel >= 5) {
                                     /* Si targetPower est inférieure à 2400w */
                                         if (targetPower < 2400) {
-                                            body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, 2400);
+                                            body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, targetPower);
                                             body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 0);
                                         }
                                     /* Si targetPower est supérieure à 2400w */
@@ -104,7 +104,7 @@ function handlePowerRange_Below_Neg1200_Service(selectBattery: SelectBattery_Typ
                                     /* Si targetPower est inférieure à 2400w */
                                         if (targetPower < 2400) {
                                             body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, 0);
-                                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 2400 + 5);
+                                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower + 5);
                                         }
                                     /* Si targetPower est supérieure à 2400w */
                                         else {
