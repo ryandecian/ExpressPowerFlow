@@ -70,7 +70,7 @@ async function home_Controller(): Promise<void> {
                 const targetPower = -homePower; /* Inversion de la valeur pour la gestion de la batterie (Point de vue batterie)*/
 
         /* Logique métier 3 : Vérification de la capacité de chaque batterie */
-            if (selectBattery.zendureSolarflow2400AC_N1.status === true) {
+            if (selectBattery.zendureSolarflow2400AC_N1.status === true || selectBattery.zendureSolarflow2400AC_N2.status === true) {
                 const electricLevel_N1 = selectBattery.zendureSolarflow2400AC_N1.electricLevel;
                 const electricLevel_N2 = selectBattery.zendureSolarflow2400AC_N2.electricLevel;
 
