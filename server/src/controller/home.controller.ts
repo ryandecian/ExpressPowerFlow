@@ -74,8 +74,8 @@ async function home_Controller(): Promise<void> {
                 const electricLevel_N1 = selectBattery.zendureSolarflow2400AC_N1.electricLevel;
                 const electricLevel_N2 = selectBattery.zendureSolarflow2400AC_N2.electricLevel;
 
-                /* Si on doit charger les batteries : */
-                    if (targetPower < 0) {
+                /* Si on doit charger les batteries donc targetPower Positif : */
+                    if (targetPower > 0) {
                         /* Si le niveau de charge est === 100% on change le status sur false pour ne pas utiliser la batterie N1 */
                         if (electricLevel_N1 === 100) {
                             selectBattery.zendureSolarflow2400AC_N1.status = false;
@@ -84,8 +84,9 @@ async function home_Controller(): Promise<void> {
                             selectBattery.zendureSolarflow2400AC_N2.status = false;
                         }
                     }
-                /* Si on doit décharger les batteries : */
-                    if (targetPower > 0) {
+
+                /* Si on doit décharger les batteries donc targetPower Négatif : */
+                    if (targetPower < 0) {
                         /* Si le niveau de charge est <= 5% on change le status sur false pour ne pas utiliser la batterie N1 */
                         if (electricLevel_N1 <= 5) {
                             selectBattery.zendureSolarflow2400AC_N1.status = false;
@@ -197,13 +198,13 @@ async function home_Controller(): Promise<void> {
         /* Logique métier 7 : Sauvegarde des dernières commandes envoyées en mémoire */
             saveLastRequest_ZSF2400AC_Service(selectBattery, body);
 
-            // console.log({
-            //     "Compteur Shelly pro 3EM": `${shellyPower} W`,
-            //     "targetPower (point de vue batterie)": `${targetPower} W`,
-            //     "Shelly prise Batterie ZSF2400AC N1": `${selectDataDevice_Result.shellyPrise_BatterieZSF2400AC_N1_Power} W`,
-            //     "Shelly prise Batterie ZSF2400AC N2": `${selectDataDevice_Result.shellyPrise_BatterieZSF2400AC_N2_Power} W`,
-            //     "Consommation maison": `${homePower} W`,
-            // })
+            console.log({
+                "Compteur Shelly pro 3EM": `${shellyPower} W`,
+                "targetPower (point de vue batterie)": `${targetPower} W`,
+                "Shelly prise Batterie ZSF2400AC N1": `${selectDataDevice_Result.shellyPrise_BatterieZSF2400AC_N1_Power} W`,
+                "Shelly prise Batterie ZSF2400AC N2": `${selectDataDevice_Result.shellyPrise_BatterieZSF2400AC_N2_Power} W`,
+                "Consommation maison": `${homePower} W`,
+            })
     }
     catch (error) {
         console.error("Une erreur inconnue est survenue dans home_Controller :", error);
