@@ -164,10 +164,10 @@ async function home_Controller() {
             }
         }
         /* Si aucune batterie n'est active */
-        else {
-            console.error("[Home_Controller] - Aucune batterie n'a reçu de commande à exécuter.");
-            return;
-        }
+        // else {
+        //     console.error("[Home_Controller] - Aucune batterie n'a reçu de commande à exécuter.");
+        //     return;
+        // }
         /* Logique métier 7 : Sauvegarde des dernières commandes envoyées en mémoire */
         saveLastRequest_ZSF2400AC_Service(selectBattery, body);
         // console.log({
