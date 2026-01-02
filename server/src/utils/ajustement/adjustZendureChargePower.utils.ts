@@ -1,4 +1,4 @@
-/* Cette fonction reçois un nombre négatif donc décharge de la batterie */
+/* Cette fonction reçois un nombre positif donc charge de la batterie */
 function adjustZendureChargePower(targetCharge: number): number {
     let commande = (targetCharge * 0.975) + 21;
 
@@ -7,7 +7,7 @@ function adjustZendureChargePower(targetCharge: number): number {
         commande = Math.abs(commande);
     }
 
-    /* Limite la commande a la puissance maximale de décharge de la batterie */
+    /* Limite la commande a la puissance maximale de charge de la batterie */
     if (commande > 2400) {
         commande = 2400;
     }
