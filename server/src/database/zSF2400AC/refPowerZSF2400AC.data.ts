@@ -1,5 +1,6 @@
 
 /* Ce composant permet contient les datas des test effectués en réelle sur la batterie */
+/* Positive = Charge et Negative = Décharge */
 const refPowerZSF2400AC = {
     /* Réelle : commande */
     "267": 280,
