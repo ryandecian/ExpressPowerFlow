@@ -12,6 +12,7 @@ import { handlePowerRange_Neg600_To_Neg1200_Service } from "../services/home_con
 import { handlePowerRange_Below_Neg1200_Service } from "../services/home_controller/handlePowerRange_Below_Neg1200.service.js";
 import { saveLastRequest_ZSF2400AC_Service } from "../services/verifs/saveLastRequest_ZSF2400AC.service.js";
 import { selectDataDevice_Service } from "../services/verifs/selectDataDevice.service.js";
+import { verifCapacityBattery_Service } from "../services/home_controller/verifCapacityBattery.service.js";
 import { verifLastRequest_ZSF2400AC_Service } from "../services/verifs/verifLastRequest_ZSF2400AC.service.js";
 /* Import des Utils */
 import { fetch_Utils } from "../utils/fetch.utils.js";
@@ -53,30 +54,7 @@ async function home_Controller() {
         /* Point de vue batterie */
         const targetPower = -homePower; /* Inversion de la valeur pour la gestion de la batterie (Point de vue batterie)*/
         /* Logique métier 3 : Vérification de la capacité de chaque batterie */
-        if (selectBattery.zendureSolarflow2400AC_N1.status === true) {
-            const electricLevel_N1 = selectBattery.zendureSolarflow2400AC_N1.electricLevel;
-            const electricLevel_N2 = selectBattery.zendureSolarflow2400AC_N2.electricLevel;
-            /* Si on doit charger les batteries : */
-            if (targetPower < 0) {
-                /* Si le niveau de charge est === 100% on change le status sur false pour ne pas utiliser la batterie N1 */
-                if (electricLevel_N1 === 100) {
-                    selectBattery.zendureSolarflow2400AC_N1.status = false;
-                }
-                if (electricLevel_N2 === 100) {
-                    selectBattery.zendureSolarflow2400AC_N2.status = false;
-                }
-            }
-            /* Si on doit décharger les batteries : */
-            if (targetPower > 0) {
-                /* Si le niveau de charge est <= 5% on change le status sur false pour ne pas utiliser la batterie N1 */
-                if (electricLevel_N1 <= 5) {
-                    selectBattery.zendureSolarflow2400AC_N1.status = false;
-                }
-                if (electricLevel_N2 <= 5) {
-                    selectBattery.zendureSolarflow2400AC_N2.status = false;
-                }
-            }
-        }
+        selectBattery = verifCapacityBattery_Service(targetPower, selectBattery);
         /* Logique métier 4 : Préparation  des commandes à envoyer et sélections des batteries et puissance a demander a chacune d'elles */
         let body = {
             ZSF2400AC_N1: null,
@@ -170,13 +148,13 @@ async function home_Controller() {
         // }
         /* Logique métier 7 : Sauvegarde des dernières commandes envoyées en mémoire */
         saveLastRequest_ZSF2400AC_Service(selectBattery, body);
-        // console.log({
-        //     "Compteur Shelly pro 3EM": `${shellyPower} W`,
-        //     "targetPower (point de vue batterie)": `${targetPower} W`,
-        //     "Shelly prise Batterie ZSF2400AC N1": `${selectDataDevice_Result.shellyPrise_BatterieZSF2400AC_N1_Power} W`,
-        //     "Shelly prise Batterie ZSF2400AC N2": `${selectDataDevice_Result.shellyPrise_BatterieZSF2400AC_N2_Power} W`,
-        //     "Consommation maison": `${homePower} W`,
-        // })
+        console.log({
+            "Compteur Shelly pro 3EM": `${shellyPower} W`,
+            "targetPower (point de vue batterie)": `${targetPower} W`,
+            "Shelly prise Batterie ZSF2400AC N1": `${selectDataDevice_Result.shellyPrise_BatterieZSF2400AC_N1_Power} W`,
+            "Shelly prise Batterie ZSF2400AC N2": `${selectDataDevice_Result.shellyPrise_BatterieZSF2400AC_N2_Power} W`,
+            "Consommation maison": `${homePower} W`,
+        });
     }
     catch (error) {
         console.error("Une erreur inconnue est survenue dans home_Controller :", error);

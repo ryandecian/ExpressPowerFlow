@@ -33,13 +33,13 @@ function requestZSF2400AC_Utils(sn, targetPower) {
     }
     /* Option 2 : Si la valeur n'existe pas dans les datas, on fait une approximation linéaire avec utils */
     else {
-        /* Possibilité 1 : La valeur est inférieure à 0 donc négative, on doit charger la batterie */
+        /* Possibilité 1 : La valeur est inférieure à 0 donc négative, on doit décharger la batterie */
         if (targetPower < 0) {
-            valueCommande = adjustZendureChargePower(targetPower); /* Valeur positive et nb entier */
-        }
-        /* Possibilité 2 : La valeur est supérieure à 0 donc positive, on doit décharger la batterie */
-        if (targetPower > 0) {
             valueCommande = adjustZendureDischargePower(targetPower); /* Valeur positive et nb entier */
+        }
+        /* Possibilité 2 : La valeur est supérieure à 0 donc positive, on doit charger la batterie */
+        if (targetPower > 0) {
+            valueCommande = adjustZendureChargePower(targetPower); /* Valeur positive et nb entier */
         }
     }
     /* Logique métier 3 : Transformation de la variable de commande */
