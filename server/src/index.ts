@@ -60,7 +60,7 @@ app.get("/", (req: Request, res: Response) => {
         setTimeout(() => {
             homeControllerReady = true;
             console.log("[HomeController] Synchronisation OK, démarrage actif.");
-        }, 600);
+        }, 700);
 
         cron.schedule(
             "*/1 * 0-14,17-23 * * *",
