@@ -82,41 +82,41 @@ async function home_Controller(): Promise<void> {
             /* Neutre */
             if (targetPower === 0) {
                 body = handlePowerRange_Equal_0_Service(selectBattery, body, targetPower);
-                console.log("Service 1")
+                // console.log("Service 1")
             }
             /* Charge */
             else if (targetPower > 0 && targetPower <= 50) {
                 body = handlePowerRange_0_To_50_Service(selectBattery, body, targetPower);
-                console.log("Service 2")
+                // console.log("Service 2")
             }
             else if (targetPower > 50 && targetPower <= 600) {
                 body = handlePowerRange_50_To_600_Service(selectBattery, body, targetPower);
-                console.log("Service 3")
+                // console.log("Service 3")
             }
             else if (targetPower > 600 && targetPower <= 1200) {
                 body = handlePowerRange_600_To_1200_Service(selectBattery, body, targetPower);
-                console.log("Service 4")
+                // console.log("Service 4")
             }
             else if (targetPower > 1200) {
                 body = handlePowerRange_Above_1200_Service(selectBattery, body, targetPower);
-                console.log("Service 5")
+                // console.log("Service 5")
             }
             /* Décharge */
             else if (targetPower < 0 && targetPower >= -50) {
                 body = handlePowerRange_Neg50_To_0_Service(selectBattery, body, targetPower);
-                console.log("Service 6")
+                // console.log("Service 6")
             }
             else if (targetPower < -50 && targetPower >= -600) {
                 body = handlePowerRange_Neg50_To_Neg600_Service(selectBattery, body, targetPower);
-                console.log("Service 7")
+                // console.log("Service 7")
             }
             else if (targetPower < -600 && targetPower >= -1200) {
                 body = handlePowerRange_Neg600_To_Neg1200_Service(selectBattery, body, targetPower);
-                console.log("Service 8")
+                // console.log("Service 8")
             }
             else if (targetPower < -1200) {
                 body = handlePowerRange_Below_Neg1200_Service(selectBattery, body, targetPower);
-                console.log("Service 9")
+                // console.log("Service 9")
             }
             else {
                 console.error("home_Controller - Erreur dans la sélection de la plage de puissance à gérer.");
@@ -174,13 +174,13 @@ async function home_Controller(): Promise<void> {
         /* Logique métier 7 : Sauvegarde des dernières commandes envoyées en mémoire */
             saveLastRequest_ZSF2400AC_Service(selectBattery, body);
 
-            console.log({
-                "Compteur Shelly pro 3EM": `${shellyPower} W`,
-                "targetPower (point de vue batterie)": `${targetPower} W`,
-                "Shelly prise Batterie ZSF2400AC N1": `${selectDataDevice_Result.shellyPrise_BatterieZSF2400AC_N1_Power} W`,
-                "Shelly prise Batterie ZSF2400AC N2": `${selectDataDevice_Result.shellyPrise_BatterieZSF2400AC_N2_Power} W`,
-                "Consommation maison": `${homePower} W`,
-            })
+            // console.log({
+            //     "Compteur Shelly pro 3EM": `${shellyPower} W`,
+            //     "targetPower (point de vue batterie)": `${targetPower} W`,
+            //     "Shelly prise Batterie ZSF2400AC N1": `${selectDataDevice_Result.shellyPrise_BatterieZSF2400AC_N1_Power} W`,
+            //     "Shelly prise Batterie ZSF2400AC N2": `${selectDataDevice_Result.shellyPrise_BatterieZSF2400AC_N2_Power} W`,
+            //     "Consommation maison": `${homePower} W`,
+            // })
     }
     catch (error) {
         console.error("Une erreur inconnue est survenue dans home_Controller :", error);
