@@ -4,25 +4,13 @@ import { shellyPriseZSF2400ACN1_Controller } from "../shelly_controller/shellyPr
 import { shellyPriseZSF2400ACN2_Controller } from "../shelly_controller/shellyPriseZSF2400ACN2.controller.js";
 import { zendureSolarflow2400ACN1_Controller } from "../zendure_controller/zendureSolarflow2400ACN1.controller.js";
 import { zendureSolarflow2400ACN2_Controller } from "../zendure_controller/zendureSolarflow2400ACN2.controller.js";
+import { home_Controller } from "../home.controller.js";
 
 async function homeManager_Controller(): Promise<void> {
     try {
-        /* Logique métier 1 : Initialisation des variables */
-            let shellyPro3EM_Controle: boolean = false;
-            let shellyPriseZSF2400ACN1_Controle: boolean = false;
-            let shellyPriseZSF2400ACN2_Controle: boolean = false;
-            let zendureSolarflow2400ACN1_Controle: boolean = false;
-            let zendureSolarflow2400ACN2_Controle: boolean = false;
-
-        /* Logique métier 2 : Lancement des controller en même temps */
-            [
-                shellyPro3EM_Controle, 
-                shellyPriseZSF2400ACN1_Controle, 
-                shellyPriseZSF2400ACN2_Controle, 
-                zendureSolarflow2400ACN1_Controle, 
-                zendureSolarflow2400ACN2_Controle
-            ] = await Promise.all
-            (
+        const start = Date.now();
+        /* Logique métier 1 : Lancement des controller secondaires en même temps */
+            await Promise.all(
                 [
                     shellyPro3EM_Controller(),
                     shellyPriseZSF2400ACN1_Controller(),
@@ -31,8 +19,16 @@ async function homeManager_Controller(): Promise<void> {
                     zendureSolarflow2400ACN2_Controller(),
                 ]
             );
+        
+        /* Logique métier 2 : Lancement du controller principal */
+            await home_Controller();
+        
+        const end = Date.now();
+        console.log(`[homeManager_Controller] - Durée d'exécution totale : ${end - start} ms`);
     }
     catch (error) {
         console.error(`[homeManager_Controller] - Une erreur inconnue est survenue : `, error);
     }
 }
+
+export { homeManager_Controller };
