@@ -20,6 +20,7 @@ const ZENDURE_URL = "http://192.168.1.26/properties/report"
 
 async function zendureSolarflow2400ACN1_Controller(): Promise<void> {
     try {
+        const start = Date.now();
         /* Logique métier 1 : Récupération des données de la Batterie Zendure Solarflow 2400 AC */
             const dataZendureResult = await fetch_Utils<GetZendureSolarflow2400AC_data_Type>("GET", ZENDURE_URL);
 
@@ -103,6 +104,8 @@ async function zendureSolarflow2400ACN1_Controller(): Promise<void> {
             // const data = getZendureSolarflow2400AC_N1();
 
             // console.log(`Batterie Zendure entrée: ${data?.data.properties?.outputPackPower} W, sortie: ${data?.data.properties?.packInputPower} W`);
+        const end = Date.now();
+        console.log(`[zendureSolarflow2400ACN1_Controller] - Durée d'exécution : ${end - start} ms`);
     }
     catch (error) {
         console.error("Erreur dans zendureSolarflow2400AC_Controller :", error);
