@@ -13,7 +13,7 @@ import { fetch_Utils } from "../../utils/fetch.utils.js";
 
 const shellyPrise_N1_URL_GET = "http://192.168.1.68/rpc/Shelly.GetStatus";
 
-async function shellyPriseZSF2400ACN1_Controller(): Promise<boolean> {
+async function shellyPriseZSF2400ACN1_Controller(): Promise<void> {
     try {
         const start = Date.now();
         /* Logique métier 1 : Récupération des données du compteur */
@@ -21,13 +21,13 @@ async function shellyPriseZSF2400ACN1_Controller(): Promise<boolean> {
 
             /* Vérification si le fetch a échoué */
             if (typeof dataShellyResult.error === "string") {
-                console.error("shellyPower_Controller - Erreur de fetch :", dataShellyResult.error);
+                console.error("shellyPriseZSF2400ACN1_Controller - Erreur de fetch :", dataShellyResult.error);
 
                 /* Si les données ont déjà été initialisées en mémoire */
                     if (getMemory_Memory().shellyPrise_BatterieZSF2400AC_N1 !== null) {
                         setMemory_Lvl2_Memory("shellyPrise_BatterieZSF2400AC_N1", "status", false);
                     }
-                return true;
+                return;
             }
 
             const dataShelly = dataShellyResult.data as GetShellyPlugSGen3_data_Type;
@@ -58,11 +58,11 @@ async function shellyPriseZSF2400ACN1_Controller(): Promise<boolean> {
             // console.log(`Compteur Shelly Plug S Gen 3 de la batterie Zendure Solarflow 2400AC N1 : ${data?.data.apower} W`);
         const end = Date.now();
         // console.log(`[shellyPriseZSF2400ACN1_Controller] - Durée d'exécution : ${end - start} ms`);
-        return true;
+        return;
     }
     catch (error) {
         console.error("Erreur dans shellyPriseZSF2400ACN1_Controller :", error);
-        return true;
+        return;
     }
 }
 

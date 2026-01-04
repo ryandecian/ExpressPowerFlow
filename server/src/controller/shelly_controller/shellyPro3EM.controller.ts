@@ -15,7 +15,7 @@ import { fetch_Utils } from "../../utils/fetch.utils.js";
 
 const SHELLY_URL = "http://192.168.1.85/rpc/EM1.GetStatus?id=0";
 
-async function shellyPro3EM_Controller(): Promise<boolean> {
+async function shellyPro3EM_Controller(): Promise<void> {
     try {
         const start = Date.now();
         /* Logique métier 1 : Récupération des données du compteur */
@@ -29,7 +29,7 @@ async function shellyPro3EM_Controller(): Promise<boolean> {
                     if (getMemory_Memory().shellyPro3EM !== null) {
                         setMemory_Lvl2_Memory("shellyPro3EM", "status", false);
                     }
-                return true;
+                return;
             }
 
             const dataShelly = dataShellyResult.data as GetShellyPro3EM_PhaseA_data_Type;
@@ -58,11 +58,11 @@ async function shellyPro3EM_Controller(): Promise<boolean> {
             // console.log(`Compteur Shelly Pro 3EM : ${data?.data.act_power} W`);
         const end = Date.now();
         // console.log(`[shellyPro3EM_Controller] - Durée d'exécution : ${end - start} ms`);
-        return true;
+        return;
     }
     catch (error) {
         console.error("Erreur dans shellyPro3EM_Controller :", error);
-        return true;
+        return;
     }
 }
 

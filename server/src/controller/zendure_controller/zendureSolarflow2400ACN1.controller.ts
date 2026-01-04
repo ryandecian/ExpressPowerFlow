@@ -18,7 +18,7 @@ import { formulaTmp_ZSF2400AC } from "../../utils/temperature/formulaTmp_ZSF2400
 
 const ZENDURE_URL = "http://192.168.1.26/properties/report"
 
-async function zendureSolarflow2400ACN1_Controller(): Promise<boolean> {
+async function zendureSolarflow2400ACN1_Controller(): Promise<void> {
     try {
         const start = Date.now();
         /* Logique métier 1 : Récupération des données de la Batterie Zendure Solarflow 2400 AC */
@@ -32,7 +32,7 @@ async function zendureSolarflow2400ACN1_Controller(): Promise<boolean> {
                     if (getMemory_Memory().zendureSolarflow2400AC_N1 !== null) {
                         setMemory_Lvl2_Memory("zendureSolarflow2400AC_N1", "status", false);
                     }
-                return true;
+                return;
             }
 
             const dataZendure = dataZendureResult.data as GetZendureSolarflow2400AC_data_Type;
@@ -106,11 +106,11 @@ async function zendureSolarflow2400ACN1_Controller(): Promise<boolean> {
             // console.log(`Batterie Zendure entrée: ${data?.data.properties?.outputPackPower} W, sortie: ${data?.data.properties?.packInputPower} W`);
         const end = Date.now();
         // console.log(`[zendureSolarflow2400ACN1_Controller] - Durée d'exécution : ${end - start} ms`);
-        return true;
+        return;
     }
     catch (error) {
         console.error("Erreur dans zendureSolarflow2400AC_Controller :", error);
-        return true;
+        return;
     }
 }
 
