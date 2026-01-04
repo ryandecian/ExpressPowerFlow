@@ -57,7 +57,7 @@ async function shellyPro3EM_Controller(): Promise<boolean> {
 
             // console.log(`Compteur Shelly Pro 3EM : ${data?.data.act_power} W`);
         const end = Date.now();
-        console.log(`[shellyPro3EM_Controller] - Durée d'exécution : ${end - start} ms`);
+        // console.log(`[shellyPro3EM_Controller] - Durée d'exécution : ${end - start} ms`);
         return true;
     }
     catch (error) {
