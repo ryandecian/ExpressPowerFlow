@@ -14,7 +14,7 @@ import router from "./router/router.js";
 
 /* Import des Controllers */
 import { homeManager_Controller } from "./controller/manager_controller/homeManager.controller.js";
-import { shellyPriseZSF2400ACN1_Controller } from "./controller/shelly_controller/shellyPriseZSF2400ACN1.controller.js";
+// import { shellyPriseZSF2400ACN1_Controller } from "./controller/shelly_controller/shellyPriseZSF2400ACN1.controller.js";
 
 const app = express();
 const port = ENV_SAFE("VITE_PORT_API_SERVER");
@@ -45,42 +45,42 @@ app.get("/", (req: Request, res: Response) => {
 /* ---------------------------------------------
    CRON 1 Hz + verrou anti-chevauchement
 --------------------------------------------- */
-setInterval(shellyPriseZSF2400ACN1_Controller, 1000);
-// let tickRunning: boolean = false;
+// setInterval(shellyPriseZSF2400ACN1_Controller, 1000);
+let tickRunning: boolean = false;
 
-// async function runHomeManager_Safe(): Promise<void> {
-//     if (tickRunning) {
-//         // utile pour diagnostiquer : si tu vois ça souvent, ton tick dépasse 1s
-//         console.warn(`[CRON] Tick sauté (déjà en cours).`);
-//         return;
-//     }
+async function runHomeManager_Safe(): Promise<void> {
+    if (tickRunning) {
+        // utile pour diagnostiquer : si tu vois ça souvent, ton tick dépasse 1s
+        console.warn(`[CRON] Tick sauté (déjà en cours).`);
+        return;
+    }
 
-//     tickRunning = true;
+    tickRunning = true;
 
 
-//     try {
-//         // Ton orchestrateur (fetchs -> mémoire -> home)
-//         await homeManager_Controller();
-//     }
-//     catch (error) {
-//         console.error(`[CRON] Erreur dans homeManager_Controller :`, error);
-//     }
-//     finally {
-//         tickRunning = false;
-//     }
-// }
+    try {
+        // Ton orchestrateur (fetchs -> mémoire -> home)
+        await homeManager_Controller();
+    }
+    catch (error) {
+        console.error(`[CRON] Erreur dans homeManager_Controller :`, error);
+    }
+    finally {
+        tickRunning = false;
+    }
+}
 
 /**
  * CRON chaque seconde (avec secondes)
  * seconde minute heure jour mois jourSemaine
  */
-// cron.schedule(
-//     "*/1 * * * * *",
-//     async () => {
-//         await runHomeManager_Safe();
-//     },
-//     { timezone: "Europe/Paris" }
-// );
+cron.schedule(
+    "*/1 * * * * *",
+    async () => {
+        await runHomeManager_Safe();
+    },
+    { timezone: "Europe/Paris" }
+);
 
 /**
  * Gestion des routes innexistante

@@ -55,7 +55,7 @@ async function shellyPriseZSF2400ACN1_Controller(): Promise<void> {
         /* Logique métier 4 : Récupération des données depuis la mémoire pour vérification */
 
             // console.log(`Compteur Shelly Prise N1 : ${dataSelected.data.apower} W avec ${dataSelected.data.voltage} V`);
-            console.log(`Compteur Shelly Prise N1 : ${dataSelected.data.apower} W`);
+            // console.log(`Compteur Shelly Prise N1 : ${dataSelected.data.apower} W`);
         const end = Date.now();
         // console.log(`[shellyPriseZSF2400ACN1_Controller] - Durée d'exécution : ${end - start} ms`);
         return;

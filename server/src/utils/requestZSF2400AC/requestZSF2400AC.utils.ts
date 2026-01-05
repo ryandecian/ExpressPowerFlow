@@ -1,4 +1,5 @@
 /* Import des Datas */
+import { stat } from "fs";
 import { refPowerZSF2400AC_v2_Data } from "../../database/zSF2400AC/refPowerZSF2400AC.v2.data.js";
 
 /* Import des Types : */
@@ -37,27 +38,31 @@ function requestZSF2400AC_Utils(sn: string, targetPower: number): BodyRequestCha
         console.log(`Target Power dans requestZSF2400AC_Utils : ${targetPower} W`);
 
     /* Logique métier 2 : Calcul de la valeur de la commande à intégrer dans la requête */
+        let stateValueCommande: number = 0; /* Initialisation de la valeur de la commande, seul le signe du nombre nous intéresse */
+
         /* Option 1 : Utilisation des données des tests effectués (très précis) dans refPowerZSF2400AC */
             /* Parcours les datas et vérifie si la clé targetPowerString existe dans refPowerZSF2400AC_v2_Data */
             if (targetPowerString in refPowerZSF2400AC_v2_Data) {
                 valueCommande = refPowerZSF2400AC_v2_Data[targetPowerString as keyof typeof refPowerZSF2400AC_v2_Data]; /* On dit a typescript tkt, la clé existe bien dans refPowerZSF2400AC_v2_Data */
+                stateValueCommande = valueCommande; /* Conservation de la valeur d'état avec son signe positif ou négatif pour décider quel utils sera lancé */
             }
         /* Option 2 : Si la valeur n'existe pas dans les datas, on fait une approximation linéaire avec utils */
             else {
                 /* Possibilité 1 : La valeur est inférieure à 0 donc négative, on doit décharger la batterie */
                     if (targetPower < 0) {
                         valueCommande = adjustZendureDischargePower(targetPower) /* Valeur positive et nb entier */
+                        stateValueCommande = valueCommande * -1; /* Conservation de la valeur d'état avec son signe négatif */
                     }
 
                 /* Possibilité 2 : La valeur est supérieure à 0 donc positive, on doit charger la batterie */
                     if (targetPower > 0) {
                         valueCommande = adjustZendureChargePower(targetPower) /* Valeur positive et nb entier */
+                        stateValueCommande = valueCommande; /* Conservation de la valeur d'état avec son signe positif */
                     }
             }
             console.log(`Valeur de la commande : ${valueCommande} W`);
     
     /* Logique métier 3 : Transformation de la variable de commande */
-        const stateValueCommande: number = valueCommande; /* Conservation de la valeur d'état avec son signe positif ou négatif pour décider quel utils sera lancé */
         if (valueCommande < 0) {
             valueCommande = Math.abs(valueCommande); /* On transforme la valeur en positive */
         }
