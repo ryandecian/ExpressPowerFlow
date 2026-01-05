@@ -1,6 +1,6 @@
 /* Cette fonction reçois un nombre positif donc charge de la batterie */
 function adjustZendureChargePower(targetCharge: number): number {
-    let commande = (targetCharge * 0.975) + 21;
+    let commande = (targetCharge * 0.966) + 22;
 
     /* Si la valeur est négative, on la change en positif */
     if (commande < 0) {

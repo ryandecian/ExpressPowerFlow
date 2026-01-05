@@ -12,23 +12,21 @@ import cron from "node-cron";
 /* Import des Routers */
 import router from "./router/router.js";
 
-import { shellyPro3EM_Controller } from "./controller/shelly_controller/shellyPro3EM.controller.js";
+/* Import des Controllers */
+import { homeManager_Controller } from "./controller/manager_controller/homeManager.controller.js";
 import { shellyPriseZSF2400ACN1_Controller } from "./controller/shelly_controller/shellyPriseZSF2400ACN1.controller.js";
-import { shellyPriseZSF2400ACN2_Controller } from "./controller/shelly_controller/shellyPriseZSF2400ACN2.controller.js";
-import { zendureSolarflow2400ACN1_Controller } from "./controller/zendure_controller/zendureSolarflow2400ACN1.controller.js";
-import { zendureSolarflow2400ACN2_Controller } from "./controller/zendure_controller/zendureSolarflow2400ACN2.controller.js";
-import { home_Controller } from "./controller/home.controller.js";
-import { homeCharge_Controller } from "./controller/homeCharge.controller.js";
 
 const app = express();
 const port = ENV_SAFE("VITE_PORT_API_SERVER");
 
-app.use(cors(
-    {
-        origin: ENV_SAFE("VITE_DOMAIN_CLIENT"),
-        credentials: true,
-    }
-));
+app.use(
+    cors(
+        {
+            origin: ENV_SAFE("VITE_DOMAIN_CLIENT"),
+            credentials: true,
+        }
+    )
+);
 
 app.use(express.json());
 app.use(cookieParser());
@@ -42,54 +40,52 @@ app.use("/", router);
  */
 app.get("/", (req: Request, res: Response) => {
     res.status(200).send("API de ExpressPowerFlow !");
-})
+});
 
-/* Appel de controller automatique */
-    /* Compteur Shelly Pro 3EM */
-        setInterval(shellyPro3EM_Controller, 1000);
-    /* Prise Shelly Plug s Gen 3 raccordée aux batteries Zendure */
-        setInterval(shellyPriseZSF2400ACN1_Controller, 1000);
-        setInterval(shellyPriseZSF2400ACN2_Controller, 1000);
-    /* Batterie Zendure Solarflow 2400AC */
-        setInterval(zendureSolarflow2400ACN1_Controller, 1000);
-        setInterval(zendureSolarflow2400ACN2_Controller, 1000);
+/* ---------------------------------------------
+   CRON 1 Hz + verrou anti-chevauchement
+--------------------------------------------- */
+setInterval(shellyPriseZSF2400ACN1_Controller, 1000);
+// let tickRunning: boolean = false;
 
-    /* Logique métier centrale */
-        let homeControllerReady: boolean = false;
+// async function runHomeManager_Safe(): Promise<void> {
+//     if (tickRunning) {
+//         // utile pour diagnostiquer : si tu vois ça souvent, ton tick dépasse 1s
+//         console.warn(`[CRON] Tick sauté (déjà en cours).`);
+//         return;
+//     }
 
-        setTimeout(() => {
-            homeControllerReady = true;
-            console.log("[HomeController] Synchronisation OK, démarrage actif.");
-        }, 700);
+//     tickRunning = true;
 
-        cron.schedule(
-            "*/1 * 0-14,17-23 * * *",
-            () => {
-                if (!homeControllerReady) {
-                    return;
-                }
 
-                home_Controller();
-            },
-            { timezone: "Europe/Paris" }
-        );
+//     try {
+//         // Ton orchestrateur (fetchs -> mémoire -> home)
+//         await homeManager_Controller();
+//     }
+//     catch (error) {
+//         console.error(`[CRON] Erreur dans homeManager_Controller :`, error);
+//     }
+//     finally {
+//         tickRunning = false;
+//     }
+// }
 
-        cron.schedule(
-            "*/1 * 15-16 * * *",
-            () => {
-                if (!homeControllerReady) {
-                    return;
-                }
-
-                homeCharge_Controller();
-            },
-            { timezone: "Europe/Paris" }
-        );
+/**
+ * CRON chaque seconde (avec secondes)
+ * seconde minute heure jour mois jourSemaine
+ */
+// cron.schedule(
+//     "*/1 * * * * *",
+//     async () => {
+//         await runHomeManager_Safe();
+//     },
+//     { timezone: "Europe/Paris" }
+// );
 
 /**
  * Gestion des routes innexistante
  */
-app.use( async (req: Request, res: Response) => {
+app.use(async (req: Request, res: Response) => {
     res.status(404).json(
         {
             success: false,
@@ -98,6 +94,7 @@ app.use( async (req: Request, res: Response) => {
             path: req.originalUrl,
         }
     );
+
     console.error(
         {
             identity: "index.ts",
@@ -106,14 +103,14 @@ app.use( async (req: Request, res: Response) => {
             "❌ Nature de l'erreur": "Tentative d'accès à une route inexistante !",
             method: req.method,
             path: req.originalUrl,
-            contenu : req.body
-        },
+            contenu: req.body,
+        }
     );
 });
 
 /**
- * Le server se lance sur le port 8080
+ * Le server se lance sur le port défini par VITE_PORT_API_SERVER
  */
 app.listen(port, async () => {
-    console.info(chalk.cyan(`Server lancé sur ${ await ENV_SAFE("VITE_DOMAIN_API_SERVER")}`));
+    console.info(chalk.cyan(`Server lancé sur ${await ENV_SAFE("VITE_DOMAIN_API_SERVER")}`));
 });

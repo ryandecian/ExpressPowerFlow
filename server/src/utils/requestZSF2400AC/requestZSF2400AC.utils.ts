@@ -16,8 +16,8 @@ function requestZSF2400AC_Utils(sn: string, targetPower: number): BodyRequestCha
         let valueCommande: number = 0; /* Valeur de la commande à envoyer dans le body */
         let body: BodyRequestChargeZSF2400AC_Type | BodyRequestDischargeZSF2400AC_Type; /* Corps de la requête */
 
-    /* Logique métier 0 : Si targetPower = 0 */
-        if (targetPower === 0) {
+    /* Logique métier 0 : Si targetPower = 0, 1 ou -1 (ce sont des valeurs inatégnables) */
+        if (targetPower === 0 || targetPower === 1 || targetPower === -1) {
             body = {
                 sn: sn, /* Numéro de série de l'appareil cible */
                 properties: {
@@ -27,18 +27,20 @@ function requestZSF2400AC_Utils(sn: string, targetPower: number): BodyRequestCha
             };
             return body; /* Envois du corps de la requête créer au controller */
         }
+
     /* Logique métier 1 : Préparation des variables */
         /* Arrondissement de la valeur cible (targetPower) en un nombre entier */
         targetPower = Math.round(targetPower);
 
         /* Conversion de targetPower de number à string */
         const targetPowerString = targetPower.toString();
+        console.log(`Target Power dans requestZSF2400AC_Utils : ${targetPower} W`);
 
     /* Logique métier 2 : Calcul de la valeur de la commande à intégrer dans la requête */
         /* Option 1 : Utilisation des données des tests effectués (très précis) dans refPowerZSF2400AC */
             /* Parcours les datas et vérifie si la clé targetPowerString existe dans refPowerZSF2400AC */
             if (targetPowerString in refPowerZSF2400AC) {
-            valueCommande = refPowerZSF2400AC[targetPowerString as keyof typeof refPowerZSF2400AC]; /* On dit a typescript tkt, la clé existe bien dans refPowerZSF2400AC */
+                valueCommande = refPowerZSF2400AC[targetPowerString as keyof typeof refPowerZSF2400AC]; /* On dit a typescript tkt, la clé existe bien dans refPowerZSF2400AC */
             }
         /* Option 2 : Si la valeur n'existe pas dans les datas, on fait une approximation linéaire avec utils */
             else {
@@ -52,15 +54,17 @@ function requestZSF2400AC_Utils(sn: string, targetPower: number): BodyRequestCha
                         valueCommande = adjustZendureChargePower(targetPower) /* Valeur positive et nb entier */
                     }
             }
+            console.log(`Valeur de la commande : ${valueCommande} W`);
     
     /* Logique métier 3 : Transformation de la variable de commande */
+        const stateValueCommande: number = valueCommande; /* Conservation de la valeur d'état avec son signe positif ou négatif pour décider quel utils sera lancé */
         if (valueCommande < 0) {
             valueCommande = Math.abs(valueCommande); /* On transforme la valeur en positive */
         }
         
     /* Logique métier 4 : Préparation du body de la requête */
         /* Option 1 : targetPower est négatif donc préparation du requête avec commande de décharge batterie */
-        if (targetPower < 0) {
+        if (stateValueCommande < 0) {
             body = {
                 sn: sn, /* Numéro de série de l'appareil cible */
                 properties: {
@@ -72,7 +76,7 @@ function requestZSF2400AC_Utils(sn: string, targetPower: number): BodyRequestCha
         }
 
         /* Option 2 : targetPower est positif donc préparation du requête avec commande de charge batterie */
-        if (targetPower > 0) {
+        if (stateValueCommande > 0) {
             body = {
                 sn: sn, /* Numéro de série de l'appareil cible */
                 properties: {

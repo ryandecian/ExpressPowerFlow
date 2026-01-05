@@ -126,6 +126,7 @@ async function home_Controller(): Promise<void> {
 
         /* Logique métier 5 : Vérification des dernières commandes envoyées aux batteries pour éviter les doublons */
             body = verifLastRequest_ZSF2400AC_Service(body);
+            console.log("Après verifLastRequest_ZSF2400AC_Service", body);
 
         /* Logique métier 6 : Envoi de la commande aux batteries */
             /* Si les 2 batteries sont actives */
