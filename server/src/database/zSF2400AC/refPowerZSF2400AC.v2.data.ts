@@ -2,7 +2,7 @@
 /* Edition le 05/01/2026 */
 /* Ce composant permet contient les datas des test effectués en réelle sur la batterie */
 /* Positive = Charge et Negative = Décharge */
-const refPowerZSF2400AC = {
+const refPowerZSF2400AC_v2_Data = {
     /* Réelle : commande */
     "300": 313,
     "299": 312,
@@ -815,4 +815,4 @@ const refPowerZSF2400AC = {
     "-500": -482,
 };
 
-export { refPowerZSF2400AC };
+export { refPowerZSF2400AC_v2_Data };
