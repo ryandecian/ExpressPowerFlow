@@ -7,6 +7,8 @@ import { requestZSF2400AC_Utils } from "../../utils/requestZSF2400AC/requestZSF2
 
 /* targetPower suppérieure à 1200w de charge */
 function handlePowerRange_Above_1200_Service(selectBattery: SelectBattery_Type, body: BodyRequestHomeController_Type, targetPower: number): BodyRequestHomeController_Type {
+    const patchN2: number = -6; /* Compensation pour la batterie N2 */
+
     /* Si les 2 batteries sont disponibles */
         if (selectBattery.zendureSolarflow2400AC_N1.status === true && selectBattery.zendureSolarflow2400AC_N2.status === true) {
             /* Cas 1 : Si les deux batteries sont chargées à 100% */
@@ -19,7 +21,7 @@ function handlePowerRange_Above_1200_Service(selectBattery: SelectBattery_Type, 
                     /* Si la batterie N1 est à 100% */
                         if (selectBattery.zendureSolarflow2400AC_N1.electricLevel === 100) {
                             body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, 0);
-                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower + 5);
+                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower + patchN2);
                         }
                     /* Si la batterie N2 est à 100% */
                         else {
@@ -32,7 +34,7 @@ function handlePowerRange_Above_1200_Service(selectBattery: SelectBattery_Type, 
                     /* ⚠️ Option 1 : Si les deux batteries ont un niveau de charge entre 95 et 100% */
                         if (selectBattery.zendureSolarflow2400AC_N1.electricLevel > 95 && selectBattery.zendureSolarflow2400AC_N2.electricLevel > 95) {
                             body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, targetPower * 0.5);
-                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower * 0.5 + 5);
+                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower * 0.5 + patchN2);
                         }
                     /* Option 2 : Si une des deux batteries a un niveau de charge entre 90 et 95% et que l'autre batterie est au moins 95% ou plus */
                         else if (selectBattery.zendureSolarflow2400AC_N1.electricLevel > 90 && selectBattery.zendureSolarflow2400AC_N1.electricLevel <= 95 &&
@@ -43,17 +45,17 @@ function handlePowerRange_Above_1200_Service(selectBattery: SelectBattery_Type, 
                                     /* Si targetPower est inférieur ou égal à 1500w N1 = 60% et N2 = 40% */
                                         if (targetPower <= 1500) {
                                             body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, targetPower *0.6);
-                                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower * 0.4 + 5);
+                                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower * 0.4 + patchN2);
                                         }
                                     /* Si targetPower est entre 1500 et 2100w N1 = 1500w et le reste à N2 */
                                         else if (targetPower > 1500 && targetPower <= 2100) {
                                             body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, 1500);
-                                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower - 1500 + 5);
+                                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower - 1500 + patchN2);
                                         }
                                     /* ⚠️ Si targetPower est supérieur à 2100w on attribue 1500w à N1, 600w à N2 et le reste est divisé équitablement à chaque batteries */
                                         else {
                                             body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, 1500 + ((targetPower - 2100) / 2));
-                                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 600 + ((targetPower - 2100) / 2) + 5);
+                                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 600 + ((targetPower - 2100) / 2) + patchN2);
                                         }
                                 }
                             /* Si la batterie N2 est entre 90 et 95%, on le charge en priorité jusqu'à 1500w, le reste va au N1 */
@@ -61,17 +63,17 @@ function handlePowerRange_Above_1200_Service(selectBattery: SelectBattery_Type, 
                                     /* Si targetPower est inférieur ou égal à 1500w N2 = 60% et N1 = 40% */
                                         if (targetPower <= 1500) {
                                             body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, targetPower *0.4);
-                                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower * 0.6 + 5);
+                                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower * 0.6 + patchN2);
                                         }
                                     /* Si targetPower est entre 1500 et 2100w N2 = 1500w et le reste à N1 */
                                         else if (targetPower > 1500 && targetPower <= 2100) {
                                             body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, targetPower - 1500);
-                                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 1500 + 5);
+                                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 1500 + patchN2);
                                         }
                                     /* ⚠️ Si targetPower est supérieur à 2100w on attribue 1500w à N2, 600w à N1 et le reste est divisé équitablement à chaque batteries */
                                         else {
                                             body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, 600 + ((targetPower - 2100) / 2));
-                                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 1500 + ((targetPower - 2100) / 2) + 5);
+                                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 1500 + ((targetPower - 2100) / 2) + patchN2);
                                         }
                                 }
                         }
@@ -81,7 +83,7 @@ function handlePowerRange_Above_1200_Service(selectBattery: SelectBattery_Type, 
                             /* Si les deux batteries ont des niveaux de charge égale */
                                 if (selectBattery.zendureSolarflow2400AC_N1.electricLevel === selectBattery.zendureSolarflow2400AC_N2.electricLevel) {
                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, targetPower * 0.5);
-                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower * 0.5 + 5);
+                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower * 0.5 + patchN2);
                                 }
                             /* Si la batterie N1 à une charge moins élevée que le N2, il va travailler plus que le N2 */
                                 else if (selectBattery.zendureSolarflow2400AC_N1.electricLevel < selectBattery.zendureSolarflow2400AC_N2.electricLevel) {
@@ -97,12 +99,12 @@ function handlePowerRange_Above_1200_Service(selectBattery: SelectBattery_Type, 
                                             /* Si la puissance demandée est entre 1500 et 3000w */
                                                 else if (targetPower > 1500 && targetPower <= 3000) {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, 1500);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower - 1500 + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower - 1500 + patchN2);
                                                 }
                                             /* Si la puissance demandée est supérieure à 3000w */
                                                 else {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, 1500 + ((targetPower - 3000) / 2));
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 1500 + ((targetPower - 3000) / 2) + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 1500 + ((targetPower - 3000) / 2) + patchN2);
                                                 }
                                         }
                                     /* Si la différence de 4% : N1 = 90% et N2 = 10% dans la limite des 1500w pour N1 */
@@ -112,17 +114,17 @@ function handlePowerRange_Above_1200_Service(selectBattery: SelectBattery_Type, 
                                             /* Si la puissance demandée est inférieure ou égale à 1500w */
                                                 if (deltaTargetPower <= 1500) {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, deltaTargetPower);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower * 0.1 + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower * 0.1 + patchN2);
                                                 }
                                             /* Si la puissance demandée est entre 1500 et 3000w */
                                                 else if (deltaTargetPower > 1500 && targetPower <= 3000) {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, 1500);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower - 1500 + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower - 1500 + patchN2);
                                                 }
                                             /* Si la puissance demandée est supérieure à 3000w */
                                                 else {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, 1500 + ((targetPower - 3000) / 2));
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 1500 + ((targetPower - 3000) / 2) + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 1500 + ((targetPower - 3000) / 2) + patchN2);
                                                 }
                                         }
                                     /* Si la différence de 3% : N1 = 80% et N2 = 20% dans la limite des 1500w pour N1 */
@@ -132,17 +134,17 @@ function handlePowerRange_Above_1200_Service(selectBattery: SelectBattery_Type, 
                                             /* Si la puissance demandée est inférieure ou égale à 1500w */
                                                 if (deltaTargetPower <= 1500) {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, deltaTargetPower);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower * 0.2 + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower * 0.2 + patchN2);
                                                 }
                                             /* Si la puissance demandée est entre 1500 et 3000w */
                                                 else if (deltaTargetPower > 1500 && targetPower <= 3000) {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, 1500);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower - 1500 + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower - 1500 + patchN2);
                                                 }
                                             /* Si la puissance demandée est supérieure à 3000w */
                                                 else {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, 1500 + ((targetPower - 3000) / 2));
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 1500 + ((targetPower - 3000) / 2) + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 1500 + ((targetPower - 3000) / 2) + patchN2);
                                                 }
                                         }
                                     /* Si la différence de 2% : N1 = 70% et N2 = 30% dans la limite des 1500w pour N1 */
@@ -152,17 +154,17 @@ function handlePowerRange_Above_1200_Service(selectBattery: SelectBattery_Type, 
                                             /* Si la puissance demandée est inférieure ou égale à 1500w */
                                                 if (deltaTargetPower <= 1500) {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, deltaTargetPower);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower * 0.3 + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower * 0.3 + patchN2);
                                                 }
                                             /* Si la puissance demandée est entre 1500 et 3000w */
                                                 else if (deltaTargetPower > 1500 && targetPower <= 3000) {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, 1500);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower - 1500 + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower - 1500 + patchN2);
                                                 }
                                             /* Si la puissance demandée est supérieure à 3000w */
                                                 else {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, 1500 + ((targetPower - 3000) / 2));
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 1500 + ((targetPower - 3000) / 2) + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 1500 + ((targetPower - 3000) / 2) + patchN2);
                                                 }
                                         }
                                     /* Si la différence de 1% : N1 = 60% et N2 = 40% dans la limite des 1500w pour N1 */
@@ -172,17 +174,17 @@ function handlePowerRange_Above_1200_Service(selectBattery: SelectBattery_Type, 
                                             /* Si la puissance demandée est inférieure ou égale à 1500w */
                                                 if (deltaTargetPower <= 1500) {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, deltaTargetPower);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower * 0.4 + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower * 0.4 + patchN2);
                                                 }
                                             /* Si la puissance demandée est supérieure à 1500w */
                                                 else if (deltaTargetPower > 1500 && targetPower <= 3000) {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, 1500);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower - 1500 + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower - 1500 + patchN2);
                                                 }
                                             /* Si la puissance demandée est supérieure à 3000w */
                                                 else {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, 1500 + ((targetPower - 3000) / 2));
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 1500 + ((targetPower - 3000) / 2) + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 1500 + ((targetPower - 3000) / 2) + patchN2);
                                                 }
                                         }
                                 }
@@ -195,17 +197,17 @@ function handlePowerRange_Above_1200_Service(selectBattery: SelectBattery_Type, 
                                             /* Si la puissance demandée est inférieure ou égale à 1500w */
                                                 if (targetPower <= 1500) {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, 0);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower + patchN2);
                                                 }
                                             /* Si la puissance demandée est entre 1500 et 3000w */
                                                 else if (targetPower > 1500 && targetPower <= 3000) {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, targetPower - 1500);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 1500 + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 1500 + patchN2);
                                                 }
                                             /* Si la puissance demandée est supérieure à 3000w */
                                                 else {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, 1500 + ((targetPower - 3000) / 2));
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 1500 + ((targetPower - 3000) / 2) + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 1500 + ((targetPower - 3000) / 2) + patchN2);
                                                 }
                                         }
                                     /* Si la différence de 4% : N1 = 90% et N2 = 10% dans la limite des 1500w pour N1 */
@@ -220,12 +222,12 @@ function handlePowerRange_Above_1200_Service(selectBattery: SelectBattery_Type, 
                                             /* Si la puissance demandée est entre 1500 et 3000w */
                                                 else if (deltaTargetPower > 1500 && targetPower <= 3000) {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, targetPower - 1500);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 1500 + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 1500 + patchN2);
                                                 }
                                             /* Si la puissance demandée est supérieure à 3000w */
                                                 else {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, 1500 + ((targetPower - 3000) / 2));
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 1500 + ((targetPower - 3000) / 2) + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 1500 + ((targetPower - 3000) / 2) + patchN2);
                                                 }
                                         }
                                     /* Si la différence de 3% : N1 = 80% et N2 = 20% dans la limite des 1500w pour N1 */
@@ -235,17 +237,17 @@ function handlePowerRange_Above_1200_Service(selectBattery: SelectBattery_Type, 
                                             /* Si la puissance demandée est inférieure ou égale à 1500w */
                                                 if (deltaTargetPower <= 1500) {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, targetPower * 0.2);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, deltaTargetPower + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, deltaTargetPower + patchN2);
                                                 }
                                             /* Si la puissance demandée est entre 1500 et 3000w */
                                                 else if (deltaTargetPower > 1500 && targetPower <= 3000) {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, targetPower - 1500);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 1500 + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 1500 + patchN2);
                                                 }
                                             /* Si la puissance demandée est supérieure à 3000w */
                                                 else {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, 1500 + ((targetPower - 3000) / 2));
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 1500 + ((targetPower - 3000) / 2) + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 1500 + ((targetPower - 3000) / 2) + patchN2);
                                                 }
                                         }
                                     /* Si la différence de 2% : N1 = 70% et N2 = 30% dans la limite des 1500w pour N1 */
@@ -255,17 +257,17 @@ function handlePowerRange_Above_1200_Service(selectBattery: SelectBattery_Type, 
                                             /* Si la puissance demandée est inférieure ou égale à 1500w */
                                                 if (deltaTargetPower <= 1500) {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, targetPower * 0.3);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, deltaTargetPower + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, deltaTargetPower + patchN2);
                                                 }
                                             /* Si la puissance demandée est supérieure à 1500w */
                                                 else if (deltaTargetPower > 1500 && targetPower <= 3000) {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, targetPower - 1500);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 1500 + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 1500 + patchN2);
                                                 }
                                             /* Si la puissance demandée est supérieure à 3000w */
                                                 else {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, 1500 + ((targetPower - 3000) / 2));
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 1500 + ((targetPower - 3000) / 2) + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 1500 + ((targetPower - 3000) / 2) + patchN2);
                                                 }
                                         }
                                     /* Si la différence de 1% : N1 = 60% et N2 = 40% dans la limite des 1500w pour N1 */
@@ -275,17 +277,17 @@ function handlePowerRange_Above_1200_Service(selectBattery: SelectBattery_Type, 
                                             /* Si la puissance demandée est inférieure ou égale à 1500w */
                                                 if (deltaTargetPower <= 1500) {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, targetPower * 0.4);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, deltaTargetPower + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, deltaTargetPower + patchN2);
                                                 }
                                             /* Si la puissance demandée est supérieure à 1500w */
                                                 else if (deltaTargetPower > 1500 && targetPower <= 3000) {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, targetPower - 1500);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 1500 + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 1500 + patchN2);
                                                 }
                                             /* Si la puissance demandée est supérieure à 3000w */
                                                 else {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, 1500 + ((targetPower - 3000) / 2));
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 1500 + ((targetPower - 3000) / 2) + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 1500 + ((targetPower - 3000) / 2) + patchN2);
                                                 }
                                         }
                                 }
@@ -309,7 +311,7 @@ function handlePowerRange_Above_1200_Service(selectBattery: SelectBattery_Type, 
                                             /* Si targetPower est supérieur à 2400w */
                                                 else {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, 2400);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower - 2400 + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower - 2400 + patchN2);
                                                 }
                                         }
                                     /* Si la différence de 4% : N1 = 90% et N2 = 10% dans la limite des 1500w pour N2 */
@@ -322,18 +324,18 @@ function handlePowerRange_Above_1200_Service(selectBattery: SelectBattery_Type, 
                                                     /* Si la puissance de N1 est inférieure ou égale à 2400w */
                                                         if (deltaTargetPower_N1 <= 2400) {
                                                             body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, deltaTargetPower_N1);
-                                                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, deltaTargetPower_N2 + 5);
+                                                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, deltaTargetPower_N2 + patchN2);
                                                         }
                                                     /* Si la puissance de N1 est supérieure à 2400w */
                                                         else {
                                                             body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, 2400);
-                                                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower - 2400 + 5);
+                                                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower - 2400 + patchN2);
                                                         }
                                                 }
                                             /* Si la puissance de N2 est suppérieur à 1500w, on le bride a 1500w et on envois le reste à N1 */
                                                 else {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, targetPower - 1500);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 1500 + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 1500 + patchN2);
                                                 }
                                         }
                                     /* Si la différence de 3% : N1 = 80% et N2 = 20% dans la limite des 1500w pour N2 */
@@ -346,18 +348,18 @@ function handlePowerRange_Above_1200_Service(selectBattery: SelectBattery_Type, 
                                                     /* Si la puissance de N1 est inférieure ou égale à 2400w */
                                                         if (deltaTargetPower_N1 <= 2400) {
                                                             body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, deltaTargetPower_N1);
-                                                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, deltaTargetPower_N2 + 5);
+                                                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, deltaTargetPower_N2 + patchN2);
                                                         }
                                                     /* Si la puissance de N1 est supérieure à 2400w */
                                                         else {
                                                             body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, 2400);
-                                                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower - 2400 + 5);
+                                                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower - 2400 + patchN2);
                                                         }
                                                 }
                                             /* Si la puissance de N2 est suppérieur à 1500w, on le bride a 1500w et on envois le reste à N1 */
                                                 else {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, targetPower - 1500);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 1500 + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 1500 + patchN2);
                                                 }
                                         }
                                     /* Si la différence de 2% : N1 = 70% et N2 = 30% dans la limite des 1500w pour N2 */
@@ -370,18 +372,18 @@ function handlePowerRange_Above_1200_Service(selectBattery: SelectBattery_Type, 
                                                     /* Si la puissance de N1 est inférieure ou égale à 2400w */
                                                         if (deltaTargetPower_N1 <= 2400) {
                                                             body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, deltaTargetPower_N1);
-                                                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, deltaTargetPower_N2 + 5);
+                                                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, deltaTargetPower_N2 + patchN2);
                                                         }
                                                     /* Si la puissance de N1 est supérieure à 2400w */
                                                         else {
                                                             body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, 2400);
-                                                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower - 2400 + 5);
+                                                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower - 2400 + patchN2);
                                                         }
                                                 }
                                                 /* Si la puissance de N2 est suppérieur à 1500w, on le bride a 1500w et on envois le reste à N1 */
                                                 else {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, targetPower - 1500);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 1500 + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 1500 + patchN2);
                                                 }
                                         }
                                     /* Si la différence de 1% : N1 = 60% et N2 = 40% dans la limite des 1500w pour N2 */
@@ -394,18 +396,18 @@ function handlePowerRange_Above_1200_Service(selectBattery: SelectBattery_Type, 
                                                     /* Si la puissance de N1 est inférieure ou égale à 2400w */
                                                         if (deltaTargetPower_N1 <= 2400) {
                                                             body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, deltaTargetPower_N1);
-                                                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, deltaTargetPower_N2 + 5);
+                                                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, deltaTargetPower_N2 + patchN2);
                                                         }
                                                     /* Si la puissance de N1 est supérieure à 2400w */
                                                         else {
                                                             body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, 2400);
-                                                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower - 2400 + 5);
+                                                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower - 2400 + patchN2);
                                                         }
                                                 }
                                             /* Si la puissance de N2 est suppérieur à 1500w, on le bride a 1500w et on envois le reste à N1 */
                                                 else {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, targetPower - 1500);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 1500 + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 1500 + patchN2);
                                                 }
                                         }
                                 }
@@ -418,12 +420,12 @@ function handlePowerRange_Above_1200_Service(selectBattery: SelectBattery_Type, 
                                             /* Si targetPower est inférieur ou égale à 2400w */
                                                 if (targetPower <= 2400) {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, 0);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower + patchN2);
                                                 }
                                             /* Si targetPower est supérieur à 2400w */
                                                 else {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, targetPower - 2400);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 2400 + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 2400 + patchN2);
                                                 }
                                         }
                                     /* Si la différence de 4% : N1 = 90% et N2 = 10% dans la limite des 1500w pour N1 */
@@ -436,18 +438,18 @@ function handlePowerRange_Above_1200_Service(selectBattery: SelectBattery_Type, 
                                                 /* Si la puissance de N1 est inférieure ou égale à 2400w */
                                                     if (deltaTargetPower_N1 <= 2400) {
                                                         body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, deltaTargetPower_N1);
-                                                        body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, deltaTargetPower_N2 + 5);
+                                                        body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, deltaTargetPower_N2 + patchN2);
                                                     }
                                                 /* Si la puissance de N1 est supérieure à 2400w */
                                                     else {
                                                         body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, targetPower - 2400);
-                                                        body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 2400 + 5);
+                                                        body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 2400 + patchN2);
                                                     }
                                             }
                                         /* Si la puissance de N1 est suppérieur à 1500w, on le bride a 1500w et on envois le reste à N2 */
                                             else {
                                                 body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, 1500);
-                                                body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower - 1500 + 5);
+                                                body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower - 1500 + patchN2);
                                             }
                                         }
                                     /* Si la différence de 3% : N1 = 80% et N2 = 20% dans la limite des 1500w pour N1 */
@@ -460,18 +462,18 @@ function handlePowerRange_Above_1200_Service(selectBattery: SelectBattery_Type, 
                                                     /* Si la puissance de N1 est inférieure ou égale à 2400w */
                                                         if (deltaTargetPower_N1 <= 2400) {
                                                             body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, deltaTargetPower_N1);
-                                                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, deltaTargetPower_N2 + 5);
+                                                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, deltaTargetPower_N2 + patchN2);
                                                         }
                                                     /* Si la puissance de N1 est supérieure à 2400w */
                                                         else {
                                                             body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, targetPower - 2400);
-                                                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 2400 + 5);
+                                                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 2400 + patchN2);
                                                         }
                                                 }
                                             /* Si la puissance de N1 est suppérieur à 1500w, on le bride a 1500w et on envois le reste à N2 */
                                                 else {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, 1500);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower - 1500 + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower - 1500 + patchN2);
                                                 }
                                         }
                                     /* Si la différence de 2% : N1 = 70% et N2 = 30% dans la limite des 1500w pour N1 */
@@ -484,18 +486,18 @@ function handlePowerRange_Above_1200_Service(selectBattery: SelectBattery_Type, 
                                                     /* Si la puissance de N1 est inférieure ou égale à 2400w */
                                                         if (deltaTargetPower_N1 <= 2400) {
                                                             body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, deltaTargetPower_N1);
-                                                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, deltaTargetPower_N2 + 5);
+                                                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, deltaTargetPower_N2 + patchN2);
                                                         }
                                                     /* Si la puissance de N1 est supérieure à 2400w */
                                                         else {
                                                             body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, targetPower - 2400);
-                                                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 2400 + 5);
+                                                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 2400 + patchN2);
                                                         }
                                                 }
                                             /* Si la puissance de N1 est suppérieur à 1500w, on le bride a 1500w et on envois le reste à N2 */
                                                 else {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, 1500);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower - 1500 + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower - 1500 + patchN2);
                                                 }
                                         }
                                     /* Si la différence de 1% : N1 = 60% et N2 = 40% dans la limite des 1500w pour N1 */
@@ -508,18 +510,18 @@ function handlePowerRange_Above_1200_Service(selectBattery: SelectBattery_Type, 
                                                     /* Si la puissance de N1 est inférieure ou égale à 2400w */
                                                         if (deltaTargetPower_N1 <= 2400) {
                                                             body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, deltaTargetPower_N1);
-                                                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, deltaTargetPower_N2 + 5);
+                                                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, deltaTargetPower_N2 + patchN2);
                                                         }
                                                     /* Si la puissance de N1 est supérieure à 2400w */
                                                         else {
                                                             body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, targetPower - 2400);
-                                                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 2400 + 5);
+                                                            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 2400 + patchN2);
                                                         }
                                                 }
                                             /* Si la puissance de N1 est suppérieur à 1500w, on le bride a 1500w et on envois le reste à N2 */
                                                 else {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, 1500);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower - 1500 + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower - 1500 + patchN2);
                                                 }
                                         }
                                 }
@@ -529,7 +531,7 @@ function handlePowerRange_Above_1200_Service(selectBattery: SelectBattery_Type, 
                             /* Si les deux batteries ont un niveau de charge égale */
                                 if (selectBattery.zendureSolarflow2400AC_N1.electricLevel === selectBattery.zendureSolarflow2400AC_N2.electricLevel) {
                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, targetPower * 0.5);
-                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower * 0.5 + 5);
+                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower * 0.5 + patchN2);
                                 }
                             /* Si la batterie N1 a un niveau de charge inférieure à la batterie N2 */
                                 else if (selectBattery.zendureSolarflow2400AC_N1.electricLevel < selectBattery.zendureSolarflow2400AC_N2.electricLevel) {
@@ -540,7 +542,7 @@ function handlePowerRange_Above_1200_Service(selectBattery: SelectBattery_Type, 
                                             /* Si la puissance de targetPower est suppérieur à 2400w */
                                                 if (targetPower > 2400) {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, 2400);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower - 2400 + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower - 2400 + patchN2);
                                                 }
                                             /* Si la puissance de targetPower est inférieure ou égale à 2400w */
                                                 else {
@@ -554,12 +556,12 @@ function handlePowerRange_Above_1200_Service(selectBattery: SelectBattery_Type, 
                                             /* Si la puissance de deltaTargetPower_N1 est suppérieur à 2400w */
                                                 if (deltaTargetPower_N1 > 2400) {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, 2400);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower - 2400 + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower - 2400 + patchN2);
                                                 }
                                             /* Si la puissance de deltaTargetPower_N1 est inférieure ou égale à 2400w */
                                                 else {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, deltaTargetPower_N1);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower * 0.1 + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower * 0.1 + patchN2);
                                                 }
                                         }
                                     /* Si la différence de 3% : N1 = 80% et N2 = 20% */
@@ -569,12 +571,12 @@ function handlePowerRange_Above_1200_Service(selectBattery: SelectBattery_Type, 
                                             /* Si la puissance de deltaTargetPower_N1 est suppérieur à 2400w */
                                                 if (deltaTargetPower_N1 > 2400) {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, 2400);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower - 2400 + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower - 2400 + patchN2);
                                                 }
                                             /* Si la puissance de deltaTargetPower_N1 est inférieure ou égale à 2400w */
                                                 else {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, deltaTargetPower_N1);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower * 0.2 + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower * 0.2 + patchN2);
                                                 }
                                         }
                                     /* Si la différence de 2% : N1 = 70% et N2 = 30% */
@@ -584,12 +586,12 @@ function handlePowerRange_Above_1200_Service(selectBattery: SelectBattery_Type, 
                                             /* Si la puissance de deltaTargetPower_N1 est suppérieur à 2400w */
                                                 if (deltaTargetPower_N1 > 2400) {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, 2400);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower - 2400 + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower - 2400 + patchN2);
                                                 }
                                             /* Si la puissance de deltaTargetPower_N1 est inférieure ou égale à 2400w */
                                                 else {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, deltaTargetPower_N1);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower * 0.3 + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower * 0.3 + patchN2);
                                                 }
                                         }
                                     /* Si la différence de 1% : N1 = 60% et N2 = 40% */
@@ -599,12 +601,12 @@ function handlePowerRange_Above_1200_Service(selectBattery: SelectBattery_Type, 
                                             /* Si la puissance de deltaTargetPower_N1 est suppérieur à 2400w */
                                                 if (deltaTargetPower_N1 > 2400) {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, 2400);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower - 2400 + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower - 2400 + patchN2);
                                                 }
                                             /* Si la puissance de deltaTargetPower_N1 est inférieure ou égale à 2400w */
                                                 else {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, deltaTargetPower_N1);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower * 0.4 + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower * 0.4 + patchN2);
                                                 }
                                         }
                                 }
@@ -617,12 +619,12 @@ function handlePowerRange_Above_1200_Service(selectBattery: SelectBattery_Type, 
                                             /* Si la puissance de targetPower est suppérieur à 2400w */
                                                 if (targetPower > 2400) {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, targetPower - 2400);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 2400 + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 2400 + patchN2);
                                                 }
                                             /* Si la puissance de targetPower est inférieure ou égale à 2400w */
                                                 else {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, 0);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower + patchN2);
                                                 }
                                         }
                                     /* Si la différence de 4% : N1 = 10% et N2 = 90% */
@@ -631,12 +633,12 @@ function handlePowerRange_Above_1200_Service(selectBattery: SelectBattery_Type, 
                                             /* Si la puissance de deltaTargetPower_N1 est suppérieur à 2400w */
                                                 if (deltaTargetPower_N1 > 2400) {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, targetPower - 2400);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 2400 + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 2400 + patchN2);
                                                 }
                                             /* Si la puissance de deltaTargetPower_N1 est inférieure ou égale à 2400w */
                                                 else {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, deltaTargetPower_N1);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower * 0.9 + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower * 0.9 + patchN2);
                                                 }
                                         }
                                     /* Si la différence de 3% : N1 = 20% et N2 = 80% */
@@ -646,12 +648,12 @@ function handlePowerRange_Above_1200_Service(selectBattery: SelectBattery_Type, 
                                             /* Si la puissance de deltaTargetPower_N1 est suppérieur à 2400w */
                                                 if (deltaTargetPower_N1 > 2400) {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, targetPower - 2400);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 2400 + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 2400 + patchN2);
                                                 }
                                             /* Si la puissance de deltaTargetPower_N1 est inférieure ou égale à 2400w */
                                                 else {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, deltaTargetPower_N1);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower * 0.8 + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower * 0.8 + patchN2);
                                                 }
                                         }
                                     /* Si la différence de 2% : N1 = 30% et N2 = 70% */
@@ -661,12 +663,12 @@ function handlePowerRange_Above_1200_Service(selectBattery: SelectBattery_Type, 
                                             /* Si la puissance de deltaTargetPower_N1 est suppérieur à 2400w */
                                                 if (deltaTargetPower_N1 > 2400) {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, targetPower - 2400);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 2400 + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 2400 + patchN2);
                                                 }
                                             /* Si la puissance de deltaTargetPower_N1 est inférieure ou égale à 2400w */
                                                 else {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, deltaTargetPower_N1);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower * 0.7 + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower * 0.7 + patchN2);
                                                 }
                                         }
                                     /* Si la différence de 1% : N1 = 40% et N2 = 60% */
@@ -676,12 +678,12 @@ function handlePowerRange_Above_1200_Service(selectBattery: SelectBattery_Type, 
                                             /* Si la puissance de deltaTargetPower_N1 est suppérieur à 2400w */
                                                 if (deltaTargetPower_N1 > 2400) {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, targetPower - 2400);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 2400 + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, 2400 + patchN2);
                                                 }
                                             /* Si la puissance de deltaTargetPower_N1 est inférieure ou égale à 2400w */
                                                 else {
                                                     body.ZSF2400AC_N1 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N1.sn, deltaTargetPower_N1);
-                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower * 0.6 + 5);
+                                                    body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower * 0.6 + patchN2);
                                                 }
                                         }
                                 }
@@ -694,7 +696,7 @@ function handlePowerRange_Above_1200_Service(selectBattery: SelectBattery_Type, 
         }
     /* Si seul la batterie N2 est disponible */
         else {
-            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower + 5);
+            body.ZSF2400AC_N2 = requestZSF2400AC_Utils(selectBattery.zendureSolarflow2400AC_N2.sn, targetPower + patchN2);
         }
 
     return body;
