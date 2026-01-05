@@ -1,4 +1,5 @@
-/* Valeur valable pour Zendure SolarFlow 2400AC V1.0.15 */
+/* Valeur valable pour Zendure SolarFlow 2400AC : Version V1.0.15 */
+/* Edition le 05/01/2026 */
 /* Ce composant permet contient les datas des test effectués en réelle sur la batterie */
 /* Positive = Charge et Negative = Décharge */
 const refPowerZSF2400AC = {

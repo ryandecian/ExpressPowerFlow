@@ -1,7 +1,7 @@
-
+/* Valeur valable pour Zendure SolarFlow 2400AC : Version inconnue */
 /* Ce composant permet contient les datas des test effectués en réelle sur la batterie */
 /* Positive = Charge et Negative = Décharge */
-const refPowerZSF2400AC = {
+const refPowerZSF2400AC_v1_Data = {
     /* Réelle : commande */
     "267": 280,
     "266": 279,
@@ -433,4 +433,4 @@ const refPowerZSF2400AC = {
     "-160": -135,
 };
 
-export { refPowerZSF2400AC };
+export { refPowerZSF2400AC_v1_Data };
