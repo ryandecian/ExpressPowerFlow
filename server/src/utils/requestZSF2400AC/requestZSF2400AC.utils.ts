@@ -1,5 +1,5 @@
 /* Import des Datas */
-import { refPowerZSF2400AC } from "../../database/zSF2400AC/refPowerZSF2400AC.data.js";
+import { refPowerZSF2400AC_v2_Data } from "../../database/zSF2400AC/refPowerZSF2400AC.v2.data.js";
 
 /* Import des Types : */
 import type { BodyRequestChargeZSF2400AC_Type } from "../../types/bodyRequestZSF2400AC_type/bodyRequestChargeZSF2400AC.type.js";
@@ -38,9 +38,9 @@ function requestZSF2400AC_Utils(sn: string, targetPower: number): BodyRequestCha
 
     /* Logique métier 2 : Calcul de la valeur de la commande à intégrer dans la requête */
         /* Option 1 : Utilisation des données des tests effectués (très précis) dans refPowerZSF2400AC */
-            /* Parcours les datas et vérifie si la clé targetPowerString existe dans refPowerZSF2400AC */
-            if (targetPowerString in refPowerZSF2400AC) {
-                valueCommande = refPowerZSF2400AC[targetPowerString as keyof typeof refPowerZSF2400AC]; /* On dit a typescript tkt, la clé existe bien dans refPowerZSF2400AC */
+            /* Parcours les datas et vérifie si la clé targetPowerString existe dans refPowerZSF2400AC_v2_Data */
+            if (targetPowerString in refPowerZSF2400AC_v2_Data) {
+                valueCommande = refPowerZSF2400AC_v2_Data[targetPowerString as keyof typeof refPowerZSF2400AC_v2_Data]; /* On dit a typescript tkt, la clé existe bien dans refPowerZSF2400AC_v2_Data */
             }
         /* Option 2 : Si la valeur n'existe pas dans les datas, on fait une approximation linéaire avec utils */
             else {
