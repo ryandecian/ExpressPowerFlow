@@ -24,7 +24,7 @@ async function homeManager_Controller(): Promise<void> {
             await home_Controller();
         
         const end = Date.now();
-        console.log(`[homeManager_Controller] - Durée d'exécution totale : ${end - start} ms`);
+        // console.log(`[homeManager_Controller] - Durée d'exécution totale : ${end - start} ms`);
     }
     catch (error) {
         console.error(`[homeManager_Controller] - Une erreur inconnue est survenue : `, error);

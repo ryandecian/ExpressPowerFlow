@@ -51,7 +51,7 @@ let tickRunning: boolean = false;
 async function runHomeManager_Safe(): Promise<void> {
     if (tickRunning) {
         // utile pour diagnostiquer : si tu vois ça souvent, ton tick dépasse 1s
-        console.warn(`[CRON] Tick sauté (déjà en cours).`);
+        // console.warn(`[CRON] Tick sauté (déjà en cours).`);
         return;
     }
 

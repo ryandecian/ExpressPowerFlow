@@ -167,7 +167,7 @@ function selectDataDevice_Service(logNameController: string): SelectDataDevice_T
                                 }
                             /* Couche 3 : Si la batterie N2 est déconnectée */
                                 else if (memoryData.zendureSolarflow2400AC_N2.status === false && memoryData.zendureSolarflow2400AC_N1.status === true) {
-                                    console.info(`[${logNameController}] - La Batterie Zendure Solarflow 2400 AC numéro 2 est déconnectée.`);
+                                    // console.info(`[${logNameController}] - La Batterie Zendure Solarflow 2400 AC numéro 2 est déconnectée.`);
                                     selectBattery.zendureSolarflow2400AC_N2.status = false;
                                     selectBattery.zendureSolarflow2400AC_N1.electricLevel = memoryData.zendureSolarflow2400AC_N1.data.properties.electricLevel;
                                 }

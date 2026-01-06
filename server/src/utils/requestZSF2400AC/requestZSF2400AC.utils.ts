@@ -1,5 +1,4 @@
 /* Import des Datas */
-import { stat } from "fs";
 import { refPowerZSF2400AC_v2_Data } from "../../database/zSF2400AC/refPowerZSF2400AC.v2.data.js";
 
 /* Import des Types : */
@@ -35,7 +34,6 @@ function requestZSF2400AC_Utils(sn: string, targetPower: number): BodyRequestCha
 
         /* Conversion de targetPower de number à string */
         const targetPowerString = targetPower.toString();
-        console.log(`Target Power dans requestZSF2400AC_Utils : ${targetPower} W`);
 
     /* Logique métier 2 : Calcul de la valeur de la commande à intégrer dans la requête */
         let stateValueCommande: number = 0; /* Initialisation de la valeur de la commande, seul le signe du nombre nous intéresse */
@@ -60,7 +58,6 @@ function requestZSF2400AC_Utils(sn: string, targetPower: number): BodyRequestCha
                         stateValueCommande = valueCommande; /* Conservation de la valeur d'état avec son signe positif */
                     }
             }
-            console.log(`Valeur de la commande : ${valueCommande} W`);
     
     /* Logique métier 3 : Transformation de la variable de commande */
         if (valueCommande < 0) {
